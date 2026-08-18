@@ -6,9 +6,9 @@
 
 ## Активне завдання
 
-`Task 2 — Model index і structural Scenario validation` реалізовано Developer (Claude Code) і очікує незалежного review.
+`Task 2 — Model index і structural Scenario validation`: незалежний review завершено з verdict `changes requested`.
 
-Наступний крок — передати `Task 2` окремому агенту в ролі `Reviewer`.
+Наступний крок — повернути `Task 2` агенту в ролі `Developer` для виправлення Major finding.
 
 ## Останнє завершене
 
@@ -19,12 +19,13 @@
 - налаштовано спільний контекст для ChatGPT, Claude Code, Codex і GitHub Copilot;
 - синхронізовано `docs/specs/repository-workflow.md`;
 - реалізовано й прийнято після незалежного review `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`);
-- реалізовано `Task 2 — Model index і structural Scenario validation` (`apps/web/src/simulation/model-index.js`, `apps/web/src/simulation/validation.js`, `apps/web/test/simulation/fixtures.js`, `apps/web/test/simulation/validation.test.js`), очікує review.
+- реалізовано `Task 2 — Model index і structural Scenario validation` (`apps/web/src/simulation/model-index.js`, `apps/web/src/simulation/validation.js`, `apps/web/test/simulation/fixtures.js`, `apps/web/test/simulation/validation.test.js`);
+- незалежний review Task 2 завершено з verdict `changes requested`: structural validator пропускає перевірку value, якщо той самий `availability` entry має невалідний key.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 2 реалізовано, чекає review);
-- `Reviewer`: немає (Task 2 очікує призначення);
+- `Developer`: немає (Task 2 повернено на виправлення, очікує призначення);
+- `Reviewer`: немає (незалежний review Task 2 завершено);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -35,11 +36,12 @@
 
 Незалежний review Task 1: `accepted`, відкритих findings немає.
 
-Task 2: red → green цикл виконано фактично.
+Task 2: незалежний review implementation commit `dd4d7eb` — `changes requested`.
 
-- Targeted red run (`cmd.exe /d /c "npm test -- test/simulation/validation.test.js"` до реалізації `model-index.js`/`validation.js`): `ERR_MODULE_NOT_FOUND`, 1 failed — очікувана поведінка (модулі ще не існують).
-- Targeted green run після реалізації (`npm test -- test/simulation/validation.test.js`): `13 passed, 0 failed`.
-- Full suite (`cmd.exe /d /c npm test`): `15 passed, 0 failed` (Task 1 constants test + Task 2 tests).
+- Незалежний targeted run (`cmd.exe /d /c "npm test -- test/simulation/validation.test.js"`): `13 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): `15 passed, 0 failed` (включно з regression test Task 1).
+- Незалежна runtime-перевірка `createModelIndex`: усі чотири індекси коректні, input model не мутовано.
+- Major finding: для `availability: { "missing-node": -1 }` повертається лише `INVALID_AVAILABILITY_NODE`; через `continue` не повертається `INVALID_AVAILABILITY_VALUE`, хоча structural contract вимагає незалежно перевірити кожен key і кожне value. Потрібно перевіряти value навіть для невалідного key та додати regression test для обох помилок одного entry.
 
 `node --version` → `v24.18.0`.
 
@@ -56,4 +58,4 @@ Task 2: red → green цикл виконано фактично.
 
 ## Наступна дія
 
-Передати `Task 2 — Model index і structural Scenario validation` окремому `Reviewer`. Task 3 не починати до acceptance Task 2.
+Передати `Task 2 — Model index і structural Scenario validation` агенту в ролі `Developer`: виправити Major finding, повторити targeted і full tests та повернути на незалежний review. Task 3 не починати до acceptance Task 2.
