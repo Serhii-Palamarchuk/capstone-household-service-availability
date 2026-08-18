@@ -165,24 +165,34 @@ causalPaths = [service-remote-work -> service-internet -> device-ont]
 
 ### TS-06 — безпосередня залежність обмежує батьківський сервіс раніше за вкладений сервіс
 
+Модель:
+
+```text
+Remote Work
+├─ Internet
+│  ├─ Router = 420
+│  └─ ONT/ONU = 300
+└─ Laptop = 120
+```
+
+Scenario:
+
 ```text
 H = 480
-
-Internet = 300
-Laptop = 120
-Remote Work -> Internet + Laptop
+Target = Remote Work
 ```
 
 Очікування:
 
 ```text
+T(Internet) = 300
 T(Remote Work) = 120
 status = Limited
 limitingDependencyIds = [device-laptop]
 causalPaths = [service-remote-work -> device-laptop]
 ```
 
-Внутрішній bottleneck `Internet` не повинен потрапляти до результату `Remote Work`, якщо `T(Internet) > T(Remote Work)`.
+Внутрішній bottleneck `Internet` не повинен потрапляти до результату `Remote Work`, оскільки `T(Internet) > T(Remote Work)`.
 
 ## 5. Рівнозначні bottleneck
 
@@ -218,7 +228,7 @@ service-internet -> device-router
 H = 360
 
 Remote Work
-├─ Internet = 120
+├─ Internet
 │  ├─ Router = 480
 │  └─ ONT/ONU = 120
 └─ Laptop = 120
@@ -227,16 +237,17 @@ Remote Work
 Очікування для `Remote Work`:
 
 ```text
-T = 120
+T(Internet) = 120
+T(Remote Work) = 120
 status = Limited
-limitingDependencyIds = [device-laptop, device-ont]  // після сортування за id
+limitingDependencyIds = [device-laptop, device-ont]
 ```
 
 Causal paths мають містити обидві гілки:
 
 ```text
-Remote Work -> Internet -> ONT/ONU
-Remote Work -> Laptop
+service-remote-work -> service-internet -> device-ont
+service-remote-work -> device-laptop
 ```
 
 Жоден довільний tie-breaker не використовується.
@@ -255,20 +266,25 @@ Remote Work
    └─ Internet Provider
 ```
 
+Scenario:
+
 ```text
 H = 360
 Internet Provider = 0
+Target = Remote Work
 ```
 
 Очікування:
 
 ```text
+T(Internet) = 0
+T(VPN) = 0
 T(Remote Work) = 0
 status = Unavailable
 limitingDependencyIds = [provider-isp]
 ```
 
-При цьому `causalPaths` містить два унікальні шляхи:
+`causalPaths` містить два унікальні шляхи:
 
 ```text
 service-remote-work -> service-internet -> provider-isp
@@ -277,26 +293,45 @@ service-remote-work -> service-vpn -> provider-isp
 
 `provider-isp` у `limitingDependencyIds` не дублюється.
 
-### TS-10 — shared nested `Service` обчислюється один раз логічно та повторно використовується
+### TS-10 — shared nested `Service` використовується кількома target-сервісами
 
 Модель:
 
 ```text
-Remote Work -> Internet + Laptop
-Smart TV    -> Internet + TV
+Remote Work
+├─ Internet
+│  ├─ Router = 480
+│  └─ ONT/ONU = 240
+└─ Laptop = 360
+
+Smart TV
+├─ Internet
+└─ TV = 600
 ```
 
 Scenario:
 
 ```text
+H = 480
 Target = [Remote Work, Smart TV]
 ```
 
 Очікування:
 
-- `Internet` присутній у `serviceResults` один раз за своїм `serviceId`;
-- обидва target-сервіси отримують коректний результат через той самий розрахований `Internet`;
-- `targetResults` повертаються у тому самому порядку, що й `targetServiceIds`.
+```text
+T(Internet) = 240
+T(Remote Work) = 240
+T(Smart TV) = 240
+```
+
+Для обох target-сервісів статус — `Limited`, а кінцевою причиною є `device-ont` через shared `Internet`.
+
+Додатково перевірити:
+
+- `Internet` присутній у `serviceResults` один раз за `service-internet`;
+- `targetResults[0]` відповідає `Remote Work`;
+- `targetResults[1]` відповідає `Smart TV`;
+- causal path кожного target починається від самого цього target-сервісу.
 
 Тест не повинен покладатися на конкретну внутрішню реалізацію кешу; перевіряється зовнішньо спостережуваний результат та відсутність дублювання `Internet` у `serviceResults`.
 
@@ -348,7 +383,7 @@ H = 360
 
 - `success = true`;
 - цикл `Heating <-> Water` не впливає на результат `Internet`;
-- cycle error не повертається для цього запуску.
+- `CYCLE_DETECTED` не повертається для цього запуску.
 
 Наявність такого циклу все одно є некоректною конфігурацією редактора і повинна бути виправлена поза межами цієї конкретної симуляції.
 
@@ -428,15 +463,15 @@ field = dependencyIds
 Модель:
 
 ```text
-Service A -> Service B
-Service B -> Service C
-Service C -> Service A
+service-a -> service-b
+service-b -> service-c
+service-c -> service-a
 ```
 
 Target:
 
 ```text
-Service A
+service-a
 ```
 
 Очікування:
@@ -445,13 +480,10 @@ Service A
 success = false
 code = CYCLE_DETECTED
 field = dependencyIds
+path = [service-a, service-b, service-c, service-a]
 ```
 
-`path`:
-
-- починається з лексикографічно найменшого `serviceId` у фактично виявленому циклі;
-- завершується тим самим `serviceId`;
-- описує замкнений спрямований шлях.
+Шлях починається з лексикографічно найменшого `serviceId` у фактично виявленому циклі та завершується тим самим `serviceId`.
 
 Не вимагається перерахування всіх можливих простих циклів графа.
 
@@ -563,10 +595,10 @@ availability задано лише для Router
 
 ```text
 INVALID_OUTAGE_DURATION
-MISSING_AVAILABILITY для ONT/ONU
+MISSING_AVAILABILITY для device-ont
 ```
 
-Simulation engine не повинен зупинитися після першої помилки.
+Simulation engine не повинен зупинитися після першої помилки. Через наявність помилок `targetResults` і `serviceResults` не повертаються.
 
 ### TS-25 — одна shared-проблема не дублюється через кілька шляхів
 
@@ -654,6 +686,7 @@ Provider = 4320
 Другий запуск для того самого графа:
 
 ```text
+H = 360
 Router = 480
 ONT/ONU = 480
 Provider = 4320
