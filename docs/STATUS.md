@@ -6,9 +6,9 @@
 
 ## Активне завдання
 
-`Task 1 — Runtime harness і constants` реалізовано Developer (Claude Code) і готове до незалежного Reviewer-циклу.
+`Task 1 — Runtime harness і constants` реалізовано Developer (Claude Code) та прийнято після незалежного review (Codex).
 
-Наступний крок — передати `Task 1` незалежному агенту в ролі `Reviewer`.
+Наступний крок — передати `Task 2 — Model index і structural Scenario validation` окремому агенту в ролі `Developer`.
 
 ## Останнє завершене
 
@@ -18,12 +18,12 @@
 - підготовлено й самоперевірено `docs/plans/simulation-engine-v1.md`;
 - налаштовано спільний контекст для ChatGPT, Claude Code, Codex і GitHub Copilot;
 - синхронізовано `docs/specs/repository-workflow.md`;
-- реалізовано `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`).
+- реалізовано й прийнято після незалежного review `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`).
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 1 завершено, очікує Reviewer);
-- `Reviewer`: немає;
+- `Developer`: немає (Task 2 очікує призначення);
+- `Reviewer`: немає (Task 1 прийнято);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -32,9 +32,11 @@
 
 ## Остання перевірка
 
-`node --version` → `v24.18.0`; `node:test` підтверджено доступним.
+Незалежний review Task 1: `accepted`, відкритих findings немає.
 
-Фактичний запуск `npm test` у `apps/web` (Task 1, констант-тест): `1 passed, 0 failed`.
+`node --version` → `v24.18.0`.
+
+Повторний запуск package script у `apps/web` через `cmd.exe /d /c npm test` → exit code `0`, `1 passed, 0 failed`. Прямий виклик `npm test` у PowerShell не запустив tests через локальну execution policy для `npm.ps1`.
 
 ## Актуальна база
 
@@ -46,4 +48,4 @@
 
 ## Наступна дія
 
-Призначити незалежного `Reviewer` для `Simulation Engine v1 / Task 1`, після чого (за прийняття) передати `Task 2` окремому `Developer`.
+Передати `Task 2 — Model index і structural Scenario validation` окремому `Developer`.
