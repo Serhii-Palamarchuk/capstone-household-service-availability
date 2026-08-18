@@ -6,9 +6,9 @@
 
 ## Активне завдання
 
-`Task 2 — Model index і structural Scenario validation`: Major finding з попереднього review виправлено Developer (Claude Code). Очікує повторного незалежного review.
+`Task 2 — Model index і structural Scenario validation` прийнято після повторного незалежного review.
 
-Наступний крок — передати `Task 2` окремому агенту в ролі `Reviewer`.
+Наступний крок — передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі `Developer`.
 
 ## Останнє завершене
 
@@ -20,13 +20,13 @@
 - синхронізовано `docs/specs/repository-workflow.md`;
 - реалізовано й прийнято після незалежного review `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`);
 - реалізовано `Task 2 — Model index і structural Scenario validation` (`apps/web/src/simulation/model-index.js`, `apps/web/src/simulation/validation.js`, `apps/web/test/simulation/fixtures.js`, `apps/web/test/simulation/validation.test.js`);
-- незалежний review Task 2 завершено з verdict `changes requested`: structural validator пропускав перевірку value, якщо той самий `availability` entry мав невалідний key;
-- виправлено Major finding у `validateScenarioStructure()` — видалено `continue`, key і value validation тепер незалежні; додано regression test.
+- виправлено Major finding у `validateScenarioStructure()` — key і value validation виконуються незалежно; додано regression test;
+- `Task 2 — Model index і structural Scenario validation` прийнято після повторного незалежного review, відкритих findings немає.
 
 ## Поточні ролі
 
-- `Developer`: немає (correction завершено, Task 2 очікує review);
-- `Reviewer`: немає (Task 2 очікує призначення);
+- `Developer`: немає (Task 3 готовий до передачі);
+- `Reviewer`: немає (Task 2 прийнято);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -37,11 +37,11 @@
 
 Незалежний review Task 1: `accepted`, відкритих findings немає.
 
-Task 2 correction (implementation commit `dd4d7eb`, review commit `cb89b2e`):
+Повторний незалежний review Task 2 correction (fix commit `e4cd10b`): `accepted`, відкритих findings немає.
 
-- Regression test (`availability['missing-node'] = -1`, до fix): FAIL — `AssertionError`, `INVALID_AVAILABILITY_VALUE` не повертався для того самого entry. Очікувана поведінка.
-- Targeted run після fix (`cmd.exe /d /c "npm test -- test/simulation/validation.test.js"`): `14 passed, 0 failed`.
-- Full suite після fix (`cmd.exe /d /c npm test`): `16 passed, 0 failed`.
+- Незалежний targeted run (`cmd.exe /d /c "npm test -- test/simulation/validation.test.js"`): `14 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): `16 passed, 0 failed` (включно з regression test Task 1).
+- Незалежна runtime-перевірка `availability['missing-node'] = -1`: повернуто рівно `INVALID_AVAILABILITY_NODE` та `INVALID_AVAILABILITY_VALUE` зі стабільними `nodeId`, `field` і `message`.
 
 `node --version` → `v24.18.0`.
 
@@ -60,4 +60,4 @@ Task 2 correction (implementation commit `dd4d7eb`, review commit `cb89b2e`):
 
 ## Наступна дія
 
-Передати `Task 2 — Model index і structural Scenario validation` окремому `Reviewer` для повторної перевірки. Task 3 не починати до acceptance Task 2.
+Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md`.
