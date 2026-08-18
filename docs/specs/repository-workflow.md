@@ -1,24 +1,24 @@
-# Repository Workflow Design
+# Організація роботи з репозиторієм
 
-## Goal
+## Мета
 
-Create a single shared engineering workspace for the Neoversity MSc Software Engineering capstone project so that ChatGPT, Claude Code, and Codex work from the same requirements, domain model, decisions, and task specifications without duplicating instructions.
+Створити єдиний спільний інженерний простір для магістерського дипломного проєкту Neoversity за спеціалізацією Software Engineering, щоб ChatGPT, Claude Code і Codex працювали з однаковими вимогами, предметною моделлю, рішеннями та специфікаціями завдань без дублювання інструкцій.
 
-## Project Context
+## Контекст проєкту
 
-Working topic:
+Робоча тема:
 
 **Оцінювання доступності критичних побутових сервісів під час відключень електроенергії на основі моделі функціональних залежностей**
 
-The project is an individual engineering project. The core hypothesis is that availability of a household service during a power outage should be evaluated through all mandatory functional dependencies rather than through the autonomy of a single device.
+Проєкт виконується індивідуально як інженерний магістерський проєкт. Основна гіпотеза полягає в тому, що доступність побутового сервісу під час відключення електроенергії потрібно оцінювати через усі його обов’язкові функціональні залежності, а не лише через автономність окремого пристрою.
 
-The MVP must remain narrow, testable, and realistic for one developer.
+MVP має залишатися вузьким, тестованим і реалістичним для реалізації однією людиною.
 
-## Repository Strategy
+## Стратегія репозиторію
 
-Use one repository for the whole capstone project.
+Для всього дипломного проєкту використовується один репозиторій.
 
-Planned structure:
+Планована структура:
 
 ```text
 /
@@ -35,125 +35,125 @@ Planned structure:
 │  └─ plans/
 ├─ apps/
 │  ├─ web/
-│  └─ api/              # optional, only if later justified
+│  └─ api/              # опційно, лише якщо пізніше буде обґрунтовано
 └─ .gitignore
 ```
 
-The repository structure must remain tool-neutral. Project documentation must not depend on a specific AI plugin, coding assistant, or workflow framework.
+Структура репозиторію має залишатися нейтральною щодо інструментів. Документація проєкту не повинна залежати від конкретного AI-плагіна, coding assistant або workflow-фреймворку.
 
-The first implementation stage is a React client application. A Node.js API may be added later only if a concrete requirement justifies centralized processing or persistence.
+Перший етап реалізації — клієнтський застосунок на React. Node.js API може бути доданий пізніше лише за наявності конкретної вимоги, яка обґрунтовує централізовану обробку або збереження даних.
 
-## Single Source of Agent Instructions
+## Єдине джерело інструкцій для агентів
 
-`AGENTS.md` is the canonical shared instruction file for all coding agents.
+`AGENTS.md` є канонічним спільним файлом інструкцій для всіх coding agents.
 
-It must contain only stable project-wide rules:
+Він має містити лише стабільні правила, що діють для всього проєкту:
 
-- project purpose and scope;
-- MVP boundaries;
-- required documents to read before implementation;
-- development and review modes;
-- testing and verification rules;
-- architecture constraints;
-- decision-log rules;
-- prohibition on silently expanding scope or adding technologies.
+- мету та межі проєкту;
+- межі MVP;
+- документи, які потрібно прочитати перед реалізацією;
+- режими розробки та рев’ю;
+- правила тестування й перевірки;
+- архітектурні обмеження;
+- правила ведення журналу рішень;
+- заборону непомітно розширювати scope або додавати технології.
 
-`CLAUDE.md` must not duplicate these rules. It should only import or point Claude Code to `AGENTS.md`.
+`CLAUDE.md` не повинен дублювати ці правила. Його призначення — лише підключити або явно направити Claude Code до `AGENTS.md`.
 
-No agent-specific role is permanently assigned.
+За жодним агентом постійно не закріплюється конкретна роль.
 
-## Working Modes
+## Режими роботи
 
-Every task explicitly assigns one of two modes.
+Кожне завдання явно призначає один із двох режимів.
 
-### Developer mode
+### Developer
 
-The assigned agent:
+Агент у режимі Developer:
 
-- implements only the approved task specification;
-- reads the referenced canonical documents first;
-- changes only files required by the task;
-- adds or updates tests required by the acceptance criteria;
-- runs verification before reporting completion;
-- does not expand scope or change architecture implicitly.
+- реалізує лише погоджену специфікацію завдання;
+- спочатку читає зазначені канонічні документи;
+- змінює лише файли, необхідні для поточного завдання;
+- додає або оновлює тести відповідно до критеріїв приймання;
+- виконує перевірку перед повідомленням про завершення;
+- не розширює scope і не змінює архітектуру неявно.
 
-### Reviewer mode
+### Reviewer
 
-The assigned agent:
+Агент у режимі Reviewer:
 
-- reviews the implementation against the task specification and canonical project documents;
-- checks correctness, scope, tests, architecture, and maintainability;
-- reports findings by severity;
-- does not modify code unless explicitly requested to switch to Developer mode.
+- перевіряє реалізацію відносно специфікації завдання та канонічних документів проєкту;
+- перевіряє коректність, відповідність scope, тести, архітектуру та підтримуваність коду;
+- повідомляє зауваження з указанням їхньої важливості;
+- не змінює код, якщо користувач явно не перевів його в режим Developer.
 
-Claude Code and Codex may alternate between Developer and Reviewer modes from task to task.
+Claude Code і Codex можуть по черзі виконувати ролі Developer і Reviewer у різних завданнях.
 
-## Canonical Technical Documents
+## Канонічні технічні документи
 
 ### `docs/PROJECT.md`
 
-Stable product-level context:
+Стабільний продуктовий контекст:
 
-- problem;
-- end user;
-- goal;
-- gap;
-- MVP scope;
-- out-of-scope items;
-- current architecture stage.
+- проблема;
+- кінцевий користувач;
+- мета;
+- прогалина в існуючих рішеннях;
+- scope MVP;
+- те, що не входить до MVP;
+- поточний етап архітектури.
 
 ### `docs/DOMAIN_MODEL.md`
 
-Defines the domain model and invariants.
+Визначає предметну модель та її інваріанти.
 
-Initial node types:
+Початкові типи вузлів:
 
 - `Service`;
 - `Device`;
 - `External Provider`.
 
-All modeled dependencies in the MVP are mandatory. Cycles are not allowed.
+Усі змодельовані залежності в MVP є обов’язковими. Цикли не допускаються.
 
 ### `docs/SIMULATION.md`
 
-Defines the deterministic availability calculation, service states, bottleneck logic, error handling, and unresolved algorithmic decisions.
+Визначає детермінований розрахунок доступності, стани сервісу, логіку визначення обмежувальної залежності (bottleneck), обробку помилок і невирішені алгоритмічні питання.
 
-Known state model:
+Відома модель станів:
 
 - `Available`: `T >= H`;
 - `Limited`: `0 < T < H`;
 - `Unavailable`: `T = 0`.
 
-Where `H` is outage duration and `T` is calculated service availability duration.
+де `H` — тривалість сценарію відключення, а `T` — розрахована тривалість доступності сервісу.
 
 ### `docs/TEST_SCENARIOS.md`
 
-Contains controlled examples and acceptance scenarios used by both implementation and review.
+Містить контрольовані приклади та acceptance-сценарії, які використовуються і для реалізації, і для рев’ю.
 
 ### `docs/DECISIONS.md`
 
-Decision log format:
+Формат журналу рішень:
 
-`Decision → Alternatives → Criteria → Arguments → Evidence → Choice`
+`Рішення → Альтернативи → Критерії → Аргументи → Докази → Вибір`
 
-Important architecture or scope changes must be recorded here before implementation.
+Важливі зміни архітектури або scope мають бути зафіксовані тут до початку їх реалізації.
 
-## Task Specification Format
+## Формат специфікації завдання
 
-Each implementation task should be small enough for one independent implementation and review cycle.
+Кожне завдання з реалізації має бути достатньо малим для одного незалежного циклу реалізації та рев’ю.
 
-Recommended task structure:
+Рекомендована структура завдання:
 
 ```text
 Role: Developer | Reviewer
-Task: <ID and title>
+Task: <ID і назва>
 
 Goal:
 ...
 
 Read first:
 - AGENTS.md
-- relevant docs/... files
+- відповідні файли docs/...
 
 Acceptance criteria:
 - ...
@@ -165,74 +165,74 @@ Out of scope:
 - ...
 ```
 
-The task prompt must reference canonical documents instead of repeating project-wide rules.
+Task prompt має посилатися на канонічні документи замість повторення загальних правил проєкту.
 
-## Development Workflow
+## Процес розробки
 
-Default workflow:
+Базовий workflow:
 
-**Specification → Developer implementation → verification/tests → independent Reviewer → corrections → acceptance → documentation update**
+**Специфікація → реалізація Developer → перевірка/тести → незалежний Reviewer → виправлення → приймання → оновлення документації**
 
-The Developer and Reviewer should normally be different agents for the same task when practical.
+Для одного завдання Developer і Reviewer за можливості мають бути різними агентами.
 
-A reviewer should not silently rewrite the implementation. Findings go back to the current Developer unless the user explicitly changes roles.
+Reviewer не повинен непомітно переписувати реалізацію. Зауваження повертаються поточному Developer, якщо користувач явно не змінює ролі.
 
-## Scope Constraints
+## Обмеження scope
 
-Core MVP remains focused on:
+Ядро MVP залишається сфокусованим на таких можливостях:
 
-1. outage scenario creation;
-2. service and dependency modelling;
-3. explicit availability duration for Device and External Provider nodes;
-4. acyclic dependency validation;
-5. deterministic availability simulation;
-6. status classification;
-7. limiting dependency and causal-path explanation;
-8. rerunning a scenario after input changes.
+1. створення сценарію відключення;
+2. моделювання сервісів та їхніх залежностей;
+3. явне задання тривалості доступності для вузлів `Device` і `External Provider`;
+4. перевірка відсутності циклічних залежностей;
+5. детермінована симуляція доступності;
+6. класифікація стану сервісу;
+7. визначення обмежувальної залежності та пояснення причинного шляху;
+8. повторний запуск сценарію після зміни вхідних даних.
 
-Not part of the core MVP:
+До ядра MVP не входять:
 
-- automatic W/Wh battery calculation;
-- external outage-schedule integration;
-- store integrations;
-- AI recommendations;
-- user accounts;
-- microservices, Kubernetes, CQRS, event-driven architecture, or distributed-system complexity.
+- автоматичний розрахунок автономності батарей за W/Wh;
+- інтеграція із зовнішніми графіками відключень;
+- інтеграції з інтернет-магазинами;
+- рекомендації на основі ШІ;
+- облікові записи користувачів;
+- microservices, Kubernetes, CQRS, event-driven architecture або інша складність distributed systems.
 
-## Technology Constraints
+## Технологічні обмеження
 
-Core framework choices must remain within the technologies allowed by the study programme.
+Основний стек має залишатися в межах технологій, дозволених навчальною програмою.
 
-Current approved direction:
+Поточний погоджений напрям:
 
-- React for the first implementation stage;
-- Node.js may be added later if a concrete server-side requirement is approved.
+- React для першого етапу реалізації;
+- Node.js може бути доданий пізніше, якщо буде погоджена конкретна серверна вимога.
 
-No database, ORM, testing framework, cloud platform, broker, or other supporting technology is considered approved merely by being common or convenient. Such choices require a deliberate project decision before adoption.
+Жодна база даних, ORM, testing framework, cloud platform, broker або інша допоміжна технологія не вважається автоматично погодженою лише тому, що вона поширена або зручна. Такий вибір потребує окремого рішення в межах проєкту до початку використання.
 
-## Testing Principle
+## Принцип тестування
 
-Every implementation task must be verifiable against explicit acceptance criteria.
+Кожне завдання з реалізації має перевірятися за явно визначеними критеріями приймання.
 
-The project should maintain traceability:
+У проєкті підтримується трасування:
 
 `Requirement → Implementation → Test → Result`
 
-Measured results must come from actual test execution. No benchmark or test result may be invented.
+Будь-які вимірювані результати мають походити з фактичного запуску тестів. Результати тестів або benchmarks не можна вигадувати.
 
-## Public Repository Rule
+## Правило для публічного репозиторію
 
-The repository is public so it can be shared with the supervisor and other reviewers.
+Репозиторій є публічним, щоб ним можна було ділитися з науковим керівником та іншими рецензентами.
 
-Never commit:
+Ніколи не додавати до репозиторію:
 
-- passwords;
-- API keys or tokens;
-- `.env` secrets;
-- private correspondence;
-- unnecessary personal identifiers;
-- confidential data.
+- паролі;
+- API keys або tokens;
+- секрети `.env`;
+- приватне листування;
+- непотрібні персональні ідентифікатори;
+- конфіденційні дані.
 
-## Current Open Design Question
+## Поточне відкрите питання проєктування
 
-Tie handling for two or more dependencies with the same minimum availability duration is intentionally unresolved. It must be decided and documented in `docs/SIMULATION.md` / `docs/DECISIONS.md` before the corresponding algorithm is implemented.
+Обробка ситуації, коли дві або більше залежностей мають однакову мінімальну тривалість доступності, навмисно ще не визначена. Рішення потрібно прийняти та зафіксувати в `docs/SIMULATION.md` і/або `docs/DECISIONS.md` до реалізації відповідної логіки алгоритму.
