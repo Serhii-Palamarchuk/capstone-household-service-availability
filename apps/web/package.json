@@ -1,0 +1,8 @@
+{
+  "name": "capstone-household-service-availability-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
