@@ -2,13 +2,13 @@
 
 ## Поточний етап
 
-Підготовка до реалізації `Simulation Engine v1`.
+Реалізація `Simulation Engine v1`.
 
 ## Активне завдання
 
-Активного завдання для `Developer` немає.
+`Task 1 — Runtime harness і constants` реалізовано Developer (Claude Code) і готове до незалежного Reviewer-циклу.
 
-Наступний крок — передати `Task 1` з `docs/plans/simulation-engine-v1.md` одному агенту в ролі `Developer`.
+Наступний крок — передати `Task 1` незалежному агенту в ролі `Reviewer`.
 
 ## Останнє завершене
 
@@ -17,11 +17,12 @@
 - сформовано `docs/TEST_SCENARIOS.md`;
 - підготовлено й самоперевірено `docs/plans/simulation-engine-v1.md`;
 - налаштовано спільний контекст для ChatGPT, Claude Code, Codex і GitHub Copilot;
-- синхронізовано `docs/specs/repository-workflow.md`.
+- синхронізовано `docs/specs/repository-workflow.md`;
+- реалізовано `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`).
 
 ## Поточні ролі
 
-- `Developer`: немає;
+- `Developer`: немає (Task 1 завершено, очікує Reviewer);
 - `Reviewer`: немає;
 - координація та рішення: користувач + ChatGPT.
 
@@ -31,17 +32,18 @@
 
 ## Остання перевірка
 
-Код simulation engine ще не реалізований, тому фактичні code tests не запускалися.
+`node --version` → `v24.18.0`; `node:test` підтверджено доступним.
 
-Остання виконана перевірка — self-review `docs/plans/simulation-engine-v1.md` та документації спільного контексту.
+Фактичний запуск `npm test` у `apps/web` (Task 1, констант-тест): `1 passed, 0 failed`.
 
 ## Актуальна база
 
 - план: `docs/plans/simulation-engine-v1.md`;
 - commit плану: `2f08425e004a5ccfb91533e075c114acf8198e9e`;
+- implementation commit Task 1: `c78de11`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Передати `Simulation Engine v1 / Task 1` одному агенту в ролі `Developer`, після чого виконати незалежний `Reviewer`-цикл відповідно до `docs/specs/repository-workflow.md`.
+Призначити незалежного `Reviewer` для `Simulation Engine v1 / Task 1`, після чого (за прийняття) передати `Task 2` окремому `Developer`.
