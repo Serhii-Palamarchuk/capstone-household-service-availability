@@ -90,6 +90,24 @@ test('TS-22: availability key referencing a missing node is invalid', () => {
   ));
 });
 
+test('regression: invalid availability key does not skip value validation', () => {
+  const index = createModelIndex(createInternetModel());
+  const scenario = createInternetScenario();
+  scenario.availability['missing-node'] = -1;
+
+  const errors = validateScenarioStructure(index, scenario);
+  assert.ok(errors.some(error =>
+    error.code === 'INVALID_AVAILABILITY_NODE' &&
+    error.nodeId === 'missing-node' &&
+    error.field === 'availability'
+  ));
+  assert.ok(errors.some(error =>
+    error.code === 'INVALID_AVAILABILITY_VALUE' &&
+    error.nodeId === 'missing-node' &&
+    error.field === 'availability'
+  ));
+});
+
 test('TS-22: availability key cannot reference Service', () => {
   const index = createModelIndex(createInternetModel());
   const scenario = createInternetScenario();

@@ -61,7 +61,6 @@ export function validateScenarioStructure(modelIndex, scenario) {
         field: 'availability',
         message: `availability references a node that is not a Device or ExternalProvider: ${nodeId}.`,
       });
-      continue;
     }
 
     if (!isNonNegativeInteger(value)) {
