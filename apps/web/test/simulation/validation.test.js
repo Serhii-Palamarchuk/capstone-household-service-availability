@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createModelIndex } from '../../src/simulation/model-index.js';
-import { validateScenarioStructure } from '../../src/simulation/validation.js';
+import {
+  validateScenarioStructure,
+  validateSimulationInput,
+} from '../../src/simulation/validation.js';
 import { createInternetModel, createInternetScenario } from './fixtures.js';
 
 for (const value of [0, -1, 1.5]) {
@@ -150,4 +153,214 @@ test('valid structural scenario produces no errors', () => {
 
   const errors = validateScenarioStructure(index, scenario);
   assert.deepEqual(errors, []);
+});
+
+test('TS-11: unreachable incomplete Service produces no simulation validation error', () => {
+  const model = {
+    services: [
+      { id: 'service-internet', name: 'Internet', dependencyIds: ['device-router'] },
+      { id: 'service-heating', name: 'Heating', dependencyIds: [] },
+    ],
+    devices: [{ id: 'device-router', name: 'Router' }],
+    externalProviders: [],
+  };
+
+  const scenario = {
+    id: 's1',
+    name: 'scenario',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-internet'],
+    availability: { 'device-router': 480 },
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  assert.deepEqual(errors, []);
+});
+
+test('TS-12: cycle in unreachable part of the model does not block independent target', () => {
+  const model = {
+    services: [
+      { id: 'service-internet', name: 'Internet', dependencyIds: ['device-router'] },
+      { id: 'service-heating', name: 'Heating', dependencyIds: ['service-water'] },
+      { id: 'service-water', name: 'Water', dependencyIds: ['service-heating'] },
+    ],
+    devices: [{ id: 'device-router', name: 'Router' }],
+    externalProviders: [],
+  };
+
+  const scenario = {
+    id: 's1',
+    name: 'scenario',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-internet'],
+    availability: { 'device-router': 480 },
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  assert.deepEqual(errors, []);
+});
+
+test('TS-14: missing reachable leaf availability is an error', () => {
+  const model = createInternetModel();
+  const scenario = createInternetScenario();
+  delete scenario.availability['device-ont'];
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  assert.ok(errors.some(error =>
+    error.code === 'MISSING_AVAILABILITY' &&
+    error.nodeId === 'device-ont' &&
+    error.field === 'availability'
+  ));
+});
+
+test('TS-15: reachable Service without dependencies is an error', () => {
+  const model = {
+    services: [
+      { id: 'service-internet', name: 'Internet', dependencyIds: [] },
+    ],
+    devices: [],
+    externalProviders: [],
+  };
+
+  const scenario = {
+    id: 's1',
+    name: 'scenario',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-internet'],
+    availability: {},
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  assert.ok(errors.some(error =>
+    error.code === 'SERVICE_WITHOUT_DEPENDENCIES' &&
+    error.nodeId === 'service-internet' &&
+    error.field === 'dependencyIds'
+  ));
+});
+
+test('TS-16: dependency referencing a missing node is an error', () => {
+  const model = {
+    services: [
+      {
+        id: 'service-internet',
+        name: 'Internet',
+        dependencyIds: ['device-router', 'missing-node'],
+      },
+    ],
+    devices: [{ id: 'device-router', name: 'Router' }],
+    externalProviders: [],
+  };
+
+  const scenario = {
+    id: 's1',
+    name: 'scenario',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-internet'],
+    availability: { 'device-router': 480 },
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  assert.ok(errors.some(error =>
+    error.code === 'DEPENDENCY_NOT_FOUND' &&
+    error.nodeId === 'service-internet' &&
+    error.field === 'dependencyIds'
+  ));
+});
+
+test('TS-17: reachable cycle has canonical path', () => {
+  const model = {
+    services: [
+      { id: 'service-a', name: 'A', dependencyIds: ['service-b'] },
+      { id: 'service-b', name: 'B', dependencyIds: ['service-c'] },
+      { id: 'service-c', name: 'C', dependencyIds: ['service-a'] },
+    ],
+    devices: [],
+    externalProviders: [],
+  };
+  const scenario = {
+    id: 's1',
+    name: 'cycle',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-a'],
+    availability: {},
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  const cycle = errors.find(error => error.code === 'CYCLE_DETECTED');
+  assert.deepEqual(cycle.path, ['service-a', 'service-b', 'service-c', 'service-a']);
+});
+
+test('TS-24: multiple independent validation errors are collected together', () => {
+  const model = createInternetModel();
+  const scenario = createInternetScenario();
+  scenario.outageDurationMinutes = 0;
+  delete scenario.availability['device-ont'];
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  assert.ok(errors.some(error => error.code === 'INVALID_OUTAGE_DURATION'));
+  assert.ok(errors.some(error =>
+    error.code === 'MISSING_AVAILABILITY' &&
+    error.nodeId === 'device-ont'
+  ));
+});
+
+test('TS-25: one shared-leaf problem is not duplicated through multiple paths', () => {
+  const model = {
+    services: [
+      {
+        id: 'service-remote-work',
+        name: 'Remote Work',
+        dependencyIds: ['service-internet', 'service-vpn'],
+      },
+      {
+        id: 'service-internet',
+        name: 'Internet',
+        dependencyIds: ['provider-isp'],
+      },
+      {
+        id: 'service-vpn',
+        name: 'VPN',
+        dependencyIds: ['provider-isp'],
+      },
+    ],
+    devices: [],
+    externalProviders: [{ id: 'provider-isp', name: 'Internet Provider' }],
+  };
+
+  const scenario = {
+    id: 's1',
+    name: 'scenario',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-remote-work'],
+    availability: {},
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  const missingAvailabilityErrors = errors.filter(error =>
+    error.code === 'MISSING_AVAILABILITY' && error.nodeId === 'provider-isp'
+  );
+  assert.equal(missingAvailabilityErrors.length, 1);
+});
+
+test('TS-26: validation errors are sorted deterministically by code, nodeId, field', () => {
+  const model = createInternetModel();
+  const scenario = createInternetScenario();
+  scenario.outageDurationMinutes = 0;
+  delete scenario.availability['device-ont'];
+  delete scenario.availability['provider-isp'];
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  const keys = errors.map(error => [error.code, error.nodeId ?? '', error.field ?? '']);
+  const sortedKeys = [...keys].sort((a, b) => {
+    for (let i = 0; i < a.length; i += 1) {
+      if (a[i] !== b[i]) {
+        return a[i] < b[i] ? -1 : 1;
+      }
+    }
+    return 0;
+  });
+  assert.deepEqual(keys, sortedKeys);
+
+  const errorsAgain = validateSimulationInput(createModelIndex(model), scenario);
+  assert.deepEqual(errors, errorsAgain);
 });
