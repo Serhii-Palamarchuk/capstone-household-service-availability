@@ -1,26 +1,57 @@
 # Предметна модель
 
-## 1. Призначення документа
+## 1. Призначення
 
-Цей документ визначає предметні сутності, зв’язки та інваріанти MVP системи оцінювання доступності побутових сервісів під час відключень електроенергії.
+Документ визначає сутності та інваріанти user-facing MVP. Алгоритм service simulation залишається в `docs/SIMULATION.md`; деталі нової ітерації — у `docs/specs/user-facing-mvp-v1.md`.
 
-Документ відповідає на питання **що існує в моделі та які структурні правила мають виконуватися**.
+## 2. Загальна модель
 
-Алгоритм розрахунку доступності, поширення обмежень, визначення `limitingDependencies` і побудова причинних шляхів описується окремо в `docs/SIMULATION.md`.
+```mermaid
+classDiagram
+    class Service {
+      id
+      name
+      dependencyIds[]
+    }
+    class Device {
+      id
+      name
+      category
+      powerW
+      internalBattery?
+    }
+    class InternalBattery {
+      usableCapacityWh
+    }
+    class ExternalProvider {
+      id
+      name
+    }
+    class BackupSource {
+      id
+      name
+      type
+      usableCapacityWh
+      maxOutputPowerW?
+    }
+    class Scenario {
+      outageDurationMinutes
+      targetServiceIds[]
+      backupAssignments
+      additionalActiveDeviceIds[]
+      externalProviderAvailability
+      powerStrategy
+    }
 
-## 2. Основні поняття
+    Service --> Service : may depend on
+    Service --> Device : may depend on
+    Service --> ExternalProvider : may depend on
+    Device "1" *-- "0..1" InternalBattery
+    BackupSource "1" --> "0..*" Device : assigned in Scenario
+    Scenario --> Service : targets
+```
 
-У MVP використовуються три типи вузлів:
-
-- `Service` — побутовий сервіс, доступність якого потрібно оцінити;
-- `Device` — фізичний пристрій, доступність якого під час сценарію задається явно;
-- `ExternalProvider` — зовнішня залежність або інфраструктура, доступність якої під час сценарію задається явно.
-
-Окремо використовується `Scenario`, який описує конкретний сценарій відключення та значення доступності листових вузлів.
-
-## 3. Сутність `Service`
-
-Концептуальна структура:
+## 3. `Service`
 
 ```text
 Service
@@ -31,39 +62,38 @@ Service
 
 Правила:
 
-- `id` є стабільним внутрішнім ідентифікатором;
-- `name` є зрозумілою користувачеві назвою сервісу;
-- `dependencyIds` містить посилання на вузли, від яких залежить сервіс;
-- залежністю може бути `Service`, `Device` або `ExternalProvider`;
-- один `Service` може мати багато залежностей;
-- усі залежності в MVP є обов’язковими;
-- одна й та сама залежність не може бути додана до одного `Service` двічі;
-- порядок `dependencyIds` не впливає на результат симуляції;
-- `Service` не має власного `availabilityDuration` — його тривалість доступності завжди обчислюється симуляцією.
+- залежність: `Service | Device | ExternalProvider`;
+- усі додані dependencies обов’язкові;
+- дублікати dependencyIds заборонені;
+- цикли заборонені;
+- `Service` не має власної постійної availability;
+- один Service може бути спільною залежністю кількох інших Service.
 
-Під час редагування допускається `Service` без залежностей. Такий сервіс можна зберегти як незавершену конфігурацію, але його не можна використовувати в симуляції, доки не визначено хоча б одну залежність.
+У user-facing MVP Service створюється з predefined template/variant. Template визначає dependency roles, cardinality та дозволені Device categories. Довільний graph editor поза scope.
 
-## 4. Сутність `Device`
-
-Концептуальна структура:
+## 4. `Device`
 
 ```text
 Device
 - id: string
 - name: string
+- category: DeviceCategory
+- powerW: number
+- internalBattery?:
+    usableCapacityWh: number
 ```
 
-У поточному MVP `Device` є листовим вузлом:
+Інваріанти:
 
-- не має власних залежностей;
-- не містить постійного значення автономності;
-- його доступність задається в конкретному `Scenario`.
+- `powerW > 0`;
+- `internalBattery.usableCapacityWh > 0`, якщо батарея задана;
+- internal battery належить лише цьому Device;
+- Device не може живити інші Device;
+- Device залишається leaf node для `Simulation Engine v1`.
 
-Таким чином, той самий `Device` може мати різну тривалість доступності в різних сценаріях.
+Його `availabilityMinutes` не вводиться користувачем напряму: її формує `Availability Estimator` для конкретного Scenario.
 
-## 5. Сутність `ExternalProvider`
-
-Концептуальна структура:
+## 5. `ExternalProvider`
 
 ```text
 ExternalProvider
@@ -71,230 +101,150 @@ ExternalProvider
 - name: string
 ```
 
-У поточному MVP `ExternalProvider` також є листовим вузлом:
+- leaf node;
+- не має власних dependencies;
+- availability задається вручну в конкретному Scenario;
+- автоматичні зовнішні інтеграції поза MVP.
 
-- не має власних залежностей;
-- не містить постійного значення доступності;
-- його доступність задається в конкретному `Scenario`.
+## 6. `BackupSource`
 
-Прикладами можуть бути інфраструктура інтернет-провайдера або інша зовнішня система, від якої функціонально залежить побутовий сервіс.
+```text
+BackupSource
+- id: string
+- name: string
+- type: PowerStation | UPS | Other
+- usableCapacityWh: number
+- maxOutputPowerW?: number
+```
 
-## 6. Сутність `Scenario`
+Інваріанти:
 
-Концептуальна структура:
+- `usableCapacityWh > 0`;
+- `maxOutputPowerW > 0`, якщо заданий;
+- type — описова metadata і не змінює формулу;
+- одне джерело може живити багато Device;
+- один Device у Scenario має максимум одне зовнішнє джерело;
+- `BackupSource → BackupSource` не підтримується.
+
+`usableCapacityWh` означає доступний запас енергії на початку outage, а не nominal capacity.
+
+## 7. `Scenario`
+
+Користувацький input:
 
 ```text
 Scenario
-- id: string
-- name: string
 - outageDurationMinutes: integer
 - targetServiceIds: string[]
-- availability: nodeId -> durationMinutes
+- backupAssignments: DeviceId -> BackupSourceId?
+- additionalActiveDeviceIds: string[]
+- externalProviderAvailability: ExternalProviderId -> durationMinutes
+- powerStrategy: ExternalFirst
 ```
-
-`Scenario` описує один конкретний сценарій відключення електроенергії.
 
 Правила:
 
 - `outageDurationMinutes > 0`;
-- `targetServiceIds` містить від одного до кількох `Service`, які потрібно оцінити;
-- `targetServiceIds` не містить дублікатів;
-- кожен `targetServiceId` повинен посилатися на існуючий `Service`;
-- `availability` задає тривалість доступності для `Device` та `ExternalProvider`;
-- для одного вузла в межах одного сценарію використовується одне значення доступності;
-- це значення використовується всіма сервісами сценарію, які прямо або опосередковано залежать від цього вузла;
-- значення `availability` не є прогнозом — це явні вхідні дані конкретного сценарію.
+- `targetServiceIds` непорожній і без дублікатів;
+- required Device визначаються автоматично з dependency graph target services;
+- required Device не можна вимкнути;
+- additional loads не визначають service availability, але споживають енергію призначеного BackupSource;
+- усі часові значення — цілі хвилини;
+- `ExternalFirst`: Device спочатку використовує зовнішній BackupSource, потім власну internal battery.
 
-Симуляція та її валідація охоплюють лише вибрані `targetServiceIds` і весь підграф залежностей, досяжний від них.
+## 8. Перетворення у contract Simulation Engine
 
-Тому незавершений сервіс, який не входить до поточної симуляції та не є залежністю вибраного сервісу, не блокує запуск сценарію.
-
-## 7. Одиниці тривалості
-
-У предметній моделі всі часові значення зберігаються як цілі хвилини.
+`Availability Estimator` формує існуючий engine input:
 
 ```text
-durationMinutes >= 0
+Engine Scenario
+- outageDurationMinutes
+- targetServiceIds
+- availability: nodeId -> durationMinutes
 ```
 
-Приклади:
+`availability` містить:
+
+- Device → розраховані estimator хвилини;
+- ExternalProvider → значення з Scenario input.
+
+`Simulation Engine v1` після цього працює без зміни свого базового контракту.
+
+## 9. Active loads
+
+```mermaid
+flowchart LR
+    T[Target services] --> R[Required Device]
+    R --> A[Active loads]
+    X[Selected additional loads] --> A
+    A --> B[BackupSource load]
+```
+
+Усі Device, призначені одному BackupSource та активні в Scenario, вважаються активними протягом усього runtime цього джерела. Динамічне вимкнення навантажень поза scope v1.
+
+## 10. Availability Estimator invariants
+
+Для BackupSource:
 
 ```text
-6 год    = 360 min
-8 год    = 480 min
-2 год    = 120 min
-1.5 год  = 90 min
+totalPowerW = Σ active Device.powerW
+sourceRuntimeMinutes = floor(usableCapacityWh / totalPowerW × 60)
 ```
 
-Години та хвилини є лише форматом введення або відображення в UI. Внутрішня модель не використовує дробові години.
-
-## 8. Зв’язки між вузлами
-
-Дозволена структура залежностей:
+Для internal battery:
 
 ```text
-Service
-├─ Service
-├─ Device
-└─ ExternalProvider
+internalRuntimeMinutes = floor(usableCapacityWh / Device.powerW × 60)
 ```
 
-`Device` і `ExternalProvider` власних залежностей у MVP не мають.
-
-Один вузол може бути спільною залежністю для кількох сервісів.
-
-Наприклад:
+Device availability:
 
 ```text
-Remote Work
-├─ Internet
-│  ├─ Router
-│  ├─ ONT/ONU
-│  └─ Internet Provider
-└─ Laptop
+external + internal = sourceRuntime + internalRuntime
+external only       = sourceRuntime
+internal only       = internalRuntime
+no backup           = 0
 ```
 
-У цьому прикладі `Remote Work` залежить одночасно від іншого `Service` та `Device`, а `Internet` має кілька власних залежностей.
+Якщо задано `maxOutputPowerW` і `totalPowerW > maxOutputPowerW` → validation error.
 
-## 9. Ациклічність
+Якщо `maxOutputPowerW` не задано → розрахунок дозволений із warning.
 
-Граф залежностей має бути ациклічним як інваріант предметної моделі.
+## 11. Service templates
 
-Заборонені:
+User-facing MVP використовує predefined templates/variants для:
 
-- пряма самозалежність `Service → той самий Service`;
-- непрямі цикли між сервісами.
+- Internet;
+- Remote Work;
+- Refrigeration;
+- Heating;
+- Water Supply.
 
-Некоректний приклад:
+Конкретний catalog, roles, cardinality та allowed categories є частиною `docs/specs/user-facing-mvp-v1.md` і не дублюються тут.
 
-```text
-Service A → Service B → Service C → Service A
-```
+Вибрані елементи ролей є обов’язковими dependencies. Кілька instances одного template дозволені.
 
-Редактор моделі повинен запобігати створенню нового циклічного зв’язку. Перед конкретним запуском simulation engine додатково перевіряє ациклічність лише підграфа, досяжного від `Scenario.targetServiceIds`. Тому цикл у недосяжній незавершеній частині моделі не блокує інший незалежний сценарій, хоча така частина моделі залишається некоректною конфігурацією і має бути виправлена.
+## 12. Структурна цілісність
 
-## 10. Унікальність і посилальна цілісність
+- кожен `id` унікальний;
+- усі посилання вказують на існуючі сутності;
+- service graph ациклічний;
+- dependency roles відповідають template cardinality;
+- Device category відповідає allowed categories role;
+- один Device не має двох зовнішніх BackupSource в одному Scenario;
+- потрібний ExternalProvider має задану availability.
 
-У межах однієї предметної моделі:
+Некоректна конфігурація повертає validation error, а не вигаданий simulation result.
 
-- кожен вузол має унікальний `id`;
-- `name` вузла є унікальним серед `Service`, `Device` та `ExternalProvider`;
-- кожен `dependencyId` повинен посилатися на існуючий вузол;
-- один `Service` не може містити дублікати `dependencyIds`;
-- `targetServiceIds` повинні посилатися лише на існуючі `Service`.
+## 13. Межа відповідальності
 
-Внутрішні зв’язки будуються за `id`, а не за `name`.
+`Availability Estimator` відповідає лише за Device availability.
 
-## 11. Валідація перед симуляцією
+`Simulation Engine v1` відповідає за:
 
-Перед запуском симуляції перевіряється досяжний підграф вибраних `targetServiceIds`.
+- Service availability;
+- `Available | Limited | Unavailable`;
+- limiting dependency/dependencies;
+- causal path/paths.
 
-Для кожного такого підграфа повинні виконуватися умови:
-
-1. кожен досяжний `Service` має хоча б одну залежність;
-2. усі `dependencyIds` посилаються на існуючі вузли;
-3. досяжний підграф не містить циклів;
-4. для кожного досяжного `Device` задано `availability` у сценарії;
-5. для кожного досяжного `ExternalProvider` задано `availability` у сценарії;
-6. кожне значення `durationMinutes` є невід’ємним цілим числом;
-7. `outageDurationMinutes` є додатним цілим числом.
-
-Якщо хоча б одна з цих умов не виконується, симуляція не запускається та повинна повернути помилку валідації замість вигаданого результату.
-
-Відсутнє значення доступності не інтерпретується автоматично як `0`, нескінченність або будь-яке інше значення.
-
-Детальний поділ структурної та simulation-валідації, коди помилок і правила їх дедуплікації визначені в `docs/SIMULATION.md`.
-
-## 12. Видалення вузлів
-
-Вузол не можна видалити, якщо на нього посилається хоча б один `Service` через `dependencyIds`.
-
-Наприклад, якщо `Internet` залежить від `ONT/ONU`, видалення `ONT/ONU` заборонене, доки користувач не видалить відповідний зв’язок із `Internet`.
-
-Каскадне автоматичне видалення залежностей у MVP не використовується.
-
-## 13. Відділення моделі від сценарію
-
-Структурні сутності не містять сценарних значень доступності.
-
-```text
-Device / ExternalProvider
-        ↓
-стабільна сутність
-
-Scenario.availability
-        ↓
-значення для конкретного відключення
-```
-
-Це дозволяє використовувати одну й ту саму предметну модель у кількох сценаріях із різними параметрами доступності.
-
-`Service` також не містить розрахованого `T` як постійної властивості: це результат конкретного запуску симуляції.
-
-## 14. Контрольний приклад
-
-Нижче наведене концептуальне представлення моделі для сценарію доступу до Інтернету.
-
-```json
-{
-  "services": [
-    {
-      "id": "service-internet",
-      "name": "Internet",
-      "dependencyIds": [
-        "device-router",
-        "device-ont",
-        "provider-isp"
-      ]
-    }
-  ],
-  "devices": [
-    {
-      "id": "device-router",
-      "name": "Router"
-    },
-    {
-      "id": "device-ont",
-      "name": "ONT/ONU"
-    }
-  ],
-  "externalProviders": [
-    {
-      "id": "provider-isp",
-      "name": "Internet Provider"
-    }
-  ],
-  "scenario": {
-    "id": "scenario-1",
-    "name": "6-hour outage",
-    "outageDurationMinutes": 360,
-    "targetServiceIds": [
-      "service-internet"
-    ],
-    "availability": {
-      "device-router": 480,
-      "device-ont": 120,
-      "provider-isp": 4320
-    }
-  }
-}
-```
-
-Ці значення є демонстраційними вхідними даними контрольного сценарію, а не результатами реальних вимірювань.
-
-Цей JSON є прикладом концептуального представлення предметної моделі. Він не фіксує остаточний TypeScript interface, формат API або формат постійного зберігання даних.
-
-## 15. Межі предметної моделі MVP
-
-У поточну модель свідомо не включаються:
-
-- окремий вузол резервного джерела живлення;
-- розрахунок автономності за W/Wh;
-- optional dependencies;
-- degraded-mode dependencies;
-- пріоритети залежностей;
-- імовірнісна доступність;
-- автоматичне отримання реальних даних провайдерів;
-- прогнозування.
-
-Такі розширення можуть бути розглянуті лише після появи окремої вимоги та відповідного рішення в `docs/DECISIONS.md`.
+Це розділення є архітектурним інваріантом MVP.
