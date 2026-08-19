@@ -4,11 +4,11 @@
 
 `Simulation Engine v1` і `React Demo v1` завершено та прийнято після fresh незалежних review.
 
-`Deploy v1 / Task 2` завершено Developer; публічна GitHub Pages demo розгорнута і передана на fresh final Reviewer gate.
+`Deploy v1` завершено та прийнято після fresh незалежного final review. Публічна GitHub Pages demo доступна.
 
 ## Активне завдання
 
-Fresh final Reviewer для `Deploy v1`.
+Немає активного implementation task: погоджений `Deploy v1` plan завершено.
 
 Канонічна специфікація:
 
@@ -32,11 +32,12 @@ Implementation plan:
 - рішення зафіксовано як `D-002` у `docs/DECISIONS.md`;
 - створено `docs/specs/deploy-v1.md` і `docs/plans/deploy-v1.md`.
 - GitHub Pages увімкнено з Source = `GitHub Actions`; public HTTPS URL: `https://serhii-palamarchuk.github.io/capstone-household-service-availability/`.
+- `Deploy v1` прийнято final Reviewer: **ACCEPTED**, Spec compliance ✅, Task quality Approved.
 
 ## Поточні ролі
 
-- `Developer`: Task 2 передано на final review;
-- `Reviewer`: потрібен fresh final Reviewer для `Deploy v1`;
+- `Developer`: немає активного task;
+- `Reviewer`: `Deploy v1` final review завершено;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -54,38 +55,24 @@ Implementation plan:
 - synchronization rules: `docs/specs/repository-workflow.md`;
 - autonomous workflow: `docs/specs/autonomous-agent-workflow.md`;
 - reusable prompts: `docs/specs/agent-session-prompts.md`.
-- Task 2 lockfile correction commits, ще не reviewed у final Deploy v1 gate: `8c7134d` і `1f735f3`.
+- Deploy v1 source/config commit: `8208809eaa62700e4db7c06c992fcf46cc62bf5d`;
+- accepted lockfile correction commits: `8c7134da09ea2cbfbb79127dff27223360e9286c` і `1f735f384b0b9c8b3077bd639bab4221bbe89c58`;
+- reviewed documentation head: `4c384451196b5238af5b1c7addffa4fde6b991e5`;
+- successful Pages workflow: `32276285162`; deployment: `5986686717`; deployed application SHA: `1f735f384b0b9c8b3077bd639bab4221bbe89c58`.
 
 ## Наступна дія
 
-Запустити fresh final Reviewer для `Deploy v1` відповідно до `docs/specs/repository-workflow.md` та final Reviewer gate у `docs/specs/deploy-v1.md`.
+Погоджений `Deploy v1` implementation plan завершено. Наступний implementation task не визначено; очікувати рішення користувача щодо нового плану або фази й не починати роботу автоматично.
 
-## Deploy v1 / Task 1 — factual handoff
+## Deploy v1 — final Reviewer decision
 
-- Створено `apps/web/vite.config.js` з repository base path `/capstone-household-service-availability/`.
-- Створено `.github/workflows/deploy-pages.yml` з pinned GitHub Actions, Node.js 24, `npm ci`, повним `npm test`, `npm run build`, Pages artifact `apps/web/dist`, permissions `contents: read`, `pages: write`, `id-token: write` та environment `github-pages`.
-- Baseline: `cmd.exe /d /c "cd apps\web && npm test"` — exit `0`, `53 passed, 0 failed`; `npm run build` — exit `0`.
-- Regression: `npm test` — exit `0`, `53 passed, 0 failed`; `npm run build` — exit `0`; built `dist/index.html` містить `/capstone-household-service-availability/assets/`; `git diff --check` — exit `0`.
-- Dependency drift: `npm ls --depth=0` — exit `0`, лише `react`, `react-dom`, `vite`; `package.json` і `package-lock.json` не змінені.
-- Implementation commit: `8208809` (`ci: configure GitHub Pages deployment`). Live Pages deployment у Task 1 не підтверджувався.
-- Наступна дія: fresh Reviewer для Task 1.
-
-## Deploy v1 / Task 1 — Reviewer decision
-
-- Fresh independent review of `94fb998ddb06e8401fa1800fbb285a8cd8c1b978..4f8aaa8`: **ACCEPTED**.
-- Local reviewer verification: Node.js `v24.18.0`; `npm test` — exit `0`, `53 passed, 0 failed`; `npm run build` — exit `0`; `dist/index.html` contains two `/capstone-household-service-availability/assets/` references; `git diff --check` — exit `0`; `npm ls --depth=0` — exit `0` (`react`, `react-dom`, `vite`); package-file diff is empty.
-- Scope verified: only Vite config, GitHub Pages workflow and Task 1 handoff; no production/test changes by Reviewer, dependencies, committed `dist`, secrets/PAT, backend or Task 2 work.
-- Workflow verified: exact Vite base, Node.js 24, npm cache from `apps/web/package-lock.json`, `npm ci` → `npm test` → `npm run build`, artifact only `apps/web/dist`, exact required permissions, environment `github-pages`, `workflow_dispatch`, and pinned action SHAs.
-- Live Pages deployment is not claimed in Task 1; it remains Task 2 work.
-- Наступна дія: **Task 2 — Developer**.
-
-## Deploy v1 / Task 2 — Developer factual handoff
-
-- До runtime deploy усунуто concrete CI lockfile defect: у `apps/web/package-lock.json` два incomplete nested optional `rolldown` entries не мали `version`, що спричиняло `npm ci: Invalid Version:`. Виправлення складають commits `8c7134d fix: repair web dependency lockfile` і `1f735f3 fix: complete web dependency lockfile`; ці commits входять до unreviewed Task 2 range.
-- Після одноразового налаштування користувачем `Repository → Settings → Pages → Build and deployment → Source → GitHub Actions`, вручну запущений workflow [32276285162](https://github.com/Serhii-Palamarchuk/capstone-household-service-availability/actions/runs/32276285162) для SHA `1f735f384b0b9c8b3077bd639bab4221bbe89c58` завершився `success`.
-- GitHub deployment `5986686717`: environment `github-pages`, status `success`, фактичний `page_url` — `https://serhii-palamarchuk.github.io/capstone-household-service-availability/`. GitHub Pages API підтверджує `build_type: workflow`, `public: true`, `https_enforced: true`.
-- HTTPS verification: root URL — HTTP `200`, `573` bytes; deployed HTML має JS `/capstone-household-service-availability/assets/index-BLNIJOnC.js` і CSS `/capstone-household-service-availability/assets/index-BUUSSPth.css`, без root-relative `/assets/...`. Обидва assets повернули HTTP `200` (JS `201057` bytes, CSS `2290` bytes).
-- Browser functional smoke: agent browser binding був недоступний (`agent.browsers.list()` повернув `[]`), тому agent не стверджує browser execution. Користувач фактично підтвердив manual smoke 2026-08-19: `6 / 8 / 2 / 72 h` → `Limited`, `2 h`, `ONT/ONU`, `Internet → ONT/ONU`; `6 / 8 / 8 / 72 h` → `Available`, `8 h`, без limiting dependency і causal path.
-- Final local verification: `cmd.exe /d /c "cd apps\web && npm test"` — exit `0`, `53 passed, 0 failed`; `cmd.exe /d /c "cd apps\web && npm run build"` — exit `0`, Vite `8.2.1`; `npm ls --depth=0` — лише `react@19.2.8`, `react-dom@19.2.8`, `vite@8.2.1`; `git diff --check` — exit `0`.
-- Scope/no-secret checks: committed `apps/web/dist` відсутній; `git ls-files` secret-pattern check не повернув tracked `.env`, `.pem`, `.key`, `id_rsa` або `token` filenames. README Live demo використовує actual deployment URL.
-- Наступна дія: **fresh final Reviewer для Deploy v1**; independently verify Task 1 + unreviewed Task 2 lockfile corrections, workflow/deployment, public assets, README/STATUS, full tests/build, scope and factual manual smoke.
+- Fresh independent review range: `94fb998ddb06e8401fa1800fbb285a8cd8c1b978..4c384451196b5238af5b1c7addffa4fde6b991e5`; verdict: **ACCEPTED**; findings Critical / Major / Minor: немає.
+- Source/config повторно перевірено: exact Vite base, `apps/web` root, artifact `apps/web/dist`, required permissions, environment `github-pages`, five action SHA pins, Node.js 24, `npm ci` → `npm test` → `npm run build`, `workflow_dispatch`; extra deployment technology не додано.
+- Fresh isolated local verification at reviewed HEAD: Node.js `v24.18.0`; `npm ci` — exit `0`; full `npm test` — exit `0`, `53 passed, 0 failed`; `npm run build` — exit `0`, Vite `8.2.1`, `25 modules transformed`; emitted HTML — two correct repository-base JS/CSS references; `npm ls --depth=0` — exit `0`, only `react@19.2.8`, `react-dom@19.2.8`, `vite@8.2.1`.
+- Lockfile reproducibility: clean `npm install --package-lock-only --ignore-scripts --no-audit --no-fund` from current `package.json` — exit `0`; generated `package-lock.json` exactly matches reviewed lockfile. Range changes only complete the two existing optional Rolldown binding records; dependency versions/top-level graph did not drift.
+- `git diff --check` for worktree and full reviewed range — exit `0`; no committed `dist`, tracked secret-key filenames, PAT/private-key patterns, backend or unrelated source changes.
+- Latest relevant workflow [32276285162](https://github.com/Serhii-Palamarchuk/capstone-household-service-availability/actions/runs/32276285162) — `success`; deployment `5986686717` — environment `github-pages`, state `success`; Pages API — `build_type: workflow`, `status: built`, `public: true`, `https_enforced: true`.
+- Actual API-returned URL `https://serhii-palamarchuk.github.io/capstone-household-service-availability/` — HTTPS root HTTP `200`, `573` bytes; referenced JS HTTP `200`, `201057` bytes; CSS HTTP `200`, `2290` bytes; all asset URLs use `/capstone-household-service-availability/assets/`. README URL matches exactly.
+- Deployment SHA `1f735f3` differs from remote `main` HEAD `4c38445` only by `README.md` and `docs/STATUS.md`; `apps/web` and deployment workflow trees are identical. Fresh HEAD build emits the same JS/CSS filenames, and live JS/CSS SHA-256 hashes match that build, so the public deployment corresponds to current `main` application state.
+- Functional smoke remains factual user manual verification supplied 2026-08-19: `6 / 8 / 2 / 72 h` → `Limited`, `2 h`, `ONT/ONU`, `Internet → ONT/ONU`; `6 / 8 / 8 / 72 h` → `Available`, `8 h`, without limiting dependency/path. Reviewer browser execution is not claimed.
+- Final Reviewer changed no production code, tests, workflow, lockfile or README; only this operational `docs/STATUS.md` update is committed after acceptance.
