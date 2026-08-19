@@ -77,14 +77,19 @@ test('TS-10: calculates one shared nested Service and roots each target causal p
 test('TS-13: accepts unreachable availability for an existing leaf node', () => {
   const model = createInternetModel();
   model.devices.push({ id: 'device-refrigerator', name: 'Refrigerator' });
-  const scenario = createInternetScenario();
-  scenario.availability['device-refrigerator'] = 300;
+  const baseline = simulate(model, createInternetScenario());
+  const scenarioWithExtraAvailability = createInternetScenario();
+  scenarioWithExtraAvailability.availability['device-refrigerator'] = 0;
 
-  const outcome = simulate(model, scenario);
+  const outcome = simulate(model, scenarioWithExtraAvailability);
 
+  assert.equal(baseline.success, true);
   assert.equal(outcome.success, true);
-  assert.equal(outcome.targetResults[0].availabilityDurationMinutes, 120);
-  assert.equal(outcome.targetResults[0].status, 'Limited');
+  assert.deepEqual(outcome.targetResults, baseline.targetResults);
+  assert.deepEqual(
+    [...outcome.serviceResults.entries()],
+    [...baseline.serviceResults.entries()],
+  );
 });
 
 test('TS-27: dependency order does not change the target semantic result', () => {
@@ -97,8 +102,8 @@ test('TS-27: dependency order does not change the target semantic result', () =>
   const secondModel = clone(firstModel);
   secondModel.services[0].dependencyIds = [
     'provider-isp',
-    'device-router',
     'device-ont',
+    'device-router',
   ];
   const scenario = createInternetScenario();
   scenario.availability['device-router'] = 120;
@@ -107,10 +112,20 @@ test('TS-27: dependency order does not change the target semantic result', () =>
   const first = simulate(firstModel, scenario).targetResults[0];
   const second = simulate(secondModel, scenario).targetResults[0];
 
-  assert.equal(first.availabilityDurationMinutes, second.availabilityDurationMinutes);
-  assert.equal(first.status, second.status);
-  assert.deepEqual(first.limitingDependencyIds, second.limitingDependencyIds);
-  assert.deepEqual(first.causalPaths, second.causalPaths);
+  assert.equal(first.availabilityDurationMinutes, 120);
+  assert.equal(second.availabilityDurationMinutes, 120);
+  assert.equal(first.status, 'Limited');
+  assert.equal(second.status, 'Limited');
+  assert.deepEqual(first.limitingDependencyIds, ['device-ont', 'device-router']);
+  assert.deepEqual(second.limitingDependencyIds, ['device-ont', 'device-router']);
+  assert.deepEqual(first.causalPaths, [
+    ['service-internet', 'device-ont'],
+    ['service-internet', 'device-router'],
+  ]);
+  assert.deepEqual(second.causalPaths, [
+    ['service-internet', 'device-ont'],
+    ['service-internet', 'device-router'],
+  ]);
 });
 
 test('TS-28: repeated runs are deterministic and leave inputs unchanged', () => {
