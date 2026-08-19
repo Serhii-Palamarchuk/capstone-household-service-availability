@@ -85,3 +85,62 @@ Status: Accepted
 - `docs/DECISIONS.md`
 - `docs/specs/repository-workflow.md`
 - `.github/copilot-instructions.md`
+
+---
+
+## D-002 — GitHub Pages для Deploy v1
+
+Date: 2026-08-19
+Status: Accepted
+
+### Context
+
+`Simulation Engine v1` і `React Demo v1` завершені та прийняті. Для демонстрації керівнику потрібна публічна робоча версія без додавання backend або нової серверної інфраструктури.
+
+Користувач підтвердив, що GitHub Pages проходився в межах навчальної програми.
+
+### Alternatives
+
+1. GitHub Pages через GitHub Actions.
+2. Окремий static hosting provider (наприклад, Vercel/Netlify/Render).
+3. Не робити deploy і демонструвати тільки локальний запуск.
+
+### Criteria
+
+- мінімальна нова інфраструктура;
+- відповідність поточній статичній React/Vite архітектурі;
+- публічний HTTPS URL;
+- автоматичний build/deploy із `main`;
+- відсутність backend і secrets;
+- простота пояснення на захисті;
+- технологія підтверджена користувачем як пройдена в навчальній програмі.
+
+### Decision
+
+Використати **GitHub Pages** як hosting для `Deploy v1` і **GitHub Actions** як build/deploy mechanism.
+
+Vite repository base path:
+
+`/capstone-household-service-availability/`
+
+Deployment source:
+
+`main → GitHub Actions → GitHub Pages`.
+
+### Rationale
+
+Поточний React Demo є повністю статичним і вже збирається Vite у `dist`, тому GitHub Pages вирішує конкретну вимогу публічної демонстрації без додавання серверної частини. Офіційна документація Vite прямо описує GitHub Pages deployment для Vite build, а GitHub підтримує Pages deployment через custom GitHub Actions workflow.
+
+### Evidence
+
+- Vite Documentation, **Deploying a Static Site — GitHub Pages**, accessed 2026-08-19: https://vite.dev/guide/static-deploy.html
+- GitHub Docs, **Using custom workflows with GitHub Pages**, accessed 2026-08-19: https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
+- GitHub Docs, **Deploying your website automatically**, accessed 2026-08-19: https://docs.github.com/en/get-started/start-your-journey/deploying-your-website-automatically
+
+### Affected
+
+- `docs/specs/deploy-v1.md`
+- `docs/plans/deploy-v1.md`
+- `apps/web/vite.config.js` (planned)
+- `.github/workflows/deploy-pages.yml` (planned)
+- `README.md` після успішного deploy
