@@ -71,3 +71,12 @@ Orchestrator має пройти Task 1 → fresh Reviewer → Task 2 → final 
 - Dependency drift: `npm ls --depth=0` — exit `0`, лише `react`, `react-dom`, `vite`; `package.json` і `package-lock.json` не змінені.
 - Implementation commit: `8208809` (`ci: configure GitHub Pages deployment`). Live Pages deployment у Task 1 не підтверджувався.
 - Наступна дія: fresh Reviewer для Task 1.
+
+## Deploy v1 / Task 1 — Reviewer decision
+
+- Fresh independent review of `94fb998ddb06e8401fa1800fbb285a8cd8c1b978..4f8aaa8`: **ACCEPTED**.
+- Local reviewer verification: Node.js `v24.18.0`; `npm test` — exit `0`, `53 passed, 0 failed`; `npm run build` — exit `0`; `dist/index.html` contains two `/capstone-household-service-availability/assets/` references; `git diff --check` — exit `0`; `npm ls --depth=0` — exit `0` (`react`, `react-dom`, `vite`); package-file diff is empty.
+- Scope verified: only Vite config, GitHub Pages workflow and Task 1 handoff; no production/test changes by Reviewer, dependencies, committed `dist`, secrets/PAT, backend or Task 2 work.
+- Workflow verified: exact Vite base, Node.js 24, npm cache from `apps/web/package-lock.json`, `npm ci` → `npm test` → `npm run build`, artifact only `apps/web/dist`, exact required permissions, environment `github-pages`, `workflow_dispatch`, and pinned action SHAs.
+- Live Pages deployment is not claimed in Task 1; it remains Task 2 work.
+- Наступна дія: **Task 2 — Developer**.
