@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createModelIndex } from '../../src/simulation/model-index.js';
 import { calculateServiceResults } from '../../src/simulation/calculate.js';
+import { simulate } from '../../src/simulation/simulate.js';
 import { createInternetModel, createInternetScenario } from './fixtures.js';
 
 function createRemoteWorkModel() {
@@ -67,6 +68,18 @@ test('TS-03: Limited when 0 < T < H', () => {
 
   assert.equal(result.availabilityDurationMinutes, 120);
   assert.equal(result.status, 'Limited');
+});
+
+test('simulate returns full success outcome', () => {
+  const scenario = createInternetScenario();
+  const outcome = simulate(createInternetModel(), scenario);
+
+  assert.equal(outcome.success, true);
+  assert.equal(outcome.targetResults.length, 1);
+  assert.equal(outcome.targetResults[0].serviceId, 'service-internet');
+  assert.equal(outcome.targetResults[0].availabilityDurationMinutes, 120);
+  assert.equal(outcome.serviceResults instanceof Map, true);
+  assert.equal('errors' in outcome, false);
 });
 
 test('TS-04: Unavailable when T = 0', () => {

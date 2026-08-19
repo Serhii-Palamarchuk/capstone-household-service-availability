@@ -5,6 +5,7 @@ import {
   validateScenarioStructure,
   validateSimulationInput,
 } from '../../src/simulation/validation.js';
+import { simulate } from '../../src/simulation/simulate.js';
 import { createInternetModel, createInternetScenario } from './fixtures.js';
 
 for (const value of [0, -1, 1.5]) {
@@ -211,6 +212,18 @@ test('TS-14: missing reachable leaf availability is an error', () => {
     error.nodeId === 'device-ont' &&
     error.field === 'availability'
   ));
+});
+
+test('simulate returns no partial results on validation failure', () => {
+  const scenario = createInternetScenario();
+  delete scenario.availability['device-ont'];
+
+  const outcome = simulate(createInternetModel(), scenario);
+
+  assert.equal(outcome.success, false);
+  assert.ok(outcome.errors.some(error => error.code === 'MISSING_AVAILABILITY'));
+  assert.equal('targetResults' in outcome, false);
+  assert.equal('serviceResults' in outcome, false);
 });
 
 test('TS-15: reachable Service without dependencies is an error', () => {
