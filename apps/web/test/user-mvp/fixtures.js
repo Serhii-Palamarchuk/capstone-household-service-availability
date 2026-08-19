@@ -1,4 +1,5 @@
 import { DeviceCategory } from '../../src/user-mvp/constants.js';
+import { createServiceInstance } from '../../src/user-mvp/service-builder.js';
 
 export function templateContext() {
   return {
@@ -221,5 +222,162 @@ export function providerFixture(overrides = {}) {
       externalProviderAvailability: { [provider.id]: 600 },
       ...overrides,
     }),
+  };
+}
+
+function buildService(input, context) {
+  const result = createServiceInstance(input, context);
+
+  if (!result.success) {
+    throw new Error(`Invalid integration fixture: ${JSON.stringify(result.errors)}`);
+  }
+
+  return result.service;
+}
+
+function internetService(devices, externalProviders) {
+  return buildService({
+    id: 'service-internet-home',
+    name: 'Internet — Home',
+    templateId: 'Internet',
+    variantId: 'Fiber',
+    dependencyBindings: {
+      router: ['device-router'],
+      ontOnu: ['device-ont'],
+      provider: ['provider-internet'],
+    },
+  }, { services: [], devices, externalProviders });
+}
+
+export function additionalLoadInternetFixture(includeTv = false) {
+  const devices = [
+    { id: 'device-router', name: 'Router', category: DeviceCategory.ROUTER, powerW: 20 },
+    { id: 'device-ont', name: 'ONT/ONU', category: DeviceCategory.ONT_ONU, powerW: 10 },
+    { id: 'device-tv', name: 'TV', category: DeviceCategory.OTHER_LOAD, powerW: 70 },
+  ];
+  const externalProviders = [{ id: 'provider-internet', name: 'Internet provider' }];
+
+  return {
+    model: {
+      services: [internetService(devices, externalProviders)],
+      devices,
+      externalProviders,
+    },
+    backupSources: [source('source-home', 600, 150)],
+    scenario: {
+      outageDurationMinutes: 600,
+      targetServiceIds: ['service-internet-home'],
+      backupAssignments: devices.map((device) => ({
+        deviceId: device.id,
+        backupSourceId: 'source-home',
+      })),
+      additionalActiveDeviceIds: includeTv ? ['device-tv'] : [],
+      externalProviderAvailability: { 'provider-internet': 2000 },
+    },
+  };
+}
+
+export function sharedInternetRemoteWorkFixture() {
+  const devices = [
+    { id: 'device-router', name: 'Router', category: DeviceCategory.ROUTER, powerW: 20 },
+    { id: 'device-ont', name: 'ONT/ONU', category: DeviceCategory.ONT_ONU, powerW: 10 },
+    {
+      id: 'device-laptop-a',
+      name: 'Laptop A',
+      category: DeviceCategory.LAPTOP_DESKTOP,
+      powerW: 60,
+      internalBattery: { usableCapacityWh: 2400 },
+    },
+    {
+      id: 'device-laptop-b',
+      name: 'Laptop B',
+      category: DeviceCategory.LAPTOP_DESKTOP,
+      powerW: 60,
+      internalBattery: { usableCapacityWh: 2400 },
+    },
+  ];
+  const externalProviders = [{ id: 'provider-internet', name: 'Internet provider' }];
+  const internet = internetService(devices, externalProviders);
+  const serviceContext = { services: [internet], devices, externalProviders };
+  const remoteWorkA = buildService({
+    id: 'service-remote-work-a',
+    name: 'Remote Work — A',
+    templateId: 'RemoteWork',
+    dependencyBindings: {
+      internetService: [internet.id],
+      workDevices: ['device-laptop-a'],
+    },
+  }, serviceContext);
+  const remoteWorkB = buildService({
+    id: 'service-remote-work-b',
+    name: 'Remote Work — B',
+    templateId: 'RemoteWork',
+    dependencyBindings: {
+      internetService: [internet.id],
+      workDevices: ['device-laptop-b'],
+    },
+  }, serviceContext);
+
+  return {
+    model: {
+      services: [internet, remoteWorkA, remoteWorkB],
+      devices,
+      externalProviders,
+    },
+    backupSources: [source('source-home', 600, 100)],
+    scenario: {
+      outageDurationMinutes: 1440,
+      targetServiceIds: [remoteWorkA.id, remoteWorkB.id],
+      backupAssignments: [
+        { deviceId: 'device-router', backupSourceId: 'source-home' },
+        { deviceId: 'device-ont', backupSourceId: 'source-home' },
+      ],
+      additionalActiveDeviceIds: [],
+      externalProviderAvailability: { 'provider-internet': 2000 },
+    },
+  };
+}
+
+export function endToEndRemoteWorkFixture() {
+  const devices = [
+    { id: 'device-router', name: 'Router', category: DeviceCategory.ROUTER, powerW: 10 },
+    { id: 'device-ont', name: 'ONT/ONU', category: DeviceCategory.ONT_ONU, powerW: 10 },
+    {
+      id: 'device-laptop',
+      name: 'Laptop',
+      category: DeviceCategory.LAPTOP_DESKTOP,
+      powerW: 60,
+      internalBattery: { usableCapacityWh: 120 },
+    },
+  ];
+  const externalProviders = [{ id: 'provider-internet', name: 'Internet provider' }];
+  const internet = internetService(devices, externalProviders);
+  const remoteWork = buildService({
+    id: 'service-remote-work',
+    name: 'Remote Work',
+    templateId: 'RemoteWork',
+    dependencyBindings: {
+      internetService: [internet.id],
+      workDevices: ['device-laptop'],
+    },
+  }, { services: [internet], devices, externalProviders });
+
+  return {
+    model: {
+      services: [internet, remoteWork],
+      devices,
+      externalProviders,
+    },
+    backupSources: [source('source-home', 480, 100)],
+    scenario: {
+      outageDurationMinutes: 480,
+      targetServiceIds: [remoteWork.id],
+      backupAssignments: devices.map((device) => ({
+        deviceId: device.id,
+        backupSourceId: 'source-home',
+      })),
+      additionalActiveDeviceIds: [],
+      externalProviderAvailability: { 'provider-internet': 600 },
+    },
   };
 }
