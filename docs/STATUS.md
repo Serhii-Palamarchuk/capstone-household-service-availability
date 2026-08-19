@@ -2,87 +2,85 @@
 
 ## Поточний етап
 
-`Simulation Engine v1`, `React Demo v1` і `Deploy v1` завершено та прийнято після незалежних review.
+Завершено й прийнято:
 
-Публічна demo доступна: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
+- `Simulation Engine v1`;
+- `React Demo v1`;
+- `Deploy v1`;
+- дизайн `User-facing MVP v1`.
 
-Поточний deployed Internet UI є першим наскрізним **vertical slice** для перевірки технічної гіпотези та інтеграції з `Simulation Engine v1`. Він не вважається фінальною UX-моделлю продукту.
+Live demo: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
-## Submission checkpoint — 2026-08-19
+Поточний Internet UI — технічний **vertical slice**, не фінальна UX-модель.
 
-Weekly Capstone Progress Report — Week 2 відформатовано за зразком Week 1, перевірено посилання та форматування, доступ до документа встановлено як `anyone with the link → commenter`.
+## Supervisor checkpoint — 2026-08-19
 
-Звіт за Week 2 відправлено Тетяні на перевірку через LMS.
+Weekly Capstone Progress Report — Week 2 відправлено Тетяні через LMS; у Slack додатково надіслано повідомлення про report і live demo.
 
-Додатково 2026-08-19 о 21:52 EEST у Slack надіслано коротке повідомлення про відправлення звіту і першої demo-версії. На момент цієї фіксації відповіді в Slack thread ще немає.
+Статус: **submitted → awaiting supervisor feedback**.
 
-Поточний статус взаємодії з керівником: **submitted → awaiting supervisor feedback**.
+## Погоджений наступний продуктовый contract
 
-## Активне завдання
+Прийнято:
 
-Активного implementation task немає. Новий autonomous coding cycle не запускати до feedback Тетяни або окремого рішення користувача продовжувати без нього.
+- `D-003 — Користувацький рівень введення після React Demo v1`;
+- `D-004 — User-facing MVP v1 contract`;
+- `docs/specs/user-facing-mvp-v1.md`.
 
-Поки очікується feedback, дозволено лише підготовчу роботу, яка не фіксує новий контракт: аналіз варіантів user-facing input model, autonomy-estimation layer, UX flow та питань до керівника.
-
-## Поточне продуктове рішення
-
-Прийнято `D-003 — Користувацький рівень введення після React Demo v1` у `docs/DECISIONS.md`.
-
-Ключове уточнення:
-
-```text
-Поточний demo:
-готові години availability → Simulation Engine → результат
-
-Цільовий користувацький напрям:
-Equipment + backup-power characteristics
-                ↓
-      availability estimation
-                ↓
-Services + functional dependencies
-                ↓
-        Simulation Engine v1
-                ↓
-availability + status + limiting cause + causal path
+```mermaid
+flowchart LR
+    A[Equipment] --> B[Backup Sources]
+    B --> C[Outage Scenario]
+    C --> D[Availability Estimator]
+    D --> E[Simulation Engine v1]
+    E --> F[Availability / Status / Cause / Path]
 ```
 
-Кінцевий користувач має працювати з власними пристроями, джерелами резервного живлення, характеристиками навантаження, важливими сервісами та їхніми залежностями. Для локальних пристроїв окремий користувацький рівень повинен отримувати тривалість доступності з цих характеристик і передавати її в уже перевірений engine.
+Ключове:
 
-`External Provider` поки може залишатися сценарним входом із заданою доступністю.
+- Device: `powerW` + optional internal battery;
+- BackupSource: usable capacity + optional max output power;
+- shared-source runtime залежить від сумарного active load;
+- predefined templates: Internet, Remote Work, Refrigeration, Heating, Water Supply;
+- target services визначають mandatory loads;
+- TV/lamp тощо — additional loads;
+- ExternalProvider availability задається вручну;
+- `Simulation Engine v1` не змінюється.
 
-Точна формула автономності, потрібні параметри потужності/ємності, коефіцієнти ефективності, validation rules і UX ще не визначені. Їх не реалізовувати мовчки: спочатку потрібні окрема специфікація, обґрунтування та план тестування.
+Canonical docs `PROJECT.md`, `DOMAIN_MODEL.md`, `DECISIONS.md` синхронізовані з погодженою spec.
 
-## Історична узгодженість
+## Активне implementation task
 
-Week 2 report, `React Demo v1` і `Deploy v1` не перейменовуються і не переписуються заднім числом. Вони залишаються фактичними milestone-артефактами того етапу. Нове формулювання описує подальшу еволюцію продукту.
+Немає.
+
+Новий coding cycle не запускати до:
+
+1. acceptance scenarios для `User-facing MVP v1`;
+2. implementation plan;
+3. окремого рішення користувача почати реалізацію, якщо feedback керівника ще не отримано.
 
 ## Остання фактична перевірка
 
 - Simulation Engine final suite: `43 passed, 0 failed`;
-- React Demo / final full suite: `53 passed, 0 failed`;
+- React Demo / full suite: `53 passed, 0 failed`;
 - production build: exit `0`, Vite `8.2.1`;
-- GitHub Pages deployment: accepted, HTTPS live URL працює;
-- ручний browser smoke користувачем:
+- GitHub Pages: live HTTPS deployment accepted;
+- manual smoke:
   - `6 / 8 / 2 / 72 h` → `Limited`, `2 h`, `ONT/ONU`, `Internet → ONT/ONU`;
-  - `6 / 8 / 8 / 72 h` → `Available`, `8 h`, без limiting dependency/path.
+  - `6 / 8 / 8 / 72 h` → `Available`, `8 h`, no limiting dependency/path.
 
-Ці значення — контрольні програмні сценарії, не результати реальних вимірювань автономності.
+Це програмні fixture-сценарії, не реальні вимірювання автономності.
 
-## Актуальна база
+## Source of truth
 
-- canonical project context: `docs/PROJECT.md`;
-- simulation contract: `docs/SIMULATION.md`;
-- domain model: `docs/DOMAIN_MODEL.md`;
-- acceptance scenarios: `docs/TEST_SCENARIOS.md`;
-- product-direction decision: `D-003` у `docs/DECISIONS.md`;
-- synchronization rules: `docs/specs/repository-workflow.md`;
-- autonomous workflow: `docs/specs/autonomous-agent-workflow.md`;
-- reusable prompts: `docs/specs/agent-session-prompts.md`;
-- Weekly Report 2: https://docs.google.com/document/d/1KvcyuQFuJU6IkNhL20ieLmFevFJgsMKLrHEqNJ4iHJQ/edit?usp=drivesdk.
+- `docs/PROJECT.md` — problem / goal / MVP / scope;
+- `docs/DOMAIN_MODEL.md` — entities та invariants;
+- `docs/SIMULATION.md` — existing engine contract;
+- `docs/specs/user-facing-mvp-v1.md` — accepted next-iteration contract;
+- `docs/TEST_SCENARIOS.md` — acceptance scenarios;
+- `docs/DECISIONS.md` — decision log;
+- `docs/specs/repository-workflow.md` — agent workflow.
 
 ## Наступна дія
 
-1. Дочекатися feedback Тетяни на Week 2 report / repository / live demo та зафіксувати його без інтерпретацій, яких вона не висловлювала.
-2. Після feedback окремо спроєктувати наступну user-facing MVP iteration: configurator сервісів/залежностей + модель обладнання/резервного живлення + availability estimation layer.
-3. До початку реалізації визначити exact inputs, формулу/метод оцінювання автономності, validation rules, acceptance criteria і tests.
-4. Лише після цього створити нові spec + implementation plan і запускати Developer → fresh Reviewer autonomous cycle.
+Сформувати стислий набір acceptance scenarios для нового Estimator + templates + наскрізної інтеграції. Після їх погодження — implementation plan. Код поки не змінювати.
