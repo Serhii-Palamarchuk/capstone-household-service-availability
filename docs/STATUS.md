@@ -6,7 +6,9 @@
 
 ## Активне завдання
 
-`Task 4 — DFS availability calculation і statuses` реалізовано, очікує незалежний review.
+`Task 4 — DFS availability calculation і statuses` прийнято після незалежного review.
+
+Наступний крок — передати `Task 5 — Limiting leaves і causal paths` агенту в ролі `Developer`.
 
 ## Останнє завершене
 
@@ -20,12 +22,12 @@
 - реалізовано й прийнято після повторного незалежного review `Task 2 — Model index і structural Scenario validation` (`apps/web/src/simulation/model-index.js`, `apps/web/src/simulation/validation.js`, `apps/web/test/simulation/fixtures.js`, `apps/web/test/simulation/validation.test.js`);
 - реалізовано й прийнято після четвертого незалежного review `Task 3 — Reachable-subgraph validation і cycles` (`apps/web/src/simulation/validation.js`, `apps/web/test/simulation/validation.test.js`): reachable DFS validation, cycle detection/canonicalization, error deduplication і deterministic sorting;
 - findings Task 3 виправлено: source-файли не містять literal NUL bytes; regression tests доводять cycle rotation і `path` як останній sort tie-breaker;
-- реалізовано `Task 4 — DFS availability calculation і statuses` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/calculation.test.js`): `calculateServiceResults()` — рекурсивний DFS з memoization, `T(Service) = min(dependencies)` без clip до `H`, статуси `Available`/`Limited`/`Unavailable`; `limitingDependencyIds`/`causalPaths` поки порожні (Task 5).
+- реалізовано й прийнято після незалежного review `Task 4 — DFS availability calculation і statuses` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/calculation.test.js`): `calculateServiceResults()` — рекурсивний DFS з memoization, `T(Service) = min(dependencies)` без clip до `H`, статуси `Available`/`Limited`/`Unavailable`; `limitingDependencyIds`/`causalPaths` поки порожні (Task 5).
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 4 готовий до review);
-- `Reviewer`: очікується незалежна сесія для Task 4;
+- `Developer`: немає (Task 5 готовий до передачі);
+- `Reviewer`: немає (Task 4 прийнято);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -47,11 +49,15 @@ Task 3 correction #3: четвертий незалежний review fix commit 
 - NUL verification: `apps/web/src/simulation/validation.js` і `apps/web/test/simulation/validation.test.js` містять `0` NUL bytes.
 - Counterfactual probe без path tie-breaker повернув reversed paths (`service-d`, `service-b`) і `matchesExpected=false`, тому regression assertion справді захищає останній sort key.
 
-Task 4 (Developer, implementation commit `6d8e99e`, фактичний запуск, ще не review):
+Task 4: незалежний review implementation commit `6d8e99e` — `accepted`, відкритих findings немає.
 
-- targeted run (`npm test -- test/simulation/calculation.test.js`, git-bash): `6 passed, 0 failed`.
-- full suite (`npm test`, git-bash): `33 passed, 0 failed`.
-- підтверджено: `apps/web/src/simulation/calculate.js` і `apps/web/test/simulation/calculation.test.js` містять 0 NUL bytes.
+- `node --version`: `v24.18.0`.
+- Незалежний targeted run (`npm test -- test/simulation/calculation.test.js`, git-bash): `6 passed, 0 failed`.
+- Незалежний full suite (`npm test`, git-bash): `33 passed, 0 failed`.
+- NUL verification: `apps/web/src/simulation/calculate.js` і `apps/web/test/simulation/calculation.test.js` містять `0` NUL bytes.
+- Scope: implementation commit змінює лише два файли, перелічені в плані для Task 4; dependencies і UI isolation (`no react/window/document` imports) не порушено.
+- Values перевірені проти `docs/TEST_SCENARIOS.md` TS-01…TS-06 (включно з нетривіальними T-розрахунками для TS-05/TS-06) і `docs/SIMULATION.md` §3–5 (T-формула, status boundaries, DFS+memoization contract) — відповідність підтверджено.
+- `limitingDependencyIds`/`causalPaths` коректно залишені порожніми на цьому task відповідно до scope Task 5.
 
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
@@ -76,4 +82,4 @@ Task 4 (Developer, implementation commit `6d8e99e`, фактичний запу�
 
 ## Наступна дія
 
-Передати `Task 4 — DFS availability calculation і statuses` агенту в ролі незалежного `Reviewer` відповідно до `docs/plans/simulation-engine-v1.md`. Task 5 не починати до acceptance Task 4.
+Передати `Task 5 — Limiting leaves і causal paths` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md`.
