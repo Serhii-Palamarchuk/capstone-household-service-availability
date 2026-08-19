@@ -12,6 +12,7 @@ export function BackupStep({
   onAssignmentChange,
   onBack,
   onChange,
+  onNext,
   onRemove,
 }) {
   return (
@@ -124,7 +125,9 @@ export function BackupStep({
         <button className="secondary-button" type="button" onClick={onBack}>
           Back to equipment
         </button>
-        <p className="next-step-note">Services &amp; Scenario continues in the next implementation task.</p>
+        <button className="primary-button" type="button" onClick={onNext}>
+          Continue to services &amp; scenario
+        </button>
       </div>
     </section>
   );
