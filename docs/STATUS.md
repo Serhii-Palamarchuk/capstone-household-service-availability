@@ -6,9 +6,7 @@
 
 ## Активне завдання
 
-`Task 5 — Limiting leaves і causal paths` прийнято після fresh незалежного review.
-
-Наступний крок — передати `Task 6 — Public simulate() contract` агенту в ролі `Developer`.
+`Task 6 — Public simulate() contract` реалізовано Developer і передано на fresh незалежний review.
 
 ## Останнє завершене
 
@@ -27,8 +25,8 @@
 
 ## Поточні ролі
 
-- `Developer`: потрібно призначити для Task 6;
-- `Reviewer`: немає (Task 5 прийнято);
+- `Developer`: немає (Task 6 implementation завершено);
+- `Reviewer`: потрібно призначити fresh independent Reviewer для Task 6;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -78,6 +76,14 @@ Task 5: fresh незалежний review implementation commit `d22477d` — `a
 - Scope: `d22477d` змінює лише два Task 5 files; `6983cc3` змінює лише operational `docs/STATUS.md`; dependencies, React/UI, backend і Task 6 не змінено.
 - Contract: реалізація відповідає `docs/SIMULATION.md` §6, §10–12 та `docs/TEST_SCENARIOS.md` TS-03…TS-09: усі equal-minimum branches поширюються до унікальних leaf IDs, усі distinct causal paths зберігаються й сортуються, а `Available` causes порожні.
 
+Task 6: Developer implementation commit `96fe5b8` — очікується fresh незалежний review.
+
+- RED full suite (`cmd.exe /d /c npm test`): exit `1`, `4 passed, 2 failed`; обидві нові contract suites очікувано завершилися `ERR_MODULE_NOT_FOUND` для відсутнього `simulate.js`.
+- GREEN targeted run (`cmd.exe /d /c npm test -- test/simulation/calculation.test.js test/simulation/validation.test.js`): exit `0`, `33 passed, 0 failed`.
+- GREEN full suite (`cmd.exe /d /c npm test`): exit `0`, `37 passed, 0 failed`.
+- Scope: `96fe5b8` змінює лише `apps/web/src/simulation/simulate.js`, `apps/web/test/simulation/calculation.test.js` і `apps/web/test/simulation/validation.test.js`; dependencies, React/UI і наступні tasks не змінено.
+- Contract: `simulate(model, scenario)` створює index, виконує повну validation до calculation, повертає лише `{ success: false, errors }` при errors або `{ success: true, targetResults, serviceResults }` при success; `targetResults` зберігає порядок `targetServiceIds`.
+
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
 ## Актуальна база
@@ -97,9 +103,10 @@ Task 5: fresh незалежний review implementation commit `d22477d` — `a
 - fix commit Task 3 (3rd correction): `0cbf6b9`;
 - implementation commit Task 4: `6d8e99e`;
 - implementation commit Task 5: `d22477d`;
+- implementation commit Task 6: `96fe5b8`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Передати `Task 6 — Public simulate() contract` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md`.
+Передати `Task 6 — Public simulate() contract` fresh independent Reviewer відповідно до `docs/plans/simulation-engine-v1.md` і `docs/specs/repository-workflow.md`.
