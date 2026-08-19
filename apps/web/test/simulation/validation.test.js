@@ -290,6 +290,58 @@ test('TS-17: reachable cycle has canonical path', () => {
   assert.deepEqual(cycle.path, ['service-a', 'service-b', 'service-c', 'service-a']);
 });
 
+test('regression: cycle canonical path rotates to the lexicographically smallest id regardless of DFS start', () => {
+  const model = {
+    services: [
+      { id: 'service-c', name: 'C', dependencyIds: ['service-a'] },
+      { id: 'service-a', name: 'A', dependencyIds: ['service-b'] },
+      { id: 'service-b', name: 'B', dependencyIds: ['service-c'] },
+    ],
+    devices: [],
+    externalProviders: [],
+  };
+  const scenario = {
+    id: 's1',
+    name: 'cycle',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-c'],
+    availability: {},
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  const cycle = errors.find(error => error.code === 'CYCLE_DETECTED');
+  assert.deepEqual(cycle.path, ['service-a', 'service-b', 'service-c', 'service-a']);
+});
+
+test('regression: equal code/nodeId/field errors are ordered by path as the final tie-breaker', () => {
+  const model = {
+    services: [
+      { id: 'service-a', name: 'A', dependencyIds: ['service-b'] },
+      { id: 'service-b', name: 'B', dependencyIds: ['service-a'] },
+      { id: 'service-x', name: 'X', dependencyIds: ['service-y'] },
+      { id: 'service-y', name: 'Y', dependencyIds: ['service-x'] },
+    ],
+    devices: [],
+    externalProviders: [],
+  };
+  const scenario = {
+    id: 's1',
+    name: 'two independent cycles',
+    outageDurationMinutes: 360,
+    targetServiceIds: ['service-a', 'service-x'],
+    availability: {},
+  };
+
+  const errors = validateSimulationInput(createModelIndex(model), scenario);
+  const cyclePaths = errors
+    .filter(error => error.code === 'CYCLE_DETECTED')
+    .map(error => error.path.join(' '));
+
+  assert.equal(cyclePaths.length, 2);
+  const sortedCyclePaths = [...cyclePaths].sort();
+  assert.deepEqual(cyclePaths, sortedCyclePaths);
+});
+
 test('TS-24: multiple independent validation errors are collected together', () => {
   const model = createInternetModel();
   const scenario = createInternetScenario();
