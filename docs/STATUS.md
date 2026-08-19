@@ -6,7 +6,9 @@
 
 ## Активне завдання
 
-`Task 6 — Public simulate() contract` реалізовано Developer і передано на fresh незалежний review.
+`Task 6 — Public simulate() contract` прийнято після fresh незалежного review.
+
+Наступний крок — передати `Task 7 — Shared services, determinism, immutability і rerun` агенту в ролі `Developer`.
 
 ## Останнє завершене
 
@@ -22,11 +24,12 @@
 - findings Task 3 виправлено: source-файли не містять literal NUL bytes; regression tests доводять cycle rotation і `path` як останній sort tie-breaker;
 - реалізовано й прийнято після незалежного review `Task 4 — DFS availability calculation і statuses` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/calculation.test.js`): `calculateServiceResults()` — рекурсивний DFS з memoization, `T(Service) = min(dependencies)` без clip до `H`, статуси `Available`/`Limited`/`Unavailable`; `limitingDependencyIds`/`causalPaths` поки порожні (Task 5).
 - реалізовано й прийнято після fresh незалежного review `Task 5 — Limiting leaves і causal paths` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/causes.test.js`): для `Limited`/`Unavailable` поширюються всі рівнозначні leaf-bottlenecks і causal paths, із дедуплікацією та лексикографічним сортуванням.
+- реалізовано й прийнято після fresh незалежного review `Task 6 — Public simulate() contract` (`apps/web/src/simulation/simulate.js`, `apps/web/test/simulation/calculation.test.js`, `apps/web/test/simulation/validation.test.js`): публічний `simulate(model, scenario)` повертає взаємовиключні success/failure outcomes без часткових результатів при validation errors.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 6 implementation завершено);
-- `Reviewer`: потрібно призначити fresh independent Reviewer для Task 6;
+- `Developer`: потрібно призначити для Task 7;
+- `Reviewer`: немає (Task 6 прийнято);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -84,6 +87,16 @@ Task 6: Developer implementation commit `96fe5b8` — очікується fresh
 - Scope: `96fe5b8` змінює лише `apps/web/src/simulation/simulate.js`, `apps/web/test/simulation/calculation.test.js` і `apps/web/test/simulation/validation.test.js`; dependencies, React/UI і наступні tasks не змінено.
 - Contract: `simulate(model, scenario)` створює index, виконує повну validation до calculation, повертає лише `{ success: false, errors }` при errors або `{ success: true, targetResults, serviceResults }` при success; `targetResults` зберігає порядок `targetServiceIds`.
 
+Task 6: fresh незалежний review implementation commit `96fe5b8` — `accepted`, відкритих findings немає.
+
+- `node --version`: `v24.18.0`.
+- Незалежний targeted run (`cmd.exe /d /c "npm test -- test/simulation/calculation.test.js test/simulation/validation.test.js"`): exit `0`, `33 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): exit `0`, `37 passed, 0 failed`.
+- Незалежний edge-case probe: exit `0`, `15 assertions passed`; перевірено exact success/failure keys, multi-target order, `serviceResults` як `Map`, validation-before-calculation на reachable cycle, відсутність partial results та input immutability для success/failure.
+- Scope: `96fe5b8` змінює лише три Task 6 files; `a9d4055` змінює лише operational `docs/STATUS.md`; dependencies, React/UI, backend і Task 7 не змінено.
+- NUL verification: три Task 6 files і review diff package містять `0` literal NUL bytes; у Task 6 production/tests немає React/UI/browser/backend imports.
+- Contract: реалізація відповідає `docs/SIMULATION.md` §7–12 і релевантним `docs/TEST_SCENARIOS.md`: failure має лише `success: false` та `errors`, success має лише `success: true`, ordered `targetResults` і `serviceResults: Map`, а inputs не змінюються.
+
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
 ## Актуальна база
@@ -109,4 +122,4 @@ Task 6: Developer implementation commit `96fe5b8` — очікується fresh
 
 ## Наступна дія
 
-Передати `Task 6 — Public simulate() contract` fresh independent Reviewer відповідно до `docs/plans/simulation-engine-v1.md` і `docs/specs/repository-workflow.md`.
+Передати `Task 7 — Shared services, determinism, immutability і rerun` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md` і `docs/specs/repository-workflow.md`.
