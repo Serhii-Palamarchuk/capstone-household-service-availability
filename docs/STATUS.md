@@ -9,11 +9,12 @@
 - `Deploy v1`;
 - дизайн `User-facing MVP v1`;
 - acceptance scenarios `AC-01…AC-14`;
-- implementation plan `docs/plans/user-facing-mvp-v1.md`.
+- implementation plan `docs/plans/user-facing-mvp-v1.md`;
+- implementation tasks 1–6 `User-facing MVP v1` із task-level review.
 
 Live demo: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
-Поточний Internet UI — стабільний технічний **vertical slice**, не фінальна UX-модель.
+`main` і live deployment не змінювалися під час реалізації `User-facing MVP v1`.
 
 ## Supervisor checkpoint
 
@@ -21,80 +22,73 @@ Weekly Capstone Progress Report — Week 2 відправлено Тетяні �
 
 Статус: **submitted → awaiting supervisor feedback**.
 
-## User-facing MVP v1
-
-Погоджено:
-
-- `D-003 — Користувацький рівень введення після React Demo v1`;
-- `D-004 — User-facing MVP v1 contract`;
-- `docs/specs/user-facing-mvp-v1.md`;
-- `docs/specs/user-facing-mvp-v1-acceptance.md`;
-- `docs/plans/user-facing-mvp-v1.md`.
-
-```mermaid
-flowchart LR
-    A[Equipment] --> B[Backup Sources]
-    B --> C[Outage Scenario]
-    C --> D[Availability Estimator]
-    D --> E[Simulation Engine v1]
-    E --> F[Availability / Status / Cause / Path]
-```
-
-Ключове:
-
-- Device: `powerW` + optional internal battery;
-- BackupSource: usable capacity + optional max output power;
-- shared-source runtime залежить від сумарного active load;
-- predefined templates: Internet, Remote Work, Refrigeration, Heating, Water Supply;
-- target services визначають mandatory loads;
-- TV/lamp тощо — additional loads;
-- ExternalProvider availability задається вручну;
-- `Simulation Engine v1` не змінюється.
-
-## Implementation checkpoint — isolated branch
-
-Користувач окремо дозволив почати реалізацію до отримання feedback Тетяни за умови повної ізоляції від стабільного demo.
+## User-facing MVP v1 — verification candidate
 
 Feature branch:
 
 `feature/user-facing-mvp-v1`
 
-Правила:
+Implementation candidate:
 
-- увесь новий код `User-facing MVP v1` робити тільки в feature branch;
-- `main` залишати стабільним для перегляду Тетяною;
-- не merge у `main`, доки не завершені всі tasks, tests/build і final review;
-- GitHub Pages workflow автоматично deploy-ить тільки push у `main` для `apps/web/**` або workflow, тому feature branch не змінює live demo;
-- після готовності гілки merge/deploy робити лише за окремим рішенням користувача.
+`d856e90aa2c3cdab886b1d1ff8245520ee4cf97c` (`feat: complete user-facing outage scenario flow`)
 
-Implementation mode: task-by-task `Developer → tests → Reviewer`, після всіх tasks — final whole-branch review.
+Реалізований flow:
 
-## Активне implementation task
+```text
+Equipment → Backup → Services & Scenario → Result
+```
 
-Дозвіл на coding cycle отримано. Наступний task: **Task 1 — Service catalog + template-safe ServiceInstance** з `docs/plans/user-facing-mvp-v1.md` у branch `feature/user-facing-mvp-v1`.
+Ключове:
 
-## Остання підтверджена стабільна baseline
+- Device вводиться через category, `powerW` і optional internal battery без ручного `availabilityMinutes`;
+- BackupSource має usable capacity, optional max output і assignments;
+- target services визначають mandatory loads, additional loads задаються окремо;
+- ExternalProvider availability вводиться вручну;
+- `Simulation Engine v1` не змінювався.
 
-- Simulation Engine final suite: `43 passed, 0 failed`;
-- React Demo / full suite: `53 passed, 0 failed`;
-- production build: exit `0`, Vite `8.2.1`;
-- GitHub Pages: live HTTPS deployment accepted.
+## Task 7 — фактична verification
 
-Це baseline попереднього стабільного milestone. Для нового User-facing MVP фактичних test results ще немає.
+2026-08-20 у локальному Browser walkthrough (HTTP `200`) перевірено AC-12 fixture:
+
+- Home backup: `80 W`, `360 min (6 h)`;
+- Router / ONT/ONU: по `360 min`; Laptop: `480 min` (`360` external + `120` internal);
+- Remote Work: `Limited`, `360 min`; limiting dependencies — ONT/ONU і Router; обидва expected causal paths показані;
+- warning `MISSING_BACKUP_SOURCE_MAX_OUTPUT` та відсутність deterministic recommendation показані;
+- rerun без reload після зміни provider availability `600 → 300` замінив outcome на `300 min`, limiting provider і відповідне пояснення про local battery.
+
+Також пройдено negative UI smoke без synthetic partial result:
+
+- `powerW = 0` → `INVALID_POSITIVE_NUMBER`;
+- active load `80 W` > known max output `50 W` → `BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED` + `No partial result is shown.`;
+- missing provider availability → `MISSING_EXTERNAL_PROVIDER_AVAILABILITY` + `No partial result is shown.`;
+- missing required Router role → `TEMPLATE_ROLE_CARDINALITY`.
+
+Fresh automated verification у `apps/web`:
+
+- `cmd.exe /d /c npm test` — exit `0`; `97 passed`, `0 failed`, `0 cancelled`, `0 skipped`, `0 todo`;
+- `cmd.exe /d /c npm run build` — exit `0`; Vite `8.2.1`, `32` modules transformed.
+
+Task 7 scope/hygiene audit:
+
+- `git diff origin/main...HEAD -- apps/web/src/simulation` — empty;
+- dependency diff for `apps/web/package.json` and `apps/web/package-lock.json` — exit `0`, empty;
+- worktree and branch `git diff --check` — exit `0`;
+- implemented-path TODO/placeholder scan — `0` matches;
+- branch-diff secret-pattern heuristic — `0` matches.
+
+## Branch review state
+
+Завдання 1–6 завершили свої task-level review cycles. Final whole-branch review **ще не** виконано; цей STATUS не заявляє про final whole-branch acceptance. Deferred task-level Minor findings залишаються контекстом для final reviewer.
 
 ## Source of truth
 
 - Google Drive `Capstone Project Context — Software Engineering` — canonical cross-chat context;
 - `docs/STATUS.md` — поточний operational snapshot;
-- `docs/PROJECT.md` — problem / goal / MVP / scope;
-- `docs/DOMAIN_MODEL.md` — entities та invariants;
-- `docs/SIMULATION.md` — existing engine contract;
 - `docs/specs/user-facing-mvp-v1.md` — accepted contract;
 - `docs/specs/user-facing-mvp-v1-acceptance.md` — accepted AC-01…AC-14;
 - `docs/plans/user-facing-mvp-v1.md` — implementation plan;
-- `docs/DECISIONS.md` — decision log;
 - `docs/specs/repository-workflow.md` — agent workflow.
 
 ## Наступна дія
 
-Почати Task 1 в `feature/user-facing-mvp-v1`. `main` і live deployment не змінювати.
+Запустити fresh final whole-branch Reviewer для `feature/user-facing-mvp-v1`; не merge у `main`, не deploy і не змінювати live demo без окремого рішення користувача.
