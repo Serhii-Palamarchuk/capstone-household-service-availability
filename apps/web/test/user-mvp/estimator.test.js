@@ -131,3 +131,24 @@ test('AC-11: required provider availability is copied and missing availability i
     errors: [{ code: 'MISSING_EXTERNAL_PROVIDER_AVAILABILITY', providerId: 'provider-isp' }],
   });
 });
+
+test('missing provider availability and known source overload are reported together in phase order', () => {
+  const input = sharedSourceFixture();
+  input.model.externalProviders = [{ id: 'provider-isp', name: 'Internet provider' }];
+  input.model.services[0].dependencyIds.push('provider-isp');
+  input.scenario.externalProviderAvailability = {};
+  input.backupSources[0].maxOutputPowerW = 99;
+
+  assert.deepEqual(estimateAvailability(input), {
+    success: false,
+    errors: [
+      { code: 'MISSING_EXTERNAL_PROVIDER_AVAILABILITY', providerId: 'provider-isp' },
+      {
+        code: 'BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED',
+        sourceId: 'source-1',
+        totalPowerW: 100,
+        maxOutputPowerW: 99,
+      },
+    ],
+  });
+});

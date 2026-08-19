@@ -144,10 +144,6 @@ export function estimateAvailability({ model, backupSources, scenario }) {
     scenario.externalProviderAvailability ?? {},
   );
 
-  if (providerAvailability.errors.length > 0) {
-    return { success: false, errors: providerAvailability.errors };
-  }
-
   const activeDeviceIds = new Set([
     ...requiredDeviceIds,
     ...(scenario.additionalActiveDeviceIds ?? []),
@@ -184,8 +180,9 @@ export function estimateAvailability({ model, backupSources, scenario }) {
     }
   }
 
-  if (sourceErrors.length > 0) {
-    return { success: false, errors: sourceErrors };
+  const estimationErrors = [...providerAvailability.errors, ...sourceErrors];
+  if (estimationErrors.length > 0) {
+    return { success: false, errors: estimationErrors };
   }
 
   const availability = { ...providerAvailability.availability };
