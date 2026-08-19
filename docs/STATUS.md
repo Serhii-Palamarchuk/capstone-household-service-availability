@@ -6,9 +6,7 @@
 
 ## Активне завдання
 
-`Task 3 — Reachable-subgraph validation і cycles`: незалежний review завершено з verdict `changes requested`.
-
-Наступний крок — повернути `Task 3` агенту в ролі `Developer` для виправлення Major finding і test-coverage gap.
+`Task 3 — Reachable-subgraph validation і cycles`: findings виправлено, очікує повторний незалежний review.
 
 ## Останнє завершене
 
@@ -21,12 +19,14 @@
 - реалізовано й прийнято після незалежного review `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`);
 - реалізовано й прийнято після повторного незалежного review `Task 2 — Model index і structural Scenario validation` (`apps/web/src/simulation/model-index.js`, `apps/web/src/simulation/validation.js`, `apps/web/test/simulation/fixtures.js`, `apps/web/test/simulation/validation.test.js`);
 - реалізовано `Task 3 — Reachable-subgraph validation і cycles` (`apps/web/src/simulation/validation.js`, `apps/web/test/simulation/validation.test.js`): додано `validateReachableSubgraph()` і `validateSimulationInput()` — reachable DFS traversal, cycle detection із канонізацією шляху, дедуплікація та детерміноване сортування помилок;
-- незалежний review Task 3 завершено з verdict `changes requested`: production-файл містить NUL-байти й визначається Git як binary; tests не доводять rotation канонічного cycle path і path tie-breaker сортування.
+- незалежний review Task 3 завершено з verdict `changes requested`: production-файл містить NUL-байти й визначається Git як binary; tests не доводять rotation канонічного cycle path і path tie-breaker сортування;
+- виправлено Major finding — 9 literal NUL bytes у separator strings замінено на текстову escape-послідовність (runtime-ключі не змінилися); підтверджено, що новий commit blob не містить NUL bytes і майбутні diffs рендеряться як текст;
+- виправлено Minor finding — додано regression tests: канонізація cycle path при старті DFS з нелексикографічно-мінімального вузла (`service-c`), та `path` як останній sort tie-breaker для двох незалежних циклів з однаковими `code`/`nodeId`/`field`.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 3 повернено на виправлення, очікує призначення);
-- `Reviewer`: немає (незалежний review Task 3 завершено);
+- `Developer`: немає (Task 3 correction готова до review);
+- `Reviewer`: очікується незалежна сесія для Task 3 correction;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -47,6 +47,12 @@ Task 3: незалежний review implementation commit `4e661e8` — `changes
 - Major finding: `apps/web/src/simulation/validation.js` містить 9 literal NUL bytes у separator strings; через це Git показує production-зміну як `Binary files differ` і `--numstat` як `-/-`, що унеможливлює нормальний GitHub review. Потрібно замінити literal NUL на текстові escape-послідовності `\u0000`, не змінюючи runtime-ключі.
 - Minor finding: TS-17 починає DFS з уже лексикографічно найменшого `service-a`, а TS-26 не містить cycle errors, тому tests не виявлять поломку rotation канонічного cycle path або четвертого sort key `path`. Потрібно додати вузькі regression assertions для обох правил.
 
+Task 3 correction (Developer, fix commit `601b6a3`, фактичний запуск, ще не review):
+
+- targeted run (`npm test -- test/simulation/validation.test.js`, git-bash): `25 passed, 0 failed`.
+- full suite (`npm test`, git-bash): `27 passed, 0 failed`.
+- підтверджено: committed blob `apps/web/src/simulation/validation.js` містить 0 NUL bytes; пробний diff проти нового commit рендериться як звичайний текстовий diff, а не `Binary files differ`.
+
 `node --version` → `v24.18.0`.
 
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
@@ -60,9 +66,11 @@ Task 3: незалежний review implementation commit `4e661e8` — `changes
 - review commit Task 2 (changes requested): `cb89b2e`;
 - fix commit Task 2: `e4cd10b`;
 - implementation commit Task 3: `4e661e8`;
+- review commit Task 3 (changes requested): `067ba8f`;
+- fix commit Task 3: `601b6a3`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі `Developer`: виправити Major і Minor findings, повторити targeted та full tests і повернути task на незалежний review. Task 4 не починати до acceptance Task 3.
+Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі незалежного `Reviewer`: перевірити fix commit `601b6a3` (NUL byte fix і нові regression tests), фактично запустити targeted та full tests. Task 4 не починати до acceptance Task 3.
