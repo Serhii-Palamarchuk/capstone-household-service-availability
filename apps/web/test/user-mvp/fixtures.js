@@ -115,3 +115,111 @@ export function validCatalogInputs() {
     },
   ];
 }
+
+function serviceModel(devices, externalProviders = [], dependencyIds = devices.map((device) => device.id)) {
+  return {
+    services: [{
+      id: 'service-target',
+      name: 'Target service',
+      dependencyIds,
+    }],
+    devices,
+    externalProviders,
+  };
+}
+
+function source(id, usableCapacityWh, maxOutputPowerW) {
+  return {
+    id,
+    name: id,
+    type: 'Power station',
+    usableCapacityWh,
+    ...(maxOutputPowerW === undefined ? {} : { maxOutputPowerW }),
+  };
+}
+
+function scenario(overrides = {}) {
+  return {
+    targetServiceIds: ['service-target'],
+    backupAssignments: [],
+    additionalActiveDeviceIds: [],
+    externalProviderAvailability: {},
+    ...overrides,
+  };
+}
+
+export function singleDeviceFixture({ wh, watts }) {
+  const device = { id: 'device-1', name: 'Device 1', powerW: watts };
+
+  return {
+    model: serviceModel([device]),
+    backupSources: [source('source-1', wh, 100)],
+    scenario: scenario({
+      backupAssignments: [{ deviceId: 'device-1', backupSourceId: 'source-1' }],
+    }),
+  };
+}
+
+export function sharedSourceFixture() {
+  const devices = [
+    { id: 'device-router', name: 'Router', powerW: 20 },
+    { id: 'device-ont', name: 'ONT', powerW: 10 },
+    { id: 'device-laptop', name: 'Laptop', powerW: 70 },
+  ];
+
+  return {
+    model: serviceModel(devices),
+    backupSources: [source('source-1', 600, 150)],
+    scenario: scenario({
+      backupAssignments: devices.map((device) => ({ deviceId: device.id, backupSourceId: 'source-1' })),
+    }),
+  };
+}
+
+export function internalOnlyFixture() {
+  const device = {
+    id: 'device-laptop',
+    name: 'Laptop',
+    powerW: 60,
+    internalBattery: { usableCapacityWh: 120 },
+  };
+
+  return {
+    model: serviceModel([device]),
+    backupSources: [],
+    scenario: scenario(),
+  };
+}
+
+export function externalPlusInternalFixture() {
+  const input = internalOnlyFixture();
+
+  return {
+    ...input,
+    backupSources: [source('source-1', 300, 100)],
+    scenario: scenario({
+      backupAssignments: [{ deviceId: 'device-laptop', backupSourceId: 'source-1' }],
+    }),
+  };
+}
+
+export function noBackupFixture() {
+  return {
+    model: serviceModel([{ id: 'device-1', name: 'Device 1', powerW: 10 }]),
+    backupSources: [],
+    scenario: scenario(),
+  };
+}
+
+export function providerFixture(overrides = {}) {
+  const provider = { id: 'provider-isp', name: 'Internet provider' };
+
+  return {
+    model: serviceModel([], [provider], [provider.id]),
+    backupSources: [],
+    scenario: scenario({
+      externalProviderAvailability: { [provider.id]: 600 },
+      ...overrides,
+    }),
+  };
+}
