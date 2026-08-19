@@ -8,26 +8,28 @@
 - `React Demo v1`;
 - `Deploy v1`;
 - дизайн `User-facing MVP v1`;
-- acceptance scenarios `AC-01…AC-14` для `User-facing MVP v1`.
+- acceptance scenarios `AC-01…AC-14`;
+- implementation plan `docs/plans/user-facing-mvp-v1.md`.
 
 Live demo: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
-Поточний Internet UI — технічний **vertical slice**, не фінальна UX-модель.
+Поточний Internet UI — стабільний технічний **vertical slice**, не фінальна UX-модель.
 
-## Supervisor checkpoint — 2026-08-19
+## Supervisor checkpoint
 
-Weekly Capstone Progress Report — Week 2 відправлено Тетяні через LMS; у Slack додатково надіслано повідомлення про report і live demo.
+Weekly Capstone Progress Report — Week 2 відправлено Тетяні через LMS; у Slack надіслано report + live demo.
 
 Статус: **submitted → awaiting supervisor feedback**.
 
-## Погоджений наступний продуктовий contract
+## User-facing MVP v1
 
-Прийнято:
+Погоджено:
 
 - `D-003 — Користувацький рівень введення після React Demo v1`;
 - `D-004 — User-facing MVP v1 contract`;
 - `docs/specs/user-facing-mvp-v1.md`;
-- `docs/specs/user-facing-mvp-v1-acceptance.md`.
+- `docs/specs/user-facing-mvp-v1-acceptance.md`;
+- `docs/plans/user-facing-mvp-v1.md`.
 
 ```mermaid
 flowchart LR
@@ -49,41 +51,50 @@ flowchart LR
 - ExternalProvider availability задається вручну;
 - `Simulation Engine v1` не змінюється.
 
-Підготовлено implementation plan:
+## Implementation checkpoint — isolated branch
 
-- `docs/plans/user-facing-mvp-v1.md`;
-- 7 послідовних task gates: templates → estimator → engine integration → recommendations → Equipment/Backup UI → Services/Scenario/Result UI → final verification.
+Користувач окремо дозволив почати реалізацію до отримання feedback Тетяни за умови повної ізоляції від стабільного demo.
+
+Feature branch:
+
+`feature/user-facing-mvp-v1`
+
+Правила:
+
+- увесь новий код `User-facing MVP v1` робити тільки в feature branch;
+- `main` залишати стабільним для перегляду Тетяною;
+- не merge у `main`, доки не завершені всі tasks, tests/build і final review;
+- GitHub Pages workflow автоматично deploy-ить тільки push у `main` для `apps/web/**` або workflow, тому feature branch не змінює live demo;
+- після готовності гілки merge/deploy робити лише за окремим рішенням користувача.
+
+Implementation mode: task-by-task `Developer → tests → Reviewer`, після всіх tasks — final whole-branch review.
 
 ## Активне implementation task
 
-Немає. Код `User-facing MVP v1` ще не реалізується.
+Дозвіл на coding cycle отримано. Наступний task: **Task 1 — Service catalog + template-safe ServiceInstance** з `docs/plans/user-facing-mvp-v1.md` у branch `feature/user-facing-mvp-v1`.
 
-Перед Task 1 потрібне явне рішення користувача почати coding cycle. Якщо feedback Тетяни на той момент ще немає, це рішення означатиме свідомо продовжити реалізацію до feedback.
-
-## Остання фактична перевірка
+## Остання підтверджена стабільна baseline
 
 - Simulation Engine final suite: `43 passed, 0 failed`;
 - React Demo / full suite: `53 passed, 0 failed`;
 - production build: exit `0`, Vite `8.2.1`;
-- GitHub Pages: live HTTPS deployment accepted;
-- manual smoke:
-  - `6 / 8 / 2 / 72 h` → `Limited`, `2 h`, `ONT/ONU`, `Internet → ONT/ONU`;
-  - `6 / 8 / 8 / 72 h` → `Available`, `8 h`, no limiting dependency/path.
+- GitHub Pages: live HTTPS deployment accepted.
 
-Це програмні fixture-сценарії, не реальні вимірювання автономності. Для нового User-facing MVP фактичних test results ще немає.
+Це baseline попереднього стабільного milestone. Для нового User-facing MVP фактичних test results ще немає.
 
 ## Source of truth
 
+- Google Drive `Capstone Project Context — Software Engineering` — canonical cross-chat context;
+- `docs/STATUS.md` — поточний operational snapshot;
 - `docs/PROJECT.md` — problem / goal / MVP / scope;
 - `docs/DOMAIN_MODEL.md` — entities та invariants;
 - `docs/SIMULATION.md` — existing engine contract;
-- `docs/specs/user-facing-mvp-v1.md` — accepted next-iteration contract;
+- `docs/specs/user-facing-mvp-v1.md` — accepted contract;
 - `docs/specs/user-facing-mvp-v1-acceptance.md` — accepted AC-01…AC-14;
 - `docs/plans/user-facing-mvp-v1.md` — implementation plan;
-- `docs/TEST_SCENARIOS.md` — existing Simulation Engine acceptance scenarios;
 - `docs/DECISIONS.md` — decision log;
 - `docs/specs/repository-workflow.md` — agent workflow.
 
 ## Наступна дія
 
-Погодити implementation plan і окремо вирішити, чи запускати Task 1 зараз до supervisor feedback, чи чекати відповіді Тетяни. До цього код не змінювати.
+Почати Task 1 в `feature/user-facing-mvp-v1`. `main` і live deployment не змінювати.
