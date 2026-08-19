@@ -61,3 +61,13 @@ Implementation plan:
 Запустити fresh autonomous coding session через `Autonomous Orchestrator session prompt` і виконувати `docs/plans/deploy-v1.md`.
 
 Orchestrator має пройти Task 1 → fresh Reviewer → Task 2 → final fresh Reviewer. Якщо GitHub Pages не enabled, зупинитися лише для одноразового налаштування Source = GitHub Actions; після цього продовжити deploy plan.
+
+## Deploy v1 / Task 1 — factual handoff
+
+- Створено `apps/web/vite.config.js` з repository base path `/capstone-household-service-availability/`.
+- Створено `.github/workflows/deploy-pages.yml` з pinned GitHub Actions, Node.js 24, `npm ci`, повним `npm test`, `npm run build`, Pages artifact `apps/web/dist`, permissions `contents: read`, `pages: write`, `id-token: write` та environment `github-pages`.
+- Baseline: `cmd.exe /d /c "cd apps\web && npm test"` — exit `0`, `53 passed, 0 failed`; `npm run build` — exit `0`.
+- Regression: `npm test` — exit `0`, `53 passed, 0 failed`; `npm run build` — exit `0`; built `dist/index.html` містить `/capstone-household-service-availability/assets/`; `git diff --check` — exit `0`.
+- Dependency drift: `npm ls --depth=0` — exit `0`, лише `react`, `react-dom`, `vite`; `package.json` і `package-lock.json` не змінені.
+- Implementation commit: `8208809` (`ci: configure GitHub Pages deployment`). Live Pages deployment у Task 1 не підтверджувався.
+- Наступна дія: fresh Reviewer для Task 1.
