@@ -47,6 +47,10 @@ function validateRole(role, bindings, context, errors) {
     if (role.allowedCategories && !role.allowedCategories.includes(dependency.item.category)) {
       errors.push(error('TEMPLATE_ROLE_CATEGORY', role.id));
     }
+
+    if (role.allowedTemplateIds && !role.allowedTemplateIds.includes(dependency.item.templateId)) {
+      errors.push(error('TEMPLATE_ROLE_TEMPLATE', role.id));
+    }
   }
 
   return ids;

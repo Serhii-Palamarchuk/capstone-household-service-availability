@@ -167,6 +167,61 @@ test('role options use template entity type and allowed Device categories', () =
   );
 });
 
+test('Remote Work Internet role options keep Internet and exclude Refrigeration services', () => {
+  // Mutation caught: removing allowed service-template filtering exposes Refrigeration in the UI.
+  const state = createInitialUserMvpState();
+  state.devices.push({
+    id: 'device-refrigerator',
+    name: 'Refrigerator',
+    category: 'Refrigerator',
+    powerW: '100',
+    internalBatteryWh: '',
+  });
+  state.services.splice(1, 0, {
+    id: 'service-refrigeration',
+    name: 'Refrigeration',
+    templateId: 'Refrigeration',
+    variantId: '',
+    dependencyBindings: { coolingDevices: ['device-refrigerator'] },
+  });
+  const internetRole = getServiceTemplate('RemoteWork').roles[0];
+
+  assert.deepEqual(
+    getRoleBindingOptions(internetRole, state, 2).map(({ id }) => id),
+    ['service-internet-home'],
+  );
+});
+
+test('form normalization rejects Refrigeration bound as Remote Work Internet', () => {
+  const state = createInitialUserMvpState();
+  state.devices.push({
+    id: 'device-refrigerator',
+    name: 'Refrigerator',
+    category: 'Refrigerator',
+    powerW: '100',
+    internalBatteryWh: '',
+  });
+  state.services.splice(1, 0, {
+    id: 'service-refrigeration',
+    name: 'Refrigeration',
+    templateId: 'Refrigeration',
+    variantId: '',
+    dependencyBindings: { coolingDevices: ['device-refrigerator'] },
+  });
+  state.services[2].dependencyBindings.internetService = ['service-refrigeration'];
+
+  const result = normalizeUserMvpForm(state);
+
+  assert.equal(result.success, false);
+  assert.deepEqual(result.errors, [{
+    code: 'TEMPLATE_ROLE_TEMPLATE',
+    field: 'services.2.dependencyBindings.internetService',
+    message: 'Choose dependencies allowed by this service role.',
+  }]);
+  assert.equal(Object.hasOwn(result, 'model'), false);
+  assert.equal(Object.hasOwn(result, 'scenario'), false);
+});
+
 test('invalid service bindings return builder errors without a partial domain payload', () => {
   const state = createInitialUserMvpState();
   state.services[0].dependencyBindings.router = ['device-laptop'];

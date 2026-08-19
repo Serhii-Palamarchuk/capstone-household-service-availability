@@ -1,10 +1,11 @@
 import { DeviceCategory } from './constants.js';
 
-const single = (id, entityType, allowedCategories) => ({
+const single = (id, entityType, allowedCategories, allowedTemplateIds) => ({
   id,
   entityType,
   cardinality: '1',
   ...(allowedCategories ? { allowedCategories } : {}),
+  ...(allowedTemplateIds ? { allowedTemplateIds } : {}),
 });
 
 const many = (id, entityType, allowedCategories) => ({
@@ -49,7 +50,7 @@ export const serviceTemplates = deepFreeze([
   {
     id: 'RemoteWork',
     roles: Object.freeze([
-      single('internetService', 'ServiceInstance'),
+      single('internetService', 'ServiceInstance', undefined, ['Internet']),
       many('workDevices', 'Device', [
         DeviceCategory.LAPTOP_DESKTOP,
         DeviceCategory.MONITOR,

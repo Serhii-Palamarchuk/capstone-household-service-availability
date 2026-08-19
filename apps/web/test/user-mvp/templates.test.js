@@ -28,6 +28,33 @@ test('AC-08: Refrigerator cannot bind to Work Devices', () => {
   assert.ok(result.errors.some((error) => error.code === 'TEMPLATE_ROLE_CATEGORY'));
 });
 
+test('AC-08: Refrigeration ServiceInstance cannot bind to Remote Work Internet role', () => {
+  // Mutation caught: removing the allowed template check lets this valid non-Internet service bind.
+  const context = templateContext();
+  const refrigeration = createServiceInstance({
+    id: 'service-refrigeration',
+    name: 'Refrigeration',
+    templateId: 'Refrigeration',
+    dependencyBindings: { coolingDevices: ['device-refrigerator'] },
+  }, context);
+
+  assert.equal(refrigeration.success, true);
+  context.services.push(refrigeration.service);
+
+  const result = createServiceInstance(remoteWorkInput({
+    dependencyBindings: {
+      internetService: ['service-refrigeration'],
+      workDevices: ['device-laptop'],
+    },
+  }), context);
+
+  assert.equal(result.success, false);
+  assert.deepEqual(result.errors, [{
+    code: 'TEMPLATE_ROLE_TEMPLATE',
+    roleId: 'internetService',
+  }]);
+});
+
 test('callers cannot weaken Remote Work category validation through a template reference', () => {
   const template = getServiceTemplate('RemoteWork');
   const workDevices = template.roles.find((role) => role.id === 'workDevices');

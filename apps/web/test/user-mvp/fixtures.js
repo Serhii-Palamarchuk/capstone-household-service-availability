@@ -4,7 +4,12 @@ import { createServiceInstance } from '../../src/user-mvp/service-builder.js';
 export function templateContext() {
   return {
     services: [
-      { id: 'service-internet-home', name: 'Internet — Home' },
+      {
+        id: 'service-internet-home',
+        name: 'Internet — Home',
+        templateId: 'Internet',
+        variantId: 'Fiber',
+      },
     ],
     devices: [
       { id: 'device-router', name: 'Router', category: DeviceCategory.ROUTER },

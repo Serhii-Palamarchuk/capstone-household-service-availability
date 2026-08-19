@@ -183,7 +183,14 @@ function normalizeServices(serviceForms, context, errors) {
           serviceErrorMessage(builderError.code),
         ));
       }
-      if (id) serviceReferences.push({ id, name });
+      if (id) {
+        serviceReferences.push({
+          id,
+          name,
+          templateId,
+          ...(variantText ? { variantId: variantText } : {}),
+        });
+      }
       continue;
     }
 
@@ -201,7 +208,9 @@ export function getRoleBindingOptions(role, state, serviceIndex = state.services
     ));
   }
   if (role.entityType === 'ServiceInstance') {
-    return state.services.slice(0, serviceIndex);
+    return state.services.slice(0, serviceIndex).filter(service => (
+      !role.allowedTemplateIds || role.allowedTemplateIds.includes(service.templateId)
+    ));
   }
   if (role.entityType === 'ExternalProvider') {
     return state.externalProviders;
