@@ -8,9 +8,21 @@
 
 Поточний deployed Internet UI є першим наскрізним **vertical slice** для перевірки технічної гіпотези та інтеграції з `Simulation Engine v1`. Він не вважається фінальною UX-моделлю продукту.
 
+## Submission checkpoint — 2026-08-19
+
+Weekly Capstone Progress Report — Week 2 відформатовано за зразком Week 1, перевірено посилання та форматування, доступ до документа встановлено як `anyone with the link → commenter`.
+
+Звіт за Week 2 відправлено Тетяні на перевірку через LMS.
+
+Додатково 2026-08-19 о 21:52 EEST у Slack надіслано коротке повідомлення про відправлення звіту і першої demo-версії. На момент цієї фіксації відповіді в Slack thread ще немає.
+
+Поточний статус взаємодії з керівником: **submitted → awaiting supervisor feedback**.
+
 ## Активне завдання
 
-Активного implementation task немає. Новий autonomous coding cycle не запускати до окремої spec/plan наступної користувацької ітерації.
+Активного implementation task немає. Новий autonomous coding cycle не запускати до feedback Тетяни або окремого рішення користувача продовжувати без нього.
+
+Поки очікується feedback, дозволено лише підготовчу роботу, яка не фіксує новий контракт: аналіз варіантів user-facing input model, autonomy-estimation layer, UX flow та питань до керівника.
 
 ## Поточне продуктове рішення
 
@@ -65,11 +77,12 @@ Week 2 report, `React Demo v1` і `Deploy v1` не перейменовують�
 - product-direction decision: `D-003` у `docs/DECISIONS.md`;
 - synchronization rules: `docs/specs/repository-workflow.md`;
 - autonomous workflow: `docs/specs/autonomous-agent-workflow.md`;
-- reusable prompts: `docs/specs/agent-session-prompts.md`.
+- reusable prompts: `docs/specs/agent-session-prompts.md`;
+- Weekly Report 2: https://docs.google.com/document/d/1KvcyuQFuJU6IkNhL20ieLmFevFJgsMKLrHEqNJ4iHJQ/edit?usp=drivesdk.
 
 ## Наступна дія
 
-1. Передати Тетяні repository, live demo і Weekly Report 2 та зафіксувати її feedback.
+1. Дочекатися feedback Тетяни на Week 2 report / repository / live demo та зафіксувати його без інтерпретацій, яких вона не висловлювала.
 2. Після feedback окремо спроєктувати наступну user-facing MVP iteration: configurator сервісів/залежностей + модель обладнання/резервного живлення + availability estimation layer.
 3. До початку реалізації визначити exact inputs, формулу/метод оцінювання автономності, validation rules, acceptance criteria і tests.
 4. Лише після цього створити нові spec + implementation plan і запускати Developer → fresh Reviewer autonomous cycle.
