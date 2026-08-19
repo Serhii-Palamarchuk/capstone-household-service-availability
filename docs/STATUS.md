@@ -6,7 +6,9 @@
 
 ## Активне завдання
 
-`Task 3 — Reachable-subgraph validation і cycles`: findings повторного review виправлено, очікує черговий незалежний review.
+`Task 3 — Reachable-subgraph validation і cycles`: третій незалежний review fix commit `b4efff6` завершено з verdict `changes requested`.
+
+Наступний крок — повернути `Task 3` агенту в ролі `Developer` для виправлення останнього Minor finding.
 
 ## Останнє завершене
 
@@ -24,12 +26,12 @@
 - додано regression test канонізації cycle path при старті DFS з нелексикографічно-мінімального вузла (`service-c`);
 - повторний незалежний review Task 3 завершено з verdict `changes requested`: literal NUL перенесено в test source, а новий sort test має різні `nodeId` і не перевіряє `path` tie-breaker;
 - виправлено Major finding — literal NUL byte у test source (`error.path.join(...)`) замінено на текстову escape-послідовність;
-- виправлено Minor finding — regression test для path tie-breaker переписано на модель з одним вузлом (`service-a`), що має дві окремі залежності (`service-b`, `service-d`), кожна з яких замикає окремий цикл назад на `service-a`; обидва cycle errors мають однакові `code`/`nodeId`/`field`, але різні `path`, що дійсно вимагає path tie-breaker для детермінованого порядку.
+- regression test для path tie-breaker переписано на два cycles зі спільними `code`/`nodeId`/`field`, але третій review виявив, що DFS уже генерує paths у лексикографічному порядку, тому test не стає red без останнього sort key.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 3 correction готова до повторного review);
-- `Reviewer`: очікується незалежна сесія для Task 3 correction;
+- `Developer`: немає (Task 3 повернено на третє виправлення, очікує призначення);
+- `Reviewer`: немає (третій незалежний review Task 3 завершено);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -42,22 +44,15 @@
 
 Повторний незалежний review Task 2 correction (fix commit `e4cd10b`): `accepted`, відкритих findings немає.
 
-Task 3 correction: повторний незалежний review fix commit `601b6a3` — `changes requested`.
+Task 3 correction #2: третій незалежний review fix commit `b4efff6` — `changes requested`.
 
-- Незалежний targeted run (`cmd.exe /d /c npm test -- test/simulation/validation.test.js`): `25 passed, 0 failed`.
-- Незалежний full suite (`cmd.exe /d /c npm test`): `27 passed, 0 failed`.
-- Runtime probe із двома циклами зі спільними `code`/`nodeId`/`field`: implementation коректно сортує paths.
-- Major finding: `apps/web/test/simulation/validation.test.js` містить 1 literal NUL byte у `error.path.join(...)` (line 338). Потрібно використати текстову escape-послідовність `\u0000`, щоб source залишався звичайним текстом.
-- Minor finding: regression test для останнього sort key створює цикли з різними `nodeId` (`service-a`, `service-x`), тому порядок визначається `nodeId` раніше за `path`; test пройде навіть без path tie-breaker. Потрібен сценарій із двома виявленими циклами, що мають однакові `code`, `nodeId` і `field`, але різні `path`.
-
-Task 3 correction #2 (Developer, fix commit `b4efff6`, фактичний запуск, ще не review):
-
-- targeted run (`npm test -- test/simulation/validation.test.js`, git-bash): `25 passed, 0 failed`.
-- full suite (`npm test`, git-bash): `27 passed, 0 failed`.
-- підтверджено: `apps/web/src/simulation/validation.js` і `apps/web/test/simulation/validation.test.js` містять 0 NUL bytes.
-- підтверджено runtime probe: модель `service-a -> [service-b, service-d]`, `service-b -> service-a`, `service-d -> service-a` дає рівно два `CYCLE_DETECTED` з однаковими `nodeId='service-a'`, `field='dependencyIds'`, але різними `path` (`service-a,service-b,service-a` і `service-a,service-d,service-a`) — новий test дійсно виявив би поломку path tie-breaker.
-
-`node --version` → `v24.18.0`.
+- `node --version`: `v24.18.0`.
+- Незалежний targeted run (`cmd.exe /d /c "npm test -- test/simulation/validation.test.js"`): exit `0`, `25 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): exit `0`, `27 passed, 0 failed`.
+- Scope: fix commit змінює лише `apps/web/test/simulation/validation.test.js`; production code, dependencies і Task 4 не змінено.
+- NUL verification: `apps/web/src/simulation/validation.js` і `apps/web/test/simulation/validation.test.js` містять `0` NUL bytes.
+- Runtime probe зі зворотним DFS-порядком (`service-a -> [service-d, service-b]`) підтвердив, що implementation сортує paths як `service-b`, потім `service-d`.
+- Minor finding: regression test у fix commit використовує `service-a -> [service-b, service-d]`, тобто DFS уже повертає paths у лексикографічному порядку. Через stable `Array.sort` test пройде навіть якщо `path` tie-breaker видалити. Потрібно задати залежності у зворотному порядку й assert exact ordered paths.
 
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
@@ -79,4 +74,4 @@ Task 3 correction #2 (Developer, fix commit `b4efff6`, фактичний зап
 
 ## Наступна дія
 
-Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі незалежного `Reviewer`: перевірити fix commit `b4efff6` (усунення literal NUL у test source, новий path-tie-breaker сценарій через спільний вузол), фактично запустити targeted та full tests. Task 4 не починати до acceptance Task 3.
+Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі `Developer`: зробити path-sort regression test чутливим до відсутності tie-breaker (зворотний DFS-порядок та exact paths), повторити targeted/full tests і повернути task на незалежний review. Task 4 не починати до acceptance Task 3.
