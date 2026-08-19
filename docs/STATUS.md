@@ -4,11 +4,11 @@
 
 `Simulation Engine v1` і `React Demo v1` завершено та прийнято після fresh незалежних review.
 
-Розпочато підготовку `Deploy v1` для публічної демонстрації через GitHub Pages.
+`Deploy v1 / Task 2` завершено Developer; публічна GitHub Pages demo розгорнута і передана на fresh final Reviewer gate.
 
 ## Активне завдання
 
-`Deploy v1 / Task 1 — Static build configuration і Pages workflow` готовий до передачі агенту в ролі `Developer`.
+Fresh final Reviewer для `Deploy v1`.
 
 Канонічна специфікація:
 
@@ -31,18 +31,17 @@ Implementation plan:
 - користувач підтвердив, що GitHub Pages проходився в межах навчальної програми;
 - рішення зафіксовано як `D-002` у `docs/DECISIONS.md`;
 - створено `docs/specs/deploy-v1.md` і `docs/plans/deploy-v1.md`.
+- GitHub Pages увімкнено з Source = `GitHub Actions`; public HTTPS URL: `https://serhii-palamarchuk.github.io/capstone-household-service-availability/`.
 
 ## Поточні ролі
 
-- `Developer`: немає активного агента; Task 1 готовий до передачі;
-- `Reviewer`: немає активного review;
+- `Developer`: Task 2 передано на final review;
+- `Reviewer`: потрібен fresh final Reviewer для `Deploy v1`;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
 
 Немає.
-
-Можлива one-time runtime escalation під час Task 2: якщо GitHub Pages ще не enabled/configured, користувач має виконати `Settings → Pages → Source → GitHub Actions`. PAT/secrets для автоматичного enablement не використовувати.
 
 ## Актуальна база
 
@@ -55,12 +54,11 @@ Implementation plan:
 - synchronization rules: `docs/specs/repository-workflow.md`;
 - autonomous workflow: `docs/specs/autonomous-agent-workflow.md`;
 - reusable prompts: `docs/specs/agent-session-prompts.md`.
+- Task 2 lockfile correction commits, ще не reviewed у final Deploy v1 gate: `8c7134d` і `1f735f3`.
 
 ## Наступна дія
 
-Запустити fresh autonomous coding session через `Autonomous Orchestrator session prompt` і виконувати `docs/plans/deploy-v1.md`.
-
-Orchestrator має пройти Task 1 → fresh Reviewer → Task 2 → final fresh Reviewer. Якщо GitHub Pages не enabled, зупинитися лише для одноразового налаштування Source = GitHub Actions; після цього продовжити deploy plan.
+Запустити fresh final Reviewer для `Deploy v1` відповідно до `docs/specs/repository-workflow.md` та final Reviewer gate у `docs/specs/deploy-v1.md`.
 
 ## Deploy v1 / Task 1 — factual handoff
 
@@ -80,3 +78,14 @@ Orchestrator має пройти Task 1 → fresh Reviewer → Task 2 → final 
 - Workflow verified: exact Vite base, Node.js 24, npm cache from `apps/web/package-lock.json`, `npm ci` → `npm test` → `npm run build`, artifact only `apps/web/dist`, exact required permissions, environment `github-pages`, `workflow_dispatch`, and pinned action SHAs.
 - Live Pages deployment is not claimed in Task 1; it remains Task 2 work.
 - Наступна дія: **Task 2 — Developer**.
+
+## Deploy v1 / Task 2 — Developer factual handoff
+
+- До runtime deploy усунуто concrete CI lockfile defect: у `apps/web/package-lock.json` два incomplete nested optional `rolldown` entries не мали `version`, що спричиняло `npm ci: Invalid Version:`. Виправлення складають commits `8c7134d fix: repair web dependency lockfile` і `1f735f3 fix: complete web dependency lockfile`; ці commits входять до unreviewed Task 2 range.
+- Після одноразового налаштування користувачем `Repository → Settings → Pages → Build and deployment → Source → GitHub Actions`, вручну запущений workflow [32276285162](https://github.com/Serhii-Palamarchuk/capstone-household-service-availability/actions/runs/32276285162) для SHA `1f735f384b0b9c8b3077bd639bab4221bbe89c58` завершився `success`.
+- GitHub deployment `5986686717`: environment `github-pages`, status `success`, фактичний `page_url` — `https://serhii-palamarchuk.github.io/capstone-household-service-availability/`. GitHub Pages API підтверджує `build_type: workflow`, `public: true`, `https_enforced: true`.
+- HTTPS verification: root URL — HTTP `200`, `573` bytes; deployed HTML має JS `/capstone-household-service-availability/assets/index-BLNIJOnC.js` і CSS `/capstone-household-service-availability/assets/index-BUUSSPth.css`, без root-relative `/assets/...`. Обидва assets повернули HTTP `200` (JS `201057` bytes, CSS `2290` bytes).
+- Browser functional smoke: agent browser binding був недоступний (`agent.browsers.list()` повернув `[]`), тому agent не стверджує browser execution. Користувач фактично підтвердив manual smoke 2026-08-19: `6 / 8 / 2 / 72 h` → `Limited`, `2 h`, `ONT/ONU`, `Internet → ONT/ONU`; `6 / 8 / 8 / 72 h` → `Available`, `8 h`, без limiting dependency і causal path.
+- Final local verification: `cmd.exe /d /c "cd apps\web && npm test"` — exit `0`, `53 passed, 0 failed`; `cmd.exe /d /c "cd apps\web && npm run build"` — exit `0`, Vite `8.2.1`; `npm ls --depth=0` — лише `react@19.2.8`, `react-dom@19.2.8`, `vite@8.2.1`; `git diff --check` — exit `0`.
+- Scope/no-secret checks: committed `apps/web/dist` відсутній; `git ls-files` secret-pattern check не повернув tracked `.env`, `.pem`, `.key`, `id_rsa` або `token` filenames. README Live demo використовує actual deployment URL.
+- Наступна дія: **fresh final Reviewer для Deploy v1**; independently verify Task 1 + unreviewed Task 2 lockfile corrections, workflow/deployment, public assets, README/STATUS, full tests/build, scope and factual manual smoke.
