@@ -6,9 +6,7 @@
 
 ## Активне завдання
 
-`Task 3 — Reachable-subgraph validation і cycles` прийнято після четвертого незалежного review.
-
-Наступний крок — передати `Task 4 — DFS availability calculation і statuses` агенту в ролі `Developer`.
+`Task 4 — DFS availability calculation і statuses` реалізовано, очікує незалежний review.
 
 ## Останнє завершене
 
@@ -21,12 +19,13 @@
 - реалізовано й прийнято після незалежного review `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`);
 - реалізовано й прийнято після повторного незалежного review `Task 2 — Model index і structural Scenario validation` (`apps/web/src/simulation/model-index.js`, `apps/web/src/simulation/validation.js`, `apps/web/test/simulation/fixtures.js`, `apps/web/test/simulation/validation.test.js`);
 - реалізовано й прийнято після четвертого незалежного review `Task 3 — Reachable-subgraph validation і cycles` (`apps/web/src/simulation/validation.js`, `apps/web/test/simulation/validation.test.js`): reachable DFS validation, cycle detection/canonicalization, error deduplication і deterministic sorting;
-- findings Task 3 виправлено: source-файли не містять literal NUL bytes; regression tests доводять cycle rotation і `path` як останній sort tie-breaker.
+- findings Task 3 виправлено: source-файли не містять literal NUL bytes; regression tests доводять cycle rotation і `path` як останній sort tie-breaker;
+- реалізовано `Task 4 — DFS availability calculation і statuses` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/calculation.test.js`): `calculateServiceResults()` — рекурсивний DFS з memoization, `T(Service) = min(dependencies)` без clip до `H`, статуси `Available`/`Limited`/`Unavailable`; `limitingDependencyIds`/`causalPaths` поки порожні (Task 5).
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 4 готовий до передачі);
-- `Reviewer`: немає (Task 3 прийнято);
+- `Developer`: немає (Task 4 готовий до review);
+- `Reviewer`: очікується незалежна сесія для Task 4;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -48,6 +47,12 @@ Task 3 correction #3: четвертий незалежний review fix commit 
 - NUL verification: `apps/web/src/simulation/validation.js` і `apps/web/test/simulation/validation.test.js` містять `0` NUL bytes.
 - Counterfactual probe без path tie-breaker повернув reversed paths (`service-d`, `service-b`) і `matchesExpected=false`, тому regression assertion справді захищає останній sort key.
 
+Task 4 (Developer, implementation commit `6d8e99e`, фактичний запуск, ще не review):
+
+- targeted run (`npm test -- test/simulation/calculation.test.js`, git-bash): `6 passed, 0 failed`.
+- full suite (`npm test`, git-bash): `33 passed, 0 failed`.
+- підтверджено: `apps/web/src/simulation/calculate.js` і `apps/web/test/simulation/calculation.test.js` містять 0 NUL bytes.
+
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
 ## Актуальна база
@@ -65,9 +70,10 @@ Task 3 correction #3: четвертий незалежний review fix commit 
 - fix commit Task 3 (2nd correction): `b4efff6`;
 - review commit Task 3 (changes requested, 3rd round): `fcf7e46`;
 - fix commit Task 3 (3rd correction): `0cbf6b9`;
+- implementation commit Task 4: `6d8e99e`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Передати `Task 4 — DFS availability calculation і statuses` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md`. Reviewer не починає Task 4 самостійно.
+Передати `Task 4 — DFS availability calculation і statuses` агенту в ролі незалежного `Reviewer` відповідно до `docs/plans/simulation-engine-v1.md`. Task 5 не починати до acceptance Task 4.
