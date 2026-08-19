@@ -12,19 +12,20 @@ function targetImprovementMinutes(simulation, counterfactualSimulation) {
   const counterfactualTargetsById = new Map(
     counterfactualSimulation.targetResults.map((target) => [target.serviceId, target]),
   );
-  let greatestImprovement = 0;
+  let smallestImprovement = Infinity;
 
   for (const target of simulation.targetResults) {
     const counterfactualTarget = counterfactualTargetsById.get(target.serviceId);
-    if (!counterfactualTarget) continue;
+    if (!counterfactualTarget) return 0;
 
-    greatestImprovement = Math.max(
-      greatestImprovement,
-      counterfactualTarget.availabilityDurationMinutes - target.availabilityDurationMinutes,
-    );
+    const improvementMinutes =
+      counterfactualTarget.availabilityDurationMinutes - target.availabilityDurationMinutes;
+    if (improvementMinutes <= 0) return 0;
+
+    smallestImprovement = Math.min(smallestImprovement, improvementMinutes);
   }
 
-  return greatestImprovement;
+  return smallestImprovement === Infinity ? 0 : smallestImprovement;
 }
 
 export function buildRecommendations({
@@ -38,10 +39,19 @@ export function buildRecommendations({
   const externalProviderIds = new Set(
     model.externalProviders.map((provider) => provider.id),
   );
+  const assignedDeviceIds = new Set(
+    (scenario.backupAssignments ?? []).map((assignment) => assignment.deviceId),
+  );
+  const devicesWithInternalBattery = new Set(
+    model.devices.filter((device) => device.internalBattery).map((device) => device.id),
+  );
   const recommendations = [];
 
   for (const deviceId of sortedUnique(estimation.requiredDeviceIds)) {
-    if (deviceIds.has(deviceId) && estimation.availability[deviceId] === 0) {
+    if (deviceIds.has(deviceId)
+      && estimation.availability[deviceId] === 0
+      && !assignedDeviceIds.has(deviceId)
+      && !devicesWithInternalBattery.has(deviceId)) {
       recommendations.push({ type: 'ADD_BACKUP', entityId: deviceId });
     }
   }
