@@ -6,7 +6,9 @@
 
 ## Активне завдання
 
-`Task 3 — Reachable-subgraph validation і cycles`: останній Minor finding виправлено, очікує четвертий незалежний review.
+`Task 3 — Reachable-subgraph validation і cycles` прийнято після четвертого незалежного review.
+
+Наступний крок — передати `Task 4 — DFS availability calculation і statuses` агенту в ролі `Developer`.
 
 ## Останнє завершене
 
@@ -18,19 +20,13 @@
 - синхронізовано `docs/specs/repository-workflow.md`;
 - реалізовано й прийнято після незалежного review `Task 1 — Runtime harness і constants` (`apps/web/package.json`, `apps/web/src/simulation/constants.js`, `apps/web/test/simulation/constants.test.js`);
 - реалізовано й прийнято після повторного незалежного review `Task 2 — Model index і structural Scenario validation` (`apps/web/src/simulation/model-index.js`, `apps/web/src/simulation/validation.js`, `apps/web/test/simulation/fixtures.js`, `apps/web/test/simulation/validation.test.js`);
-- реалізовано `Task 3 — Reachable-subgraph validation і cycles` (`apps/web/src/simulation/validation.js`, `apps/web/test/simulation/validation.test.js`): додано `validateReachableSubgraph()` і `validateSimulationInput()` — reachable DFS traversal, cycle detection із канонізацією шляху, дедуплікація та детерміноване сортування помилок;
-- незалежний review Task 3 завершено з verdict `changes requested`: production-файл містить NUL-байти й визначається Git як binary; tests не доводять rotation канонічного cycle path і path tie-breaker сортування;
-- виправлено Major finding — 9 literal NUL bytes у separator strings замінено на текстову escape-послідовність (runtime-ключі не змінилися); підтверджено, що новий commit blob не містить NUL bytes і майбутні diffs рендеряться як текст;
-- додано regression test канонізації cycle path при старті DFS з нелексикографічно-мінімального вузла (`service-c`);
-- повторний незалежний review Task 3 завершено з verdict `changes requested`: literal NUL перенесено в test source, а новий sort test має різні `nodeId` і не перевіряє `path` tie-breaker;
-- виправлено Major finding — literal NUL byte у test source (`error.path.join(...)`) замінено на текстову escape-послідовність;
-- regression test для path tie-breaker переписано на два cycles зі спільними `code`/`nodeId`/`field`, але третій review виявив, що DFS уже генерує paths у лексикографічному порядку, тому test не стає red без останнього sort key;
-- виправлено Minor finding — `dependencyIds` для `service-a` змінено на `['service-d', 'service-b']`, щоб DFS відкривала цикли у зворотному лексикографічному порядку; test тепер перевіряє точний очікуваний порядок paths. Локально підтверджено red → green: тимчасове видалення `path` з `compareErrors` ламає саме цей test з очікуваною AssertionError, після відновлення implementation test знову green.
+- реалізовано й прийнято після четвертого незалежного review `Task 3 — Reachable-subgraph validation і cycles` (`apps/web/src/simulation/validation.js`, `apps/web/test/simulation/validation.test.js`): reachable DFS validation, cycle detection/canonicalization, error deduplication і deterministic sorting;
+- findings Task 3 виправлено: source-файли не містять literal NUL bytes; regression tests доводять cycle rotation і `path` як останній sort tie-breaker.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 3 correction готова до четвертого review);
-- `Reviewer`: очікується незалежна сесія для Task 3 correction;
+- `Developer`: немає (Task 4 готовий до передачі);
+- `Reviewer`: немає (Task 3 прийнято);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -43,22 +39,14 @@
 
 Повторний незалежний review Task 2 correction (fix commit `e4cd10b`): `accepted`, відкритих findings немає.
 
-Task 3 correction #2: третій незалежний review fix commit `b4efff6` — `changes requested`.
+Task 3 correction #3: четвертий незалежний review fix commit `0cbf6b9` — `accepted`, відкритих findings немає.
 
 - `node --version`: `v24.18.0`.
 - Незалежний targeted run (`cmd.exe /d /c "npm test -- test/simulation/validation.test.js"`): exit `0`, `25 passed, 0 failed`.
 - Незалежний full suite (`cmd.exe /d /c npm test`): exit `0`, `27 passed, 0 failed`.
 - Scope: fix commit змінює лише `apps/web/test/simulation/validation.test.js`; production code, dependencies і Task 4 не змінено.
 - NUL verification: `apps/web/src/simulation/validation.js` і `apps/web/test/simulation/validation.test.js` містять `0` NUL bytes.
-- Runtime probe зі зворотним DFS-порядком (`service-a -> [service-d, service-b]`) підтвердив, що implementation сортує paths як `service-b`, потім `service-d`.
-- Minor finding: regression test у fix commit використовує `service-a -> [service-b, service-d]`, тобто DFS уже повертає paths у лексикографічному порядку. Через stable `Array.sort` test пройде навіть якщо `path` tie-breaker видалити. Потрібно задати залежності у зворотному порядку й assert exact ordered paths.
-
-Task 3 correction #3 (Developer, fix commit `0cbf6b9`, фактичний запуск, ще не review):
-
-- targeted run (`npm test -- test/simulation/validation.test.js`, git-bash): `25 passed, 0 failed`.
-- full suite (`npm test`, git-bash): `27 passed, 0 failed`.
-- red → green підтверджено локально: тимчасове видалення `path` з ключів `compareErrors` у `validation.js` призводить до `AssertionError` саме в тесті `regression: equal code/nodeId/field errors are ordered by path as the final tie-breaker` (очікувані `service-b`/`service-d` виявляються переставленими); після `git checkout` production file всі 25 targeted tests знову green.
-- scope: fix commit змінює лише `apps/web/test/simulation/validation.test.js` (`dependencyIds: ['service-d', 'service-b']` + exact `assert.deepEqual` на point paths); production code не змінено.
+- Counterfactual probe без path tie-breaker повернув reversed paths (`service-d`, `service-b`) і `matchesExpected=false`, тому regression assertion справді захищає останній sort key.
 
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
@@ -82,4 +70,4 @@ Task 3 correction #3 (Developer, fix commit `0cbf6b9`, фактичний зап
 
 ## Наступна дія
 
-Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі незалежного `Reviewer`: перевірити fix commit `0cbf6b9` (path tie-breaker regression test із reversed discovery order і exact expected paths), фактично запустити targeted та full tests. Task 4 не починати до acceptance Task 3.
+Передати `Task 4 — DFS availability calculation і statuses` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md`. Reviewer не починає Task 4 самостійно.
