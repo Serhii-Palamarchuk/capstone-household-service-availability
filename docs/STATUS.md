@@ -8,7 +8,7 @@
 
 ## Активне завдання
 
-`React Demo v1 / Task 3 — Interactive scenario form and simulation execution` реалізовано та передано на fresh незалежний review.
+`React Demo v1 / Task 3 — Interactive scenario form and simulation execution` прийнято після fresh незалежного review.
 
 Канонічна специфікація:
 
@@ -31,11 +31,12 @@ Implementation plan:
 - `React Demo v1 / Task 2` прийнято: Critical/Major/Minor findings — немає.
 - `React Demo v1 / Task 3` реалізовано: додано контрольовану форму з чотирма string inputs, adapter-gated виклик `simulate()` та доступне відображення conversion errors; presentation outcome належить Task 4 і не реалізовувалась.
 - Task 3 implementation commit: `f408fd1` (`feat: add interactive outage scenario form`).
+- `React Demo v1 / Task 3` прийнято: Critical/Major/Minor findings — немає.
 
 ## Поточні ролі
 
-- `Developer`: Task 3 завершено; не починати Task 4 до окремого Developer task після acceptance Task 3;
-- `Reviewer`: виконати fresh незалежний review Task 3;
+- `Developer`: Task 4 може бути розпочато лише окремим Developer task;
+- `Reviewer`: Task 3 прийнято;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -44,13 +45,15 @@ Implementation plan:
 
 ## Остання фактична перевірка
 
-Developer для `React Demo v1 / Task 3`, implementation range `94af0c5..f408fd1`:
+Fresh незалежний Reviewer для `React Demo v1 / Task 3`, implementation range `94af0c5..f408fd1`:
 
+- `cmd.exe /d /c "npm test -- test/demo/internet-demo.test.js"` у `apps/web`: exit `0`, `6 passed`, `0 failed`, `0 skipped`, `0 todo`;
 - `cmd.exe /d /c npm test` у `apps/web`: exit `0`, `49 passed`, `0 failed`, `0 skipped`, `0 todo`;
 - `cmd.exe /d /c npm run build` у `apps/web`: exit `0`; Vite production build успішний, `23 modules transformed`;
-- `git diff --check`: exit `0` до implementation commit;
-- перевірено imports і call-path у `App.jsx`: `createInternetScenarioFromHours(values)` виконується до `simulate(INTERNET_DEMO_MODEL, conversion.scenario)`; за conversion failure `simulate()` не викликається;
-- range містить лише `apps/web/src/components/ScenarioForm.jsx`, `apps/web/src/App.jsx` і `apps/web/src/styles.css`; dependencies, simulation engine і Task 4 result presentation не змінювалися.
+- `git diff --check 94af0c5..f408fd1`: exit `0`;
+- перевірено exact Task 3 contract: `ScenarioForm` має чотири контрольовані numeric inputs з погодженими labels/attributes/props; `App.jsx` тримає string state, викликає adapter до `simulate()`, зупиняє engine за conversion failure, очищує conversion errors і зберігає outcome за success;
+- range містить лише `apps/web/src/components/ScenarioForm.jsx`, `apps/web/src/App.jsx` і `apps/web/src/styles.css`; dependencies, simulation engine, дубльовані правила `min`/status/bottleneck і Task 4 result presentation не змінювалися;
+- локальний browser для visual walkthrough у reviewer environment недоступний; responsive plain CSS перевірено статично.
 
 ## Актуальна база
 
@@ -76,4 +79,4 @@ Backend, persistence, DB, external integrations, UI framework і deploy у це�
 
 ## Наступна дія
 
-Запустити fresh незалежний Reviewer task для `React Demo v1 / Task 3 — Interactive scenario form and simulation execution` відповідно до `docs/plans/react-demo-v1.md`. Task 4 не розпочинати до acceptance Task 3.
+Запустити окремий Developer task для `React Demo v1 / Task 4 — Result presentation and demo acceptance gate` відповідно до `docs/plans/react-demo-v1.md`.
