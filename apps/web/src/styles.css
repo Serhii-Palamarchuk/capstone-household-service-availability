@@ -1,0 +1,41 @@
+:root {
+  color: #1f2937;
+  background: #f8fafc;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  box-sizing: border-box;
+  max-width: 48rem;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.hero {
+  line-height: 1.5;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  line-height: 1.1;
+}
+
+.hero p:last-child {
+  max-width: 42rem;
+  font-size: 1.125rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
