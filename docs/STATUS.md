@@ -113,6 +113,14 @@ Task 7: fresh незалежний review implementation commit `e7f9df6` — `c
 - Minor findings: немає.
 - Production behavior для обох ризиків підтверджено focused probes; production code змінювати не потрібно. Production files і tests Reviewer не змінював.
 
+Task 7: Developer correction commit `f417abd` — очікується повторний fresh незалежний review.
+
+- Correction scope: лише `apps/web/test/simulation/determinism.test.js`; production code, dependencies, React/UI, backend і Task 8 не змінено.
+- TS-13: valid unreachable `availability[device-refrigerator] = 0` порівнюється з baseline без extra availability за `targetResults` і `serviceResults`.
+- TS-27: переставлено самі tied bottlenecks `device-router`/`device-ont`; обидва результати мають literal canonical `limitingDependencyIds` і `causalPaths`.
+- Targeted correction run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`.
+- Full correction suite (`cmd.exe /d /c npm test`): exit `0`, `42 passed, 0 failed`.
+
 ## Актуальна база
 
 - план: `docs/plans/simulation-engine-v1.md`;
@@ -132,9 +140,10 @@ Task 7: fresh незалежний review implementation commit `e7f9df6` — `c
 - implementation commit Task 5: `d22477d`;
 - implementation commit Task 6: `96fe5b8`;
 - implementation commit Task 7: `e7f9df6`;
+- correction commit Task 7: `f417abd`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Повернути `Task 7 — Shared services, determinism, immutability і rerun` агенту в ролі `Developer` для correction TS-13 і TS-27; після targeted/full verification передати correction commit на повторний fresh review. `Task 8` не починати.
+Передати correction commit `f417abd` для `Task 7 — Shared services, determinism, immutability і rerun` fresh агенту в ролі `Reviewer` для повторного незалежного review. `Task 8` не починати.
