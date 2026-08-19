@@ -6,9 +6,9 @@
 
 ## Активне завдання
 
-`Task 6 — Public simulate() contract` прийнято після fresh незалежного review.
+`Task 7 — Shared services, determinism, immutability і rerun`: після fresh незалежного review потрібні зміни в tests.
 
-Наступний крок — передати `Task 7 — Shared services, determinism, immutability і rerun` агенту в ролі `Developer`.
+Наступний крок — повернути `Task 7` агенту в ролі `Developer` для виправлення meaningful coverage TS-13 і TS-27 без змін production logic.
 
 ## Останнє завершене
 
@@ -28,8 +28,8 @@
 
 ## Поточні ролі
 
-- `Developer`: потрібно призначити для Task 7;
-- `Reviewer`: немає (Task 6 прийнято);
+- `Developer`: потрібно призначити для correction Task 7;
+- `Reviewer`: fresh review Task 7 завершено з `CHANGES REQUESTED`;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -99,13 +99,19 @@ Task 6: fresh незалежний review implementation commit `96fe5b8` — `a
 
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
-Task 7: Developer implementation commit `e7f9df6` — очікується fresh незалежний review.
+Task 7: fresh незалежний review implementation commit `e7f9df6` — `changes requested`.
 
 - Initial targeted run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`; production невідповідностей `docs/SIMULATION.md` не виявлено.
-- Final targeted run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`.
-- Full suite (`cmd.exe /d /c npm test`): exit `0`, `42 passed, 0 failed`.
+- Незалежний targeted run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): exit `0`, `42 passed, 0 failed`.
+- Незалежні focused probes через public `simulate()`: meaningful TS-27 permutation із переставленими рівнозначними bottleneck — exit `0`, `3 assertions passed`; TS-13 з unreachable valid availability `0` — exit `0`, `3 assertions passed`.
 - Scope: `e7f9df6` створює лише `apps/web/test/simulation/determinism.test.js`; production code, dependencies, React/UI, backend і Task 8 не змінено.
-- Contract: tests покривають `docs/TEST_SCENARIOS.md` TS-10, TS-13, TS-27, TS-28 і TS-29 та `docs/SIMULATION.md` §5–§12: shared `Service`, target order і self-rooted causal paths, extra unreachable availability, semantic dependency-order determinism, read-only repeated runs і rerun зі зміненим `Scenario`.
+- Critical findings: немає.
+- Major findings:
+  - TS-13 використовує unreachable availability `300` при фактичному bottleneck `120`, тому test не виявить помилкове включення зайвого leaf у глобальний minimum; потрібен нижчий valid value та порівняння повного релевантного результату з baseline.
+  - TS-27 в обох моделях зберігає порядок рівнозначних bottleneck `device-router` → `device-ont`; test не виявить залежні від `dependencyIds` несортовані `limitingDependencyIds`/`causalPaths`. Потрібно переставити саме limiting dependencies і зафіксувати canonical expected arrays.
+- Minor findings: немає.
+- Production behavior для обох ризиків підтверджено focused probes; production code змінювати не потрібно. Production files і tests Reviewer не змінював.
 
 ## Актуальна база
 
@@ -131,4 +137,4 @@ Task 7: Developer implementation commit `e7f9df6` — очікується fresh
 
 ## Наступна дія
 
-Передати implementation commit `e7f9df6` для `Task 7 — Shared services, determinism, immutability і rerun` fresh агенту в ролі `Reviewer` відповідно до `docs/plans/simulation-engine-v1.md` і `docs/specs/repository-workflow.md`.
+Повернути `Task 7 — Shared services, determinism, immutability і rerun` агенту в ролі `Developer` для correction TS-13 і TS-27; після targeted/full verification передати correction commit на повторний fresh review. `Task 8` не починати.
