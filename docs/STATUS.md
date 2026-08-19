@@ -55,6 +55,7 @@ Equipment → Backup → Services & Scenario → Result
 - Remote Work: `Limited`, `360 min`; limiting dependencies — ONT/ONU і Router; обидва expected causal paths показані;
 - warning `MISSING_BACKUP_SOURCE_MAX_OUTPUT` та відсутність deterministic recommendation показані;
 - rerun без reload після зміни provider availability `600 → 300` замінив outcome на `300 min`, limiting provider і відповідне пояснення про local battery.
+- focused additional-load check: окремо доданий TV (`Other Load`, `70 W`) і вибраний як additional load дав total `150 W`, runtime `192 min`; Remote Work лишився `Limited` на `192 min`, TV не став service dependency, а recommendation повідомила, що його вимкнення покращує кожен selected target щонайменше на `168 min (2.8 h)`.
 
 Також пройдено negative UI smoke без synthetic partial result:
 
