@@ -6,9 +6,9 @@
 
 ## Активне завдання
 
-`Task 7 — Shared services, determinism, immutability і rerun`: після fresh незалежного review потрібні зміни в tests.
+`Task 8 — Повне acceptance coverage і Reviewer gate`: готове до передачі агенту в ролі `Developer`.
 
-Наступний крок — повернути `Task 7` агенту в ролі `Developer` для виправлення meaningful coverage TS-13 і TS-27 без змін production logic.
+`Task 7 — Shared services, determinism, immutability і rerun` прийнято після correction round 1 і повторного fresh незалежного review.
 
 ## Останнє завершене
 
@@ -28,8 +28,8 @@
 
 ## Поточні ролі
 
-- `Developer`: потрібно призначити для correction Task 7;
-- `Reviewer`: fresh review Task 7 завершено з `CHANGES REQUESTED`;
+- `Developer`: потрібно призначити для Task 8;
+- `Reviewer`: повторний fresh review Task 7 correction round 1 завершено з `ACCEPTED`;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
