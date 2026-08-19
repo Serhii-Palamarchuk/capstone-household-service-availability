@@ -7,14 +7,15 @@
 - `Simulation Engine v1`;
 - `React Demo v1`;
 - `Deploy v1`;
-- дизайн `User-facing MVP v1`;
-- acceptance scenarios `AC-01…AC-14`;
-- implementation plan `docs/plans/user-facing-mvp-v1.md`;
-- implementation tasks 1–6 `User-facing MVP v1` із task-level review.
+- `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation plan і final whole-branch review.
 
-Live demo: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
+Feature branch: `feature/user-facing-mvp-v1`.
 
-`main` і live deployment не змінювалися під час реалізації `User-facing MVP v1`.
+Релевантний accepted implementation commit:
+
+`f1d0a9293c8484d0f7468caa7177e75a559baf9c` (`fix: enforce Remote Work Internet role`)
+
+Branch збережено для окремого рішення користувача. `main`, live demo та deployment не змінювалися; push, merge і deploy не виконувалися.
 
 ## Supervisor checkpoint
 
@@ -22,15 +23,7 @@ Weekly Capstone Progress Report — Week 2 відправлено Тетяні �
 
 Статус: **submitted → awaiting supervisor feedback**.
 
-## User-facing MVP v1 — verification candidate
-
-Feature branch:
-
-`feature/user-facing-mvp-v1`
-
-Implementation candidate:
-
-`d856e90aa2c3cdab886b1d1ff8245520ee4cf97c` (`feat: complete user-facing outage scenario flow`)
+## User-facing MVP v1 — accepted branch state
 
 Реалізований flow:
 
@@ -46,50 +39,52 @@ Equipment → Backup → Services & Scenario → Result
 - ExternalProvider availability вводиться вручну;
 - `Simulation Engine v1` не змінювався.
 
-## Task 7 — фактична verification
+## Task 7 — browser acceptance
 
-2026-08-20 у локальному Browser walkthrough (HTTP `200`) перевірено AC-12 fixture:
+Локальний Browser walkthrough (HTTP `200`) підтвердив AC-12: Home backup `80 W` / `360 min`, Router і ONT/ONU по `360 min`, Laptop `480 min` (`360` external + `120` internal), Remote Work `Limited` / `360 min`, limiting dependencies Router + ONT/ONU та обидва causal paths.
 
-- Home backup: `80 W`, `360 min (6 h)`;
-- Router / ONT/ONU: по `360 min`; Laptop: `480 min` (`360` external + `120` internal);
-- Remote Work: `Limited`, `360 min`; limiting dependencies — ONT/ONU і Router; обидва expected causal paths показані;
-- warning `MISSING_BACKUP_SOURCE_MAX_OUTPUT` та відсутність deterministic recommendation показані;
-- rerun без reload після зміни provider availability `600 → 300` замінив outcome на `300 min`, limiting provider і відповідне пояснення про local battery.
-- focused additional-load check: окремо доданий TV (`Other Load`, `70 W`) і вибраний як additional load дав total `150 W`, runtime `192 min`; Remote Work лишився `Limited` на `192 min`, TV не став service dependency, а recommendation повідомила, що його вимкнення покращує кожен selected target щонайменше на `168 min (2.8 h)`.
+Також перевірено:
 
-Також пройдено negative UI smoke без synthetic partial result:
+- rerun без reload після provider `600 → 300`: Remote Work `300 min`, limiting Internet provider і відповідне пояснення;
+- TV (`Other Load`, `70 W`) додано окремо й вибрано як additional load: `150 W`, `192 min`, TV не став service dependency, а вимкнення TV покращує кожен selected target щонайменше на `168 min (2.8 h)`;
+- negative UI smoke без synthetic partial result: `INVALID_POSITIVE_NUMBER`, `BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED`, `MISSING_EXTERNAL_PROVIDER_AVAILABILITY`, `TEMPLATE_ROLE_CARDINALITY`.
 
-- `powerW = 0` → `INVALID_POSITIVE_NUMBER`;
-- active load `80 W` > known max output `50 W` → `BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED` + `No partial result is shown.`;
-- missing provider availability → `MISSING_EXTERNAL_PROVIDER_AVAILABILITY` + `No partial result is shown.`;
-- missing required Router role → `TEMPLATE_ROLE_CARDINALITY`.
+## Final verification — 2026-08-20
 
-Fresh automated verification у `apps/web`:
+На `f1d0a92` controller виконав:
 
-- `cmd.exe /d /c npm test` — exit `0`; `97 passed`, `0 failed`, `0 cancelled`, `0 skipped`, `0 todo`;
-- `cmd.exe /d /c npm run build` — exit `0`; Vite `8.2.1`, `32` modules transformed.
+- `cmd.exe /d /c npm test` у `apps/web` — exit `0`; `100 passed`, `0 failed`, `0 cancelled`, `0 skipped`, `0 todo`;
+- `cmd.exe /d /c npm run build` — exit `0`; Vite `8.2.1`, `32` modules transformed;
+- worktree був чистим перед цим STATUS update;
+- worktree і branch `git diff --check` — exit `0`;
+- branch diff від merge base `6a18be4` під `apps/web/src/simulation` — `0` lines;
+- dependency diff для `apps/web/package.json` і `apps/web/package-lock.json` — exit `0`, empty;
+- implemented placeholder scan і branch-diff secret-pattern heuristic — по `0` matches.
 
-Task 7 scope/hygiene audit:
+До цього STATUS update branch містив `13` implementation/documentation commits.
 
-- `git diff origin/main...HEAD -- apps/web/src/simulation` — empty;
-- dependency diff for `apps/web/package.json` and `apps/web/package-lock.json` — exit `0`, empty;
-- worktree and branch `git diff --check` — exit `0`;
-- implemented-path TODO/placeholder scan — `0` matches;
-- branch-diff secret-pattern heuristic — `0` matches.
+## Final whole-branch review
 
-## Branch review state
+Reviewer перевірив range `6a18be4..b8a027d` і повернув `CHANGES REQUESTED` для одного Major: `Remote Work` приймав `ServiceInstance`, що не є Internet. Єдина fix wave у `f1d0a92` додала metadata-driven allowed-template constraint, незалежне builder enforcement, UI/form filtering і regressions.
 
-Завдання 1–6 завершили свої task-level review cycles. Final whole-branch review **ще не** виконано; цей STATUS не заявляє про final whole-branch acceptance. Deferred task-level Minor findings залишаються контекстом для final reviewer.
+Scoped re-review: Major **ADDRESSED**, нових Critical/Major/Minor breakage немає. Final verdict: **All findings addressed, no new Critical/Major breakage**. Final whole-branch review accepted at `f1d0a92`.
+
+Неblocking follow-up context:
+
+- AC-07 test використовує equivalent models замість exact same model;
+- AC-12 integration test не має direct assertions `totalPowerW === 80` і nested Internet `360`;
+- повторені same-code/same-field React validation errors можуть мати duplicate keys;
+- `docs/specs/repository-workflow.md` містить stale W/Wh-out-of-scope prose. Його не змінювати без окремого user approval; accepted user-facing spec залишається binding.
+
+Попередній Minor щодо blank `maxOutputPowerW` закрито: current test прямо перевіряє omission.
 
 ## Source of truth
 
-- Google Drive `Capstone Project Context — Software Engineering` — canonical cross-chat context;
 - `docs/STATUS.md` — поточний operational snapshot;
 - `docs/specs/user-facing-mvp-v1.md` — accepted contract;
 - `docs/specs/user-facing-mvp-v1-acceptance.md` — accepted AC-01…AC-14;
-- `docs/plans/user-facing-mvp-v1.md` — implementation plan;
 - `docs/specs/repository-workflow.md` — agent workflow.
 
 ## Наступна дія
 
-Запустити fresh final whole-branch Reviewer для `feature/user-facing-mvp-v1`; не merge у `main`, не deploy і не змінювати live demo без окремого рішення користувача.
+Потрібне окреме рішення користувача перед merge у `main` або deployment. Optional Minor cleanup і рішення щодо stale workflow documentation виконувати лише в окремому погодженому scope.
