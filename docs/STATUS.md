@@ -99,6 +99,14 @@ Task 6: fresh незалежний review implementation commit `96fe5b8` — `a
 
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
+Task 7: Developer implementation commit `e7f9df6` — очікується fresh незалежний review.
+
+- Initial targeted run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`; production невідповідностей `docs/SIMULATION.md` не виявлено.
+- Final targeted run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`.
+- Full suite (`cmd.exe /d /c npm test`): exit `0`, `42 passed, 0 failed`.
+- Scope: `e7f9df6` створює лише `apps/web/test/simulation/determinism.test.js`; production code, dependencies, React/UI, backend і Task 8 не змінено.
+- Contract: tests покривають `docs/TEST_SCENARIOS.md` TS-10, TS-13, TS-27, TS-28 і TS-29 та `docs/SIMULATION.md` §5–§12: shared `Service`, target order і self-rooted causal paths, extra unreachable availability, semantic dependency-order determinism, read-only repeated runs і rerun зі зміненим `Scenario`.
+
 ## Актуальна база
 
 - план: `docs/plans/simulation-engine-v1.md`;
@@ -117,9 +125,10 @@ Task 6: fresh незалежний review implementation commit `96fe5b8` — `a
 - implementation commit Task 4: `6d8e99e`;
 - implementation commit Task 5: `d22477d`;
 - implementation commit Task 6: `96fe5b8`;
+- implementation commit Task 7: `e7f9df6`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Передати `Task 7 — Shared services, determinism, immutability і rerun` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md` і `docs/specs/repository-workflow.md`.
+Передати implementation commit `e7f9df6` для `Task 7 — Shared services, determinism, immutability і rerun` fresh агенту в ролі `Reviewer` відповідно до `docs/plans/simulation-engine-v1.md` і `docs/specs/repository-workflow.md`.
