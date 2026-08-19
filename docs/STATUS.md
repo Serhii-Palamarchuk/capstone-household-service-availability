@@ -121,6 +121,18 @@ Task 7: Developer correction commit `f417abd` — очікується повт�
 - Targeted correction run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`.
 - Full correction suite (`cmd.exe /d /c npm test`): exit `0`, `42 passed, 0 failed`.
 
+Task 7 correction round 1: повторний fresh незалежний review correction commit `f417abd` — `accepted`, відкритих findings немає.
+
+- Попередній Major TS-13: `ADDRESSED` — unreachable valid `availability = 0` нижче за baseline bottleneck `120`; `targetResults` і `serviceResults` збігаються з baseline.
+- Попередній Major TS-27: `ADDRESSED` — tied `device-router`/`device-ont` мають протилежний порядок у двох моделях; обидва результати перевіряються проти literal canonical `limitingDependencyIds` і `causalPaths`.
+- `node --version`: `v24.18.0`.
+- Незалежний targeted run (`cmd.exe /d /c "npm test -- test/simulation/determinism.test.js"`): exit `0`, `5 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): exit `0`, `42 passed, 0 failed`.
+- Незалежний focused public-API probe: exit `0`, `8 assertions passed`; підтверджено meaningful ordering/value pressure обох regression tests.
+- Scope: `f417abd` змінює лише `apps/web/test/simulation/determinism.test.js`; production code, dependencies, React/UI, backend і Task 8 не змінено.
+- Critical findings: немає. Major findings: немає. Minor findings: немає.
+- Reviewer не змінював production files або tests.
+
 ## Актуальна база
 
 - план: `docs/plans/simulation-engine-v1.md`;
@@ -146,4 +158,4 @@ Task 7: Developer correction commit `f417abd` — очікується повт�
 
 ## Наступна дія
 
-Передати correction commit `f417abd` для `Task 7 — Shared services, determinism, immutability і rerun` fresh агенту в ролі `Reviewer` для повторного незалежного review. `Task 8` не починати.
+Передати `Task 8 — Повне acceptance coverage і Reviewer gate` агенту в ролі `Developer`. Task 8 у межах review Task 7 не починався.
