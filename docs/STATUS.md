@@ -6,7 +6,7 @@
 
 ## Активне завдання
 
-`Task 8 — Повне acceptance coverage і Reviewer gate`: готове до передачі агенту в ролі `Developer`.
+`Task 8 — Повне acceptance coverage і Reviewer gate`: Developer handoff готовий; implementation commit `298c8ee` очікує fresh незалежного review.
 
 `Task 7 — Shared services, determinism, immutability і rerun` прийнято після correction round 1 і повторного fresh незалежного review.
 
@@ -25,11 +25,12 @@
 - реалізовано й прийнято після незалежного review `Task 4 — DFS availability calculation і statuses` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/calculation.test.js`): `calculateServiceResults()` — рекурсивний DFS з memoization, `T(Service) = min(dependencies)` без clip до `H`, статуси `Available`/`Limited`/`Unavailable`; `limitingDependencyIds`/`causalPaths` поки порожні (Task 5).
 - реалізовано й прийнято після fresh незалежного review `Task 5 — Limiting leaves і causal paths` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/causes.test.js`): для `Limited`/`Unavailable` поширюються всі рівнозначні leaf-bottlenecks і causal paths, із дедуплікацією та лексикографічним сортуванням.
 - реалізовано й прийнято після fresh незалежного review `Task 6 — Public simulate() contract` (`apps/web/src/simulation/simulate.js`, `apps/web/test/simulation/calculation.test.js`, `apps/web/test/simulation/validation.test.js`): публічний `simulate(model, scenario)` повертає взаємовиключні success/failure outcomes без часткових результатів при validation errors.
+- реалізовано й прийнято після correction round 1 та повторного fresh незалежного review `Task 7 — Shared services, determinism, immutability і rerun` (`apps/web/test/simulation/determinism.test.js`).
 
 ## Поточні ролі
 
-- `Developer`: потрібно призначити для Task 8;
-- `Reviewer`: повторний fresh review Task 7 correction round 1 завершено з `ACCEPTED`;
+- `Developer`: Task 8 завершено й передано на review;
+- `Reviewer`: потрібно призначити fresh незалежного Reviewer для Task 8;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -133,6 +134,18 @@ Task 7 correction round 1: повторний fresh незалежний review 
 - Critical findings: немає. Major findings: немає. Minor findings: немає.
 - Reviewer не змінював production files або tests.
 
+Task 8: Developer implementation commit `298c8ee` — очікується fresh незалежний review.
+
+- Searchable audit: усі `TS-01`…`TS-29` присутні в explicit test names; explicit test names без `TS-XX` marker — `0`.
+- Structural variants: TS-18 виконує `0`, `-1`, `1.5`; TS-21 — missing id і existing `Device`; TS-22 — missing node і existing `Service`; TS-23 — `-1`, `1.5` та валідний boundary `0`.
+- TS-24 перевіряє одночасно точні tuples `INVALID_OUTAGE_DURATION` і `MISSING_AVAILABILITY/device-ont/availability`; TS-25 — рівно один `MISSING_AVAILABILITY/provider-isp/availability`; TS-26 — `code → nodeId → field` та окремий `path` tie-breaker.
+- Targeted run (`cmd.exe /d /c "npm test -- test/simulation/calculation.test.js test/simulation/causes.test.js test/simulation/constants.test.js test/simulation/validation.test.js"`): exit `0`, `37 passed, 0 failed`.
+- Full suite (`cmd.exe /d /c npm test`): exit `0`, `43 passed, 0 failed`.
+- Public-contract probe: exit `0`, `9 assertions passed`; exact success/failure keys і відсутність input mutation підтверджено.
+- Isolation/dependencies: `src/simulation` має `0` збігів `react|window.|document.`; `package.json` не містить `dependencies` або `devDependencies`.
+- Hygiene: `0` NUL files серед `11` simulation source/test files; `git diff --check` — exit `0`.
+- Scope: `298c8ee` змінює лише чотири `apps/web/test/simulation/*.test.js`; production code, UI, backend і dependencies не змінено.
+
 ## Актуальна база
 
 - план: `docs/plans/simulation-engine-v1.md`;
@@ -153,9 +166,10 @@ Task 7 correction round 1: повторний fresh незалежний review 
 - implementation commit Task 6: `96fe5b8`;
 - implementation commit Task 7: `e7f9df6`;
 - correction commit Task 7: `f417abd`;
+- implementation commit Task 8: `298c8ee`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Передати `Task 8 — Повне acceptance coverage і Reviewer gate` агенту в ролі `Developer`. Task 8 у межах review Task 7 не починався.
+Передати implementation commit `298c8ee` для `Task 8 — Повне acceptance coverage і Reviewer gate` fresh незалежному Reviewer. Наступний implementation plan не починати до acceptance Simulation Engine v1.
