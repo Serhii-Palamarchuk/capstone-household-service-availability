@@ -1,6 +1,6 @@
 # User-facing MVP v1 — acceptance scenarios
 
-Status: **Draft for approval**.
+Status: **Accepted — 2026-08-19**.
 
 Основа: `docs/specs/user-facing-mvp-v1.md`. Існуючі `TS-01…TS-29` у `docs/TEST_SCENARIOS.md` залишаються acceptance-контрактом `Simulation Engine v1` і не дублюються тут.
 
