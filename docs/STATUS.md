@@ -2,13 +2,13 @@
 
 ## Поточний етап
 
-`Simulation Engine v1` завершено та прийнято після фінального fresh незалежного review.
+`Simulation Engine v1` і `React Demo v1` завершено та прийнято після fresh незалежних review.
 
-Погоджено наступну фазу: `React Demo v1` — мінімальний React SPA для наскрізної демонстрації контрольного сценарію `Internet` поверх готового simulation engine.
+Наступна фаза `Deploy v1` не розпочата: hosting/platform потребують окремого рішення і плану.
 
 ## Активне завдання
 
-`React Demo v1 / Task 4 — Result presentation and demo acceptance gate` реалізовано й очікує fresh незалежного review.
+Активного implementation task немає.
 
 Канонічна специфікація:
 
@@ -34,11 +34,13 @@ Implementation plan:
 - `React Demo v1 / Task 3` прийнято: Critical/Major/Minor findings — немає.
 - `React Demo v1 / Task 4` реалізовано: додано pure `createResultView(outcome)`, `SimulationResult`, відображення success/failure outcome, Available explanation і plain-CSS result card без зміни simulation engine.
 - Task 4 implementation commit: `209b17b` (`feat: present simulation demo results`).
+- `React Demo v1 / Task 4` прийнято: Critical/Major/Minor findings — немає.
+- Фінальний source/scope audit `React Demo v1` прийнято; фазу завершено.
 
 ## Поточні ролі
 
-- `Developer`: Task 4 implementation завершено; новий Developer task не розпочинати;
-- `Reviewer`: потрібен fresh незалежний review `React Demo v1 / Task 4`;
+- `Developer`: немає активного task;
+- `Reviewer`: Task 4 і фінальний audit `React Demo v1` завершено;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -47,17 +49,20 @@ Implementation plan:
 
 ## Остання фактична перевірка
 
-Developer для `React Demo v1 / Task 4`, implementation range `ceeedd4..209b17b`:
+Fresh незалежний Reviewer для Task 4 range `ceeedd4..209b17b` і фінального `React Demo v1` range `e196ab4..209b17b`:
 
-- RED: `cmd.exe /d /c "npm test -- test/demo/result-view.test.js"` у `apps/web`: exit `1`, очікуваний `ERR_MODULE_NOT_FOUND`, бо `src/demo/result-view.js` ще не існував;
-- `cmd.exe /d /c "npm test -- test/demo/result-view.test.js"` у `apps/web`: exit `0`, `4 passed`, `0 failed`, `0 skipped`, `0 todo`;
+- verdict: `ACCEPTED`; Critical/Major/Minor findings — немає;
+- `node --version`: `v24.18.0`;
 - `cmd.exe /d /c "npm test -- test/demo/internet-demo.test.js test/demo/result-view.test.js"` у `apps/web`: exit `0`, `10 passed`, `0 failed`, `0 skipped`, `0 todo`;
 - `cmd.exe /d /c npm test` у `apps/web`: exit `0`, `53 passed`, `0 failed`, `0 skipped`, `0 todo`;
-- `cmd.exe /d /c npm run build` у `apps/web`: exit `0`; Vite production build успішний, `25 modules transformed`;
-- deterministic pure adapter + engine probes: default `6/8/2/72 h` → `2 h`, `Limited`, `ONT/ONU`, `Internet → ONT/ONU`; changed ONT `6/8/8/72 h` → `8 h`, `Available`, порожні cause/path; zero ONT `6/8/0/72 h` → `0 h`, `Unavailable`, `ONT/ONU`, `Internet → ONT/ONU`;
-- `git diff --check`: exit `0`; усі п’ять Task 4 файлів перевірено на valid UTF-8 і trailing whitespace — порушень немає;
-- source/scope audit: `App.jsx` продовжує викликати `simulate()`; presenter лише копіює engine `status`/causes/paths, форматує хвилини та мапить ID через `DEMO_NODE_NAMES`; не додано backend/API/DB/persistence/router/state/UI/testing framework; dependencies залишилися React/ReactDOM та Vite dev tooling;
-- visual walkthrough не виконувався в Developer task; за планом він належить browser-capable Reviewer, якщо такий інструмент доступний.
+- `cmd.exe /d /c npm run build` у `apps/web`: exit `0`; Vite `v8.2.1`, `25 modules transformed`;
+- `cmd.exe /d /c npm ls --depth=0` у `apps/web`: exit `0`; top-level packages — `react@19.2.8`, `react-dom@19.2.8`, `vite@8.2.1`;
+- `git diff --check e196ab4..209b17b`: exit `0`;
+- adapter → `simulate()` → presenter probes: default `6/8/2/72 h` → `2 h`, `Limited`, `ONT/ONU`, `Internet → ONT/ONU`; changed ONT `8 h` → `8 h`, `Available`, порожні causes/paths; zero ONT → `0 h`, `Unavailable`, `ONT/ONU`, `Internet → ONT/ONU`;
+- independent tie/failure probes підтвердили mapping двох причин/шляхів і точне копіювання engine error `code`/`message`;
+- source/scope audit: React використовує public `simulate()`; поза `src/simulation/` не дублюються `min`, status classification або bottleneck traversal; Task 1–4 files відповідають plan; backend/API/DB/persistence/deploy і router/state/UI/testing frameworks не додані;
+- Browser walkthrough не виконано через відсутність browser binding: `getForUrl(...)` → `No browser is available`, після troubleshooting `agent.browsers.list()` → `[]`, `get("iab")` → `Browser is not available: iab`; standalone Playwright не використовувався;
+- тимчасовий Vite server `127.0.0.1:4178` зупинено; production code і tests Reviewer не змінював.
 
 ## Актуальна база
 
@@ -68,6 +73,7 @@ Developer для `React Demo v1 / Task 4`, implementation range `ceeedd4..209b17
 - React Demo Task 2 implementation commit: `c64d6d7`;
 - React Demo Task 3 implementation commit: `f408fd1`;
 - React Demo Task 4 implementation commit: `209b17b`;
+- final accepted React Demo implementation commit: `209b17b6d81c45b64ada9aedf4b97cf6a9f4d2a3`;
 - React Demo spec: `docs/specs/react-demo-v1.md`;
 - React Demo plan: `docs/plans/react-demo-v1.md`;
 - synchronization rules: `docs/specs/repository-workflow.md`;
@@ -84,4 +90,4 @@ Backend, persistence, DB, external integrations, UI framework і deploy у це�
 
 ## Наступна дія
 
-Запустити fresh незалежний Reviewer для `React Demo v1 / Task 4 — Result presentation and demo acceptance gate` відповідно до `docs/plans/react-demo-v1.md`. Не позначати task або `React Demo v1` прийнятими до цього review.
+Окремо погодити hosting/platform і підготувати implementation plan для `Deploy v1`; deploy не починати до цього рішення. Перед deploy користувачу слід виконати двопрохідну visual confirmation у браузері, яку Reviewer environment не зміг виконати через відсутність browser binding.
