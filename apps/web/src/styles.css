@@ -101,12 +101,97 @@ body {
   padding-left: 1.25rem;
 }
 
+.result-card {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.result-card h2,
+.result-detail h3 {
+  margin: 0;
+}
+
+.result-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 0;
+}
+
+.result-summary div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.result-summary dt {
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.result-summary dd {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+}
+
+.status-available {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-limited {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-unavailable {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.result-detail {
+  margin-top: 1.25rem;
+}
+
+.result-detail ul,
+.result-failure ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.availability-explanation {
+  margin: 1.25rem 0 0;
+  color: #166534;
+  font-weight: 600;
+}
+
+.result-failure {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
 @media (max-width: 36rem) {
   .app-shell {
     padding: 2.5rem 1rem;
   }
 
   .scenario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-summary {
     grid-template-columns: 1fr;
   }
 }

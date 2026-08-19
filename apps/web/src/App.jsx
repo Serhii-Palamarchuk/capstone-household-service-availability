@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ScenarioForm } from './components/ScenarioForm.jsx';
+import { SimulationResult } from './components/SimulationResult.jsx';
 import {
   DEFAULT_INTERNET_DEMO_INPUTS,
   createInternetScenarioFromHours,
@@ -10,7 +11,7 @@ import { simulate } from './simulation/simulate.js';
 export function App() {
   const [values, setValues] = useState(DEFAULT_INTERNET_DEMO_INPUTS);
   const [conversionErrors, setConversionErrors] = useState([]);
-  const [, setOutcome] = useState(null);
+  const [outcome, setOutcome] = useState(null);
 
   function handleChange(field, value) {
     setValues(currentValues => ({ ...currentValues, [field]: value }));
@@ -54,6 +55,7 @@ export function App() {
           </ul>
         </div>
       )}
+      {outcome && <SimulationResult outcome={outcome} />}
     </main>
   );
 }
