@@ -94,7 +94,7 @@ test('TS-22: availability key referencing a missing node is invalid', () => {
   ));
 });
 
-test('regression: invalid availability key does not skip value validation', () => {
+test('TS-22 + TS-23: invalid availability key does not skip value validation', () => {
   const index = createModelIndex(createInternetModel());
   const scenario = createInternetScenario();
   scenario.availability['missing-node'] = -1;
@@ -148,7 +148,7 @@ test('TS-23: accepts availability value=0', () => {
   assert.ok(!errors.some(error => error.code === 'INVALID_AVAILABILITY_VALUE'));
 });
 
-test('valid structural scenario produces no errors', () => {
+test('TS-03: valid structural scenario produces no errors', () => {
   const index = createModelIndex(createInternetModel());
   const scenario = createInternetScenario();
 
@@ -214,7 +214,7 @@ test('TS-14: missing reachable leaf availability is an error', () => {
   ));
 });
 
-test('simulate returns no partial results on validation failure', () => {
+test('TS-14: simulate returns no partial results on validation failure', () => {
   const scenario = createInternetScenario();
   delete scenario.availability['device-ont'];
 
@@ -303,7 +303,7 @@ test('TS-17: reachable cycle has canonical path', () => {
   assert.deepEqual(cycle.path, ['service-a', 'service-b', 'service-c', 'service-a']);
 });
 
-test('regression: cycle canonical path rotates to the lexicographically smallest id regardless of DFS start', () => {
+test('TS-17: cycle canonical path rotates to the lexicographically smallest id regardless of DFS start', () => {
   const model = {
     services: [
       { id: 'service-c', name: 'C', dependencyIds: ['service-a'] },
@@ -326,7 +326,7 @@ test('regression: cycle canonical path rotates to the lexicographically smallest
   assert.deepEqual(cycle.path, ['service-a', 'service-b', 'service-c', 'service-a']);
 });
 
-test('regression: equal code/nodeId/field errors are ordered by path as the final tie-breaker', () => {
+test('TS-26: equal code/nodeId/field errors use path as the final sort tie-breaker', () => {
   const model = {
     services: [
       {
@@ -367,11 +367,21 @@ test('TS-24: multiple independent validation errors are collected together', () 
   delete scenario.availability['device-ont'];
 
   const errors = validateSimulationInput(createModelIndex(model), scenario);
-  assert.ok(errors.some(error => error.code === 'INVALID_OUTAGE_DURATION'));
-  assert.ok(errors.some(error =>
-    error.code === 'MISSING_AVAILABILITY' &&
-    error.nodeId === 'device-ont'
-  ));
+  assert.deepEqual(
+    errors.map(({ code, nodeId = '', field }) => ({ code, nodeId, field })),
+    [
+      {
+        code: 'INVALID_OUTAGE_DURATION',
+        nodeId: '',
+        field: 'outageDurationMinutes',
+      },
+      {
+        code: 'MISSING_AVAILABILITY',
+        nodeId: 'device-ont',
+        field: 'availability',
+      },
+    ],
+  );
 });
 
 test('TS-25: one shared-leaf problem is not duplicated through multiple paths', () => {
@@ -406,10 +416,13 @@ test('TS-25: one shared-leaf problem is not duplicated through multiple paths', 
   };
 
   const errors = validateSimulationInput(createModelIndex(model), scenario);
-  const missingAvailabilityErrors = errors.filter(error =>
-    error.code === 'MISSING_AVAILABILITY' && error.nodeId === 'provider-isp'
+  const missingAvailabilityErrors = errors.filter(
+    error => error.code === 'MISSING_AVAILABILITY',
   );
-  assert.equal(missingAvailabilityErrors.length, 1);
+  assert.deepEqual(
+    missingAvailabilityErrors.map(({ nodeId, field }) => ({ nodeId, field })),
+    [{ nodeId: 'provider-isp', field: 'availability' }],
+  );
 });
 
 test('TS-26: validation errors are sorted deterministically by code, nodeId, field', () => {

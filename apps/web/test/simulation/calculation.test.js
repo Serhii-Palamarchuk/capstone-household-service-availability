@@ -70,7 +70,7 @@ test('TS-03: Limited when 0 < T < H', () => {
   assert.equal(result.status, 'Limited');
 });
 
-test('simulate returns full success outcome', () => {
+test('TS-03: simulate returns full success outcome', () => {
   const scenario = createInternetScenario();
   const outcome = simulate(createInternetModel(), scenario);
 
@@ -78,6 +78,11 @@ test('simulate returns full success outcome', () => {
   assert.equal(outcome.targetResults.length, 1);
   assert.equal(outcome.targetResults[0].serviceId, 'service-internet');
   assert.equal(outcome.targetResults[0].availabilityDurationMinutes, 120);
+  assert.equal(outcome.targetResults[0].status, 'Limited');
+  assert.deepEqual(outcome.targetResults[0].limitingDependencyIds, ['device-ont']);
+  assert.deepEqual(outcome.targetResults[0].causalPaths, [
+    ['service-internet', 'device-ont'],
+  ]);
   assert.equal(outcome.serviceResults instanceof Map, true);
   assert.equal('errors' in outcome, false);
 });

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ServiceStatus, ValidationCode } from '../../src/simulation/constants.js';
 
-test('simulation constants expose the canonical contract', () => {
+test('TS-01: simulation constants expose the canonical status and validation contract', () => {
   assert.deepEqual(ServiceStatus, {
     AVAILABLE: 'Available',
     LIMITED: 'Limited',
