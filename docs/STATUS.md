@@ -6,9 +6,7 @@
 
 ## Активне завдання
 
-`Task 3 — Reachable-subgraph validation і cycles`: третій незалежний review fix commit `b4efff6` завершено з verdict `changes requested`.
-
-Наступний крок — повернути `Task 3` агенту в ролі `Developer` для виправлення останнього Minor finding.
+`Task 3 — Reachable-subgraph validation і cycles`: останній Minor finding виправлено, очікує четвертий незалежний review.
 
 ## Останнє завершене
 
@@ -26,12 +24,13 @@
 - додано regression test канонізації cycle path при старті DFS з нелексикографічно-мінімального вузла (`service-c`);
 - повторний незалежний review Task 3 завершено з verdict `changes requested`: literal NUL перенесено в test source, а новий sort test має різні `nodeId` і не перевіряє `path` tie-breaker;
 - виправлено Major finding — literal NUL byte у test source (`error.path.join(...)`) замінено на текстову escape-послідовність;
-- regression test для path tie-breaker переписано на два cycles зі спільними `code`/`nodeId`/`field`, але третій review виявив, що DFS уже генерує paths у лексикографічному порядку, тому test не стає red без останнього sort key.
+- regression test для path tie-breaker переписано на два cycles зі спільними `code`/`nodeId`/`field`, але третій review виявив, що DFS уже генерує paths у лексикографічному порядку, тому test не стає red без останнього sort key;
+- виправлено Minor finding — `dependencyIds` для `service-a` змінено на `['service-d', 'service-b']`, щоб DFS відкривала цикли у зворотному лексикографічному порядку; test тепер перевіряє точний очікуваний порядок paths. Локально підтверджено red → green: тимчасове видалення `path` з `compareErrors` ламає саме цей test з очікуваною AssertionError, після відновлення implementation test знову green.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 3 повернено на третє виправлення, очікує призначення);
-- `Reviewer`: немає (третій незалежний review Task 3 завершено);
+- `Developer`: немає (Task 3 correction готова до четвертого review);
+- `Reviewer`: очікується незалежна сесія для Task 3 correction;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -54,6 +53,13 @@ Task 3 correction #2: третій незалежний review fix commit `b4eff
 - Runtime probe зі зворотним DFS-порядком (`service-a -> [service-d, service-b]`) підтвердив, що implementation сортує paths як `service-b`, потім `service-d`.
 - Minor finding: regression test у fix commit використовує `service-a -> [service-b, service-d]`, тобто DFS уже повертає paths у лексикографічному порядку. Через stable `Array.sort` test пройде навіть якщо `path` tie-breaker видалити. Потрібно задати залежності у зворотному порядку й assert exact ordered paths.
 
+Task 3 correction #3 (Developer, fix commit `0cbf6b9`, фактичний запуск, ще не review):
+
+- targeted run (`npm test -- test/simulation/validation.test.js`, git-bash): `25 passed, 0 failed`.
+- full suite (`npm test`, git-bash): `27 passed, 0 failed`.
+- red → green підтверджено локально: тимчасове видалення `path` з ключів `compareErrors` у `validation.js` призводить до `AssertionError` саме в тесті `regression: equal code/nodeId/field errors are ordered by path as the final tie-breaker` (очікувані `service-b`/`service-d` виявляються переставленими); після `git checkout` production file всі 25 targeted tests знову green.
+- scope: fix commit змінює лише `apps/web/test/simulation/validation.test.js` (`dependencyIds: ['service-d', 'service-b']` + exact `assert.deepEqual` на point paths); production code не змінено.
+
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
 ## Актуальна база
@@ -69,9 +75,11 @@ Task 3 correction #2: третій незалежний review fix commit `b4eff
 - fix commit Task 3 (1st correction): `601b6a3`;
 - review commit Task 3 (changes requested, 2nd round): `d75a8ed`;
 - fix commit Task 3 (2nd correction): `b4efff6`;
+- review commit Task 3 (changes requested, 3rd round): `fcf7e46`;
+- fix commit Task 3 (3rd correction): `0cbf6b9`;
 - рішення про спільний контекст: `D-001` у `docs/DECISIONS.md`;
 - правила синхронізації: `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі `Developer`: зробити path-sort regression test чутливим до відсутності tie-breaker (зворотний DFS-порядок та exact paths), повторити targeted/full tests і повернути task на незалежний review. Task 4 не починати до acceptance Task 3.
+Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі незалежного `Reviewer`: перевірити fix commit `0cbf6b9` (path tie-breaker regression test із reversed discovery order і exact expected paths), фактично запустити targeted та full tests. Task 4 не починати до acceptance Task 3.
