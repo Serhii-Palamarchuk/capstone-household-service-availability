@@ -6,9 +6,9 @@
 
 ## Активне завдання
 
-`Task 5 — Limiting leaves і causal paths` реалізовано; очікує fresh незалежний review.
+`Task 5 — Limiting leaves і causal paths` прийнято після fresh незалежного review.
 
-Наступний крок — передати `Task 5 — Limiting leaves і causal paths` агенту в ролі `Reviewer` у fresh context.
+Наступний крок — передати `Task 6 — Public simulate() contract` агенту в ролі `Developer`.
 
 ## Останнє завершене
 
@@ -23,12 +23,12 @@
 - реалізовано й прийнято після четвертого незалежного review `Task 3 — Reachable-subgraph validation і cycles` (`apps/web/src/simulation/validation.js`, `apps/web/test/simulation/validation.test.js`): reachable DFS validation, cycle detection/canonicalization, error deduplication і deterministic sorting;
 - findings Task 3 виправлено: source-файли не містять literal NUL bytes; regression tests доводять cycle rotation і `path` як останній sort tie-breaker;
 - реалізовано й прийнято після незалежного review `Task 4 — DFS availability calculation і statuses` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/calculation.test.js`): `calculateServiceResults()` — рекурсивний DFS з memoization, `T(Service) = min(dependencies)` без clip до `H`, статуси `Available`/`Limited`/`Unavailable`; `limitingDependencyIds`/`causalPaths` поки порожні (Task 5).
-- реалізовано `Task 5 — Limiting leaves і causal paths` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/causes.test.js`): для `Limited`/`Unavailable` поширюються всі рівнозначні leaf-bottlenecks і causal paths, із дедуплікацією та лексикографічним сортуванням; очікує незалежного review.
+- реалізовано й прийнято після fresh незалежного review `Task 5 — Limiting leaves і causal paths` (`apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/causes.test.js`): для `Limited`/`Unavailable` поширюються всі рівнозначні leaf-bottlenecks і causal paths, із дедуплікацією та лексикографічним сортуванням.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 5 передано на review);
-- `Reviewer`: потрібно призначити для fresh незалежного review Task 5;
+- `Developer`: потрібно призначити для Task 6;
+- `Reviewer`: немає (Task 5 прийнято);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -60,13 +60,23 @@ Task 4: незалежний review implementation commit `6d8e99e` — `accepte
 - Values перевірені проти `docs/TEST_SCENARIOS.md` TS-01…TS-06 (включно з нетривіальними T-розрахунками для TS-05/TS-06) і `docs/SIMULATION.md` §3–5 (T-формула, status boundaries, DFS+memoization contract) — відповідність підтверджено.
 - `limitingDependencyIds`/`causalPaths` коректно залишені порожніми на цьому task відповідно до scope Task 5.
 
-Task 5: Developer implementation commit `d22477d` — очікує fresh незалежного review.
+Task 5: Developer implementation commit `d22477d` — handoff зафіксовано в `6983cc3`.
 
 - RED run (`cmd.exe /d /c npm test -- test/simulation/causes.test.js`): exit `1`, `0 passed, 2 failed`; обидва tests очікувано зафіксували порожні `limitingDependencyIds` до реалізації.
 - GREEN targeted run (`cmd.exe /d /c npm test -- test/simulation/causes.test.js test/simulation/calculation.test.js`): exit `0`, `8 passed, 0 failed`.
 - Full suite (`cmd.exe /d /c npm test`): exit `0`, `35 passed, 0 failed`.
 - Scope: implementation commit змінює лише `apps/web/src/simulation/calculate.js` і `apps/web/test/simulation/causes.test.js`; dependencies, UI і наступні Task не змінено.
 - Self-review: перевірено TS-03…TS-09 і `docs/SIMULATION.md` §6, §10–12; рівні `T` дають усі причини, nested `Service` лишаються у path, leaf `id` не дублюються, а `Available` має порожні cause-поля.
+
+Task 5: fresh незалежний review implementation commit `d22477d` — `accepted`, відкритих findings немає.
+
+- `node --version`: `v24.18.0`.
+- Незалежний targeted run (`cmd.exe /d /c npm test -- test/simulation/causes.test.js test/simulation/calculation.test.js`): exit `0`, `8 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): exit `0`, `35 passed, 0 failed`.
+- Незалежний edge-case probe: exit `0`, `13 assertions passed`; перевірено TS-03…TS-09, `Available` empty causes, TS-08 equal minima на різних рівнях, non-minimum exclusion, self-contained nested paths, sorting/deduplication і input immutability.
+- NUL verification: `apps/web/src/simulation/calculate.js`, `apps/web/test/simulation/causes.test.js`, `apps/web/test/simulation/calculation.test.js` і review diff package містять `0` literal NUL bytes.
+- Scope: `d22477d` змінює лише два Task 5 files; `6983cc3` змінює лише operational `docs/STATUS.md`; dependencies, React/UI, backend і Task 6 не змінено.
+- Contract: реалізація відповідає `docs/SIMULATION.md` §6, §10–12 та `docs/TEST_SCENARIOS.md` TS-03…TS-09: усі equal-minimum branches поширюються до унікальних leaf IDs, усі distinct causal paths зберігаються й сортуються, а `Available` causes порожні.
 
 Прямий виклик `npm test` у PowerShell не запускає tests через локальну execution policy для `npm.ps1`; використовується workaround `cmd.exe /d /c npm test` (або запуск із git-bash, де такого обмеження немає).
 
@@ -92,4 +102,4 @@ Task 5: Developer implementation commit `d22477d` — очікує fresh нез�
 
 ## Наступна дія
 
-Провести fresh незалежний review `Task 5 — Limiting leaves і causal paths` відповідно до `docs/plans/simulation-engine-v1.md`; не починати Task 6 до рішення Reviewer.
+Передати `Task 6 — Public simulate() contract` агенту в ролі `Developer` відповідно до `docs/plans/simulation-engine-v1.md`.
