@@ -8,9 +8,9 @@
 
 ## Активне завдання
 
-`React Demo v1 / Task 1 — React/Vite application shell` прийнято після fresh незалежного review.
+`React Demo v1 / Task 2 — Internet demo input adapter and engine integration tests` реалізовано; очікується fresh незалежний review.
 
-Наступне погоджене завдання: `React Demo v1 / Task 2 — Internet demo input adapter and engine integration tests`.
+Task 3 не розпочато.
 
 Канонічна специфікація:
 
@@ -28,13 +28,13 @@ Implementation plan:
 - final engine review: Critical/Major/Minor findings — немає;
 - підготовлено й погоджено `React Demo v1` spec;
 - підготовлено `React Demo v1` implementation plan із чотирьох послідовних Developer → fresh Reviewer tasks.
-- `React Demo v1 / Task 1` прийнято: додано React/Vite application shell, scripts `dev`, `build`, `preview`, а наявний `test` script збережено;
-- Task 1 implementation commit: `8260417` (`feat: scaffold React demo application`).
+- `React Demo v1 / Task 2` реалізовано: додано fixed `Internet` demo model, string-hours to minutes adapter та integration coverage з `simulate()`;
+- Task 2 implementation commit: `c64d6d7` (`feat: add Internet demo scenario adapter`).
 
 ## Поточні ролі
 
-- `Developer`: потрібно розпочати лише Task 2 згідно з active plan;
-- `Reviewer`: Task 1 прийнято; наступний review — лише після Developer handoff Task 2;
+- `Developer`: Task 2 передано на fresh незалежний review; не починати Task 3;
+- `Reviewer`: потрібно перевірити лише Task 2 відносно `docs/specs/react-demo-v1.md` і `docs/plans/react-demo-v1.md`;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -43,17 +43,15 @@ Implementation plan:
 
 ## Остання фактична перевірка
 
-Fresh незалежний Reviewer для `React Demo v1 / Task 1`, implementation commit `8260417`:
+Developer для `React Demo v1 / Task 2`, implementation commit `c64d6d7`:
 
-- `cmd.exe /d /c npm test` у `apps/web`: exit `0`, `43 passed`, `0 failed`, `0 skipped`, `0 todo`;
-- `cmd.exe /d /c npm run build` у `apps/web`: exit `0`; Vite `v8.2.1` успішно створив production output у `apps/web/dist/`;
-- `git diff --check e196ab4..8260417`: exit `0`;
-- `npm ls --depth=0`: лише погоджені Task 1 dependencies `react`, `react-dom`, `vite`;
-- range містить лише шість запланованих Task 1 файлів; файли та код Task 2 відсутні;
-- Critical findings: немає; Major findings: немає; Minor findings: немає;
-- verdict: `ACCEPTED`.
+- RED: `cmd.exe /d /c "npm test -- test/demo/internet-demo.test.js"` у `apps/web`: exit `1`; очікувано `ERR_MODULE_NOT_FOUND` для ще відсутнього `src/demo/internet-demo.js`;
+- GREEN targeted: та сама команда: exit `0`, `6 passed`, `0 failed`, `0 skipped`, `0 todo`;
+- GREEN full: `cmd.exe /d /c npm test` у `apps/web`: exit `0`, `49 passed`, `0 failed`, `0 skipped`, `0 todo`;
+- перед implementation commit: `git diff --cached --check`: exit `0`;
+- implementation range містить лише `apps/web/src/demo/internet-demo.js` і `apps/web/test/demo/internet-demo.test.js`.
 
-Task 1 accepted. Task 2 не розпочато.
+Task 2 implementation complete; review ще не виконано.
 
 ## Актуальна база
 
@@ -61,6 +59,7 @@ Task 1 accepted. Task 2 не розпочато.
 - React Demo spec commit: `ad80e275e79b6ea380a02ebe129c86a8abee1a6b`;
 - React Demo plan commit: `caf17fa69939211667e32474081e38477b3ad94d`;
 - React Demo Task 1 accepted implementation commit: `8260417`;
+- React Demo Task 2 implementation commit: `c64d6d7`;
 - React Demo spec: `docs/specs/react-demo-v1.md`;
 - React Demo plan: `docs/plans/react-demo-v1.md`;
 - synchronization rules: `docs/specs/repository-workflow.md`;
@@ -77,4 +76,4 @@ Backend, persistence, DB, external integrations, UI framework і deploy у це�
 
 ## Наступна дія
 
-Розпочати лише `React Demo v1 / Task 2 — Internet demo input adapter and engine integration tests` у ролі `Developer` відповідно до `docs/plans/react-demo-v1.md`; після Developer handoff потрібен fresh незалежний Reviewer. Не починати Task 3 до verdict Task 2.
+Виконати fresh незалежний review лише `React Demo v1 / Task 2 — Internet demo input adapter and engine integration tests`. Не починати Task 3 до verdict Task 2.
