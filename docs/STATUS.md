@@ -6,7 +6,9 @@
 
 ## Активне завдання
 
-`Task 3 — Reachable-subgraph validation і cycles`: findings виправлено, очікує повторний незалежний review.
+`Task 3 — Reachable-subgraph validation і cycles`: повторний незалежний review correction commit `601b6a3` завершено з verdict `changes requested`.
+
+Наступний крок — повернути `Task 3` агенту в ролі `Developer` для виправлення findings повторного review.
 
 ## Останнє завершене
 
@@ -21,12 +23,13 @@
 - реалізовано `Task 3 — Reachable-subgraph validation і cycles` (`apps/web/src/simulation/validation.js`, `apps/web/test/simulation/validation.test.js`): додано `validateReachableSubgraph()` і `validateSimulationInput()` — reachable DFS traversal, cycle detection із канонізацією шляху, дедуплікація та детерміноване сортування помилок;
 - незалежний review Task 3 завершено з verdict `changes requested`: production-файл містить NUL-байти й визначається Git як binary; tests не доводять rotation канонічного cycle path і path tie-breaker сортування;
 - виправлено Major finding — 9 literal NUL bytes у separator strings замінено на текстову escape-послідовність (runtime-ключі не змінилися); підтверджено, що новий commit blob не містить NUL bytes і майбутні diffs рендеряться як текст;
-- виправлено Minor finding — додано regression tests: канонізація cycle path при старті DFS з нелексикографічно-мінімального вузла (`service-c`), та `path` як останній sort tie-breaker для двох незалежних циклів з однаковими `code`/`nodeId`/`field`.
+- додано regression test канонізації cycle path при старті DFS з нелексикографічно-мінімального вузла (`service-c`);
+- повторний незалежний review Task 3 завершено з verdict `changes requested`: literal NUL перенесено в test source, а новий sort test має різні `nodeId` і не перевіряє `path` tie-breaker.
 
 ## Поточні ролі
 
-- `Developer`: немає (Task 3 correction готова до review);
-- `Reviewer`: очікується незалежна сесія для Task 3 correction;
+- `Developer`: немає (Task 3 повернено на повторне виправлення, очікує призначення);
+- `Reviewer`: немає (повторний незалежний review Task 3 завершено);
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -39,19 +42,13 @@
 
 Повторний незалежний review Task 2 correction (fix commit `e4cd10b`): `accepted`, відкритих findings немає.
 
-Task 3: незалежний review implementation commit `4e661e8` — `changes requested`.
+Task 3 correction: повторний незалежний review fix commit `601b6a3` — `changes requested`.
 
-- Незалежний targeted run (`cmd.exe /d /c npm test -- test/simulation/validation.test.js`): `23 passed, 0 failed`.
-- Незалежний full suite (`cmd.exe /d /c npm test`): `25 passed, 0 failed`.
-- Додаткові runtime probes: cycle rotation із target `service-c`, self-cycle, два незалежні reachable cycles, duplicate target і read-only input — фактична поведінка коректна.
-- Major finding: `apps/web/src/simulation/validation.js` містить 9 literal NUL bytes у separator strings; через це Git показує production-зміну як `Binary files differ` і `--numstat` як `-/-`, що унеможливлює нормальний GitHub review. Потрібно замінити literal NUL на текстові escape-послідовності `\u0000`, не змінюючи runtime-ключі.
-- Minor finding: TS-17 починає DFS з уже лексикографічно найменшого `service-a`, а TS-26 не містить cycle errors, тому tests не виявлять поломку rotation канонічного cycle path або четвертого sort key `path`. Потрібно додати вузькі regression assertions для обох правил.
-
-Task 3 correction (Developer, fix commit `601b6a3`, фактичний запуск, ще не review):
-
-- targeted run (`npm test -- test/simulation/validation.test.js`, git-bash): `25 passed, 0 failed`.
-- full suite (`npm test`, git-bash): `27 passed, 0 failed`.
-- підтверджено: committed blob `apps/web/src/simulation/validation.js` містить 0 NUL bytes; пробний diff проти нового commit рендериться як звичайний текстовий diff, а не `Binary files differ`.
+- Незалежний targeted run (`cmd.exe /d /c npm test -- test/simulation/validation.test.js`): `25 passed, 0 failed`.
+- Незалежний full suite (`cmd.exe /d /c npm test`): `27 passed, 0 failed`.
+- Runtime probe із двома циклами зі спільними `code`/`nodeId`/`field`: implementation коректно сортує paths.
+- Major finding: `apps/web/test/simulation/validation.test.js` містить 1 literal NUL byte у `error.path.join(...)` (line 338). Потрібно використати текстову escape-послідовність `\u0000`, щоб source залишався звичайним текстом.
+- Minor finding: regression test для останнього sort key створює цикли з різними `nodeId` (`service-a`, `service-x`), тому порядок визначається `nodeId` раніше за `path`; test пройде навіть без path tie-breaker. Потрібен сценарій із двома виявленими циклами, що мають однакові `code`, `nodeId` і `field`, але різні `path`.
 
 `node --version` → `v24.18.0`.
 
@@ -73,4 +70,4 @@ Task 3 correction (Developer, fix commit `601b6a3`, фактичний запу�
 
 ## Наступна дія
 
-Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі незалежного `Reviewer`: перевірити fix commit `601b6a3` (NUL byte fix і нові regression tests), фактично запустити targeted та full tests. Task 4 не починати до acceptance Task 3.
+Передати `Task 3 — Reachable-subgraph validation і cycles` агенту в ролі `Developer`: прибрати literal NUL із test source, виправити path-sort regression test, повторити targeted/full tests і повернути task на незалежний review. Task 4 не починати до acceptance Task 3.
