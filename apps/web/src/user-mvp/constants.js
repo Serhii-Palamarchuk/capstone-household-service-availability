@@ -1,0 +1,15 @@
+export const DeviceCategory = Object.freeze({
+  ROUTER: 'Router',
+  MODEM: 'Modem',
+  ONT_ONU: 'ONT/ONU',
+  LAPTOP_DESKTOP: 'Laptop/Desktop',
+  MONITOR: 'Monitor',
+  WORK_PERIPHERAL: 'Work Peripheral',
+  REFRIGERATOR: 'Refrigerator',
+  FREEZER: 'Freezer',
+  GAS_BOILER: 'Gas Boiler',
+  ELECTRIC_HEATER_BOILER: 'Electric Heater/Boiler',
+  HEAT_PUMP: 'Heat Pump',
+  WATER_PUMP: 'Water Pump',
+  OTHER_LOAD: 'Other Load',
+});

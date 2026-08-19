@@ -224,6 +224,12 @@ User-facing MVP використовує predefined templates/variants для:
 
 Вибрані елементи ролей є обов’язковими dependencies. Кілька instances одного template дозволені.
 
+`ServiceInstance` є user-facing конфігурацією template/variant. Після успішної
+template validation `service-builder.js` проєктує його у незмінний engine
+`Service` через `id`, `name` і derived `dependencyIds`. Поля `templateId`,
+`variantId` та `dependencyBindings` залишаються поза контрактом `Simulation
+Engine v1`; UI не формує `dependencyIds` напряму.
+
 ## 12. Структурна цілісність
 
 - кожен `id` унікальний;
