@@ -316,28 +316,32 @@ test('regression: cycle canonical path rotates to the lexicographically smallest
 test('regression: equal code/nodeId/field errors are ordered by path as the final tie-breaker', () => {
   const model = {
     services: [
-      { id: 'service-a', name: 'A', dependencyIds: ['service-b'] },
+      {
+        id: 'service-a',
+        name: 'A',
+        dependencyIds: ['service-b', 'service-d'],
+      },
       { id: 'service-b', name: 'B', dependencyIds: ['service-a'] },
-      { id: 'service-x', name: 'X', dependencyIds: ['service-y'] },
-      { id: 'service-y', name: 'Y', dependencyIds: ['service-x'] },
+      { id: 'service-d', name: 'D', dependencyIds: ['service-a'] },
     ],
     devices: [],
     externalProviders: [],
   };
   const scenario = {
     id: 's1',
-    name: 'two independent cycles',
+    name: 'two cycles through the same node',
     outageDurationMinutes: 360,
-    targetServiceIds: ['service-a', 'service-x'],
+    targetServiceIds: ['service-a'],
     availability: {},
   };
 
   const errors = validateSimulationInput(createModelIndex(model), scenario);
-  const cyclePaths = errors
-    .filter(error => error.code === 'CYCLE_DETECTED')
-    .map(error => error.path.join(' '));
+  const cycles = errors.filter(error => error.code === 'CYCLE_DETECTED');
 
-  assert.equal(cyclePaths.length, 2);
+  assert.equal(cycles.length, 2);
+  assert.ok(cycles.every(cycle => cycle.nodeId === 'service-a' && cycle.field === 'dependencyIds'));
+
+  const cyclePaths = cycles.map(cycle => cycle.path.join('\u0000'));
   const sortedCyclePaths = [...cyclePaths].sort();
   assert.deepEqual(cyclePaths, sortedCyclePaths);
 });
