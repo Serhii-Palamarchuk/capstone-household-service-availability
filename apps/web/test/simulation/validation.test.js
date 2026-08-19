@@ -319,7 +319,7 @@ test('regression: equal code/nodeId/field errors are ordered by path as the fina
       {
         id: 'service-a',
         name: 'A',
-        dependencyIds: ['service-b', 'service-d'],
+        dependencyIds: ['service-d', 'service-b'],
       },
       { id: 'service-b', name: 'B', dependencyIds: ['service-a'] },
       { id: 'service-d', name: 'D', dependencyIds: ['service-a'] },
@@ -329,7 +329,7 @@ test('regression: equal code/nodeId/field errors are ordered by path as the fina
   };
   const scenario = {
     id: 's1',
-    name: 'two cycles through the same node',
+    name: 'two cycles through the same node, discovered out of lexicographic order',
     outageDurationMinutes: 360,
     targetServiceIds: ['service-a'],
     availability: {},
@@ -341,9 +341,10 @@ test('regression: equal code/nodeId/field errors are ordered by path as the fina
   assert.equal(cycles.length, 2);
   assert.ok(cycles.every(cycle => cycle.nodeId === 'service-a' && cycle.field === 'dependencyIds'));
 
-  const cyclePaths = cycles.map(cycle => cycle.path.join('\u0000'));
-  const sortedCyclePaths = [...cyclePaths].sort();
-  assert.deepEqual(cyclePaths, sortedCyclePaths);
+  assert.deepEqual(cycles.map(cycle => cycle.path), [
+    ['service-a', 'service-b', 'service-a'],
+    ['service-a', 'service-d', 'service-a'],
+  ]);
 });
 
 test('TS-24: multiple independent validation errors are collected together', () => {
