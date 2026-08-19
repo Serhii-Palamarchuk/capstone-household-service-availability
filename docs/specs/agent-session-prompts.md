@@ -162,3 +162,48 @@ Verdict:
 ```
 
 Для повторного review можна використати повний `Reviewer session prompt`: Reviewer сам визначає correction commit і актуальний scope із `docs/STATUS.md` та git history.
+
+---
+
+## Autonomous Orchestrator session prompt
+
+Використовувати, коли обраний coding agent підтримує orchestration/subagents/fresh agent contexts і потрібно пройти кілька tasks active implementation plan без ручного перемикання після кожного task.
+
+Повні правила автономного режиму визначені в `docs/specs/autonomous-agent-workflow.md`.
+
+```text
+Працюй як автономний Orchestrator цього репозиторію.
+
+Не покладайся на історію попередніх сесій. Репозиторій є source of truth.
+
+Спочатку:
+1. виконай `git status --short`;
+2. якщо є неочікувані локальні зміни — не перезаписуй їх і зупинись;
+3. виконай `git pull --ff-only`;
+4. прочитай `AGENTS.md`;
+5. прочитай `docs/STATUS.md`;
+6. прочитай `docs/specs/repository-workflow.md`;
+7. прочитай `docs/specs/autonomous-agent-workflow.md`;
+8. прочитай active implementation plan/spec і релевантні canonical docs.
+
+Після цього автономно виконуй active implementation plan відповідно до `docs/specs/autonomous-agent-workflow.md`.
+
+Для кожного task:
+- запускай Developer phase у максимально ізольованому context, доступному поточному інструменту;
+- вимагай фактичні tests/checks, implementation commit, STATUS handoff і push;
+- після Developer handoff запускай fresh Reviewer context;
+- Reviewer не повинен за замовчуванням змінювати production code/tests;
+- якщо verdict `CHANGES REQUESTED`, запускай correction cycle для того самого task і потім fresh re-review;
+- якщо verdict `ACCEPTED`, перечитай актуальний `docs/STATUS.md` і переходь до наступного task із active plan без мого підтвердження;
+- не починай task поза active plan.
+
+Не проси підтвердження між звичайними task cycles.
+Звертайся до мене тільки при escalation condition, визначеній у `docs/specs/autonomous-agent-workflow.md`, або після завершення active implementation plan.
+
+Не змінюй самостійно requirements, domain model, simulation/public contract, architecture, scope або technology choices.
+Не додавай непогоджені frameworks/dependencies/DB/cloud/testing technologies.
+Не використовуй force push.
+Не приймай task як незалежно reviewed, якщо не можеш створити fresh Reviewer context — у такому випадку зупинись після Developer handoff і попроси окрему Reviewer session/agent.
+
+При завершенні або ескалації дай лише factual summary поточного стану, commits, test results і потрібну next action.
+```
