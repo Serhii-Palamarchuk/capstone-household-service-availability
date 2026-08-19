@@ -141,9 +141,9 @@ Deployment source:
 
 - `docs/specs/deploy-v1.md`
 - `docs/plans/deploy-v1.md`
-- `apps/web/vite.config.js` (planned)
-- `.github/workflows/deploy-pages.yml` (planned)
-- `README.md` після успішного deploy
+- `apps/web/vite.config.js`
+- `.github/workflows/deploy-pages.yml`
+- `README.md`
 
 ---
 
@@ -154,30 +154,25 @@ Status: Accepted
 
 ### Context
 
-`React Demo v1` успішно перевіряє наскрізний сценарій `UI → simulate() → result`, але користувач вводить уже готові години доступності Router, ONT/ONU та Internet Provider. Це зручно для контрольованої перевірки simulation engine, проте не відповідає цільовій ментальній моделі побутового користувача, який зазвичай знає своє обладнання, його споживання та джерела резервного живлення, а не готову тривалість доступності кожної залежності.
-
-Також важливо не переписувати заднім числом Week 2 report або назви вже прийнятих артефактів: вони мають залишатися історичним відображенням фактичного стану на той момент.
+`React Demo v1` перевіряє `UI → simulate() → result`, але вимагає готові години availability Router, ONT/ONU та Internet Provider. Це підходить для vertical slice, але не для цільової ментальної моделі побутового користувача.
 
 ### Alternatives
 
-1. Залишити пряме введення тривалості доступності як фінальну модель UX.
-2. Додати лише конфігуратор Service / Device / External Provider, але й надалі вимагати від користувача ручне введення готових годин для кожного Device.
-3. Додати окремий користувацький рівень для обладнання та резервного живлення, який оцінює доступність локальних пристроїв і передає отриману тривалість у вже перевірений simulation engine.
+1. Залишити пряме введення availability як фінальну UX-модель.
+2. Додати configurator, але залишити ручне введення availability кожного Device.
+3. Додати окремий user-facing layer обладнання та резервного живлення, який готує часові входи для engine.
 
 ### Criteria
 
-- відповідність реальній ментальній моделі кінцевого користувача;
-- збереження перевіреного `Simulation Engine v1` без зміни його базового контракту;
-- чітке розділення енергетичного розрахунку та сервісної симуляції;
-- можливість компонувати багаторівневі сервіси та сценарії;
-- реалістичний scope для індивідуального дипломного проєкту;
-- можливість окремо тестувати правильність оцінювання автономності й правильність simulation engine.
+- відповідність ментальній моделі кінцевого користувача;
+- збереження перевіреного `Simulation Engine v1`;
+- розділення energy estimation і service simulation;
+- реалістичний scope;
+- окреме тестування двох шарів.
 
 ### Decision
 
-1. Не перейменовувати і не переписувати заднім числом Week 2 report, `React Demo v1` або `Deploy v1`.
-2. Поточний deployed Internet demo трактувати як **перший наскрізний vertical slice**, який перевіряє технічну гіпотезу та інтеграцію з simulation engine, а не як фінальну UX-модель продукту.
-3. Для наступної користувацької ітерації орієнтуватися на flow:
+Поточний deployed Internet demo залишається першим vertical slice. Наступна user-facing ітерація будується за flow:
 
 ```text
 Equipment + backup-power characteristics
@@ -191,18 +186,70 @@ Services + functional dependencies
 availability + status + limiting cause + causal path
 ```
 
-4. Користувач повинен мати змогу описати важливі сервіси, локальні пристрої, зовнішні залежності, резервне живлення і сценарій відключення; для локальних пристроїв система має сама отримувати тривалість доступності з користувацьких характеристик, а не вимагати ручного перекладу всієї моделі у внутрішні engine inputs.
-5. `External Provider` може залишатися сценарним входом із заданою доступністю, доки не буде окремо погоджено джерело або спосіб її визначення.
-6. Точна формула автономності, потрібні параметри потужності/ємності, коефіцієнти ефективності, правила валідації та UX **ще не визначені**. Вони потребують окремої специфікації, обґрунтування і тестування до включення у фінальний MVP contract.
+`ExternalProvider` може залишатися сценарним входом. Week 2 report, `React Demo v1` і `Deploy v1` не переписуються заднім числом.
 
 ### Rationale
 
-Таке розділення зберігає головну відмінність проєкту — сервісний аналіз залежностей і пояснення причин — але прибирає зайву вимогу до побутового користувача знати внутрішню часову модель кожного пристрою. При цьому вже протестований simulation engine не потрібно переписувати: новий користувацький рівень лише готує для нього коректні часові входи.
+Користувач працює з власним обладнанням і резервним живленням, а новий layer перетворює ці дані у часові inputs для вже протестованого engine.
 
 ### Affected
 
 - `docs/PROJECT.md`
-- `README.md`
 - `docs/STATUS.md`
-- робоча пояснювальна записка, розділи 3.2 і 3.4
-- наступна spec/plan для user-facing MVP iteration
+- наступна user-facing spec/plan
+
+---
+
+## D-004 — User-facing MVP v1 contract
+
+Date: 2026-08-19
+Status: Accepted
+
+### Context
+
+Після D-003 потрібно було визначити точний мінімальний contract availability estimation, структуру сервісів, validation і межі наступної user-facing ітерації.
+
+### Alternatives
+
+1. Залишити availability Device ручним input.
+2. Побудувати детальний електричний симулятор із динамічними навантаженнями та втратами.
+3. Використати детерміновану W/Wh-модель з обмеженим набором параметрів і predefined service templates.
+
+### Criteria
+
+- зрозумілість для побутового користувача;
+- достатня реалістичність для головної гіпотези;
+- пояснюваний deterministic calculation;
+- збереження `Simulation Engine v1`;
+- невеликий індивідуальний scope;
+- можливість unit/integration testing.
+
+### Decision
+
+Прийнято `docs/specs/user-facing-mvp-v1.md` як contract наступної MVP ітерації.
+
+Ключові рішення:
+
+- Device: `powerW` + optional internal battery `usableCapacityWh`;
+- BackupSource: `usableCapacityWh` + optional `maxOutputPowerW`;
+- shared BackupSource runtime рахується за сумою активних навантажень;
+- один Device має максимум одне зовнішнє джерело в Scenario;
+- strategy v1: `ExternalFirst`;
+- Device availability передається у незмінений `Simulation Engine v1`;
+- ExternalProvider availability задається вручну;
+- predefined service templates замість довільного graph editor;
+- target services автоматично визначають mandatory loads;
+- TV, lamp та інші необов’язкові пристрої моделюються як additional loads;
+- автоматична оптимізація, dynamic load scheduling і детальна електрична модель поза scope.
+
+### Rationale
+
+Модель W/Wh додає практичний user-facing input без перетворення диплома на окремий електротехнічний симулятор і зберігає центральну цінність проєкту — аналіз service dependencies та причин обмеження.
+
+### Affected
+
+- `docs/specs/user-facing-mvp-v1.md`
+- `docs/PROJECT.md`
+- `docs/DOMAIN_MODEL.md`
+- `docs/STATUS.md`
+- майбутні `docs/TEST_SCENARIOS.md` і implementation plan
