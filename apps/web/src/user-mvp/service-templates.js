@@ -14,7 +14,18 @@ const many = (id, entityType, allowedCategories) => ({
   ...(allowedCategories ? { allowedCategories } : {}),
 });
 
-export const serviceTemplates = Object.freeze([
+function deepFreeze(value) {
+  if (value && typeof value === 'object') {
+    for (const nestedValue of Object.values(value)) {
+      deepFreeze(nestedValue);
+    }
+    Object.freeze(value);
+  }
+
+  return value;
+}
+
+export const serviceTemplates = deepFreeze([
   {
     id: 'Internet',
     variants: Object.freeze([

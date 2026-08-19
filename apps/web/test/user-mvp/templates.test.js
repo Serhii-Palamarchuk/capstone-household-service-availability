@@ -28,6 +28,28 @@ test('AC-08: Refrigerator cannot bind to Work Devices', () => {
   assert.ok(result.errors.some((error) => error.code === 'TEMPLATE_ROLE_CATEGORY'));
 });
 
+test('callers cannot weaken Remote Work category validation through a template reference', () => {
+  const template = getServiceTemplate('RemoteWork');
+  const workDevices = template.roles.find((role) => role.id === 'workDevices');
+  let mutationError;
+
+  try {
+    workDevices.allowedCategories.push('Refrigerator');
+  } catch (error) {
+    mutationError = error;
+  } finally {
+    if (workDevices.allowedCategories.at(-1) === 'Refrigerator') {
+      workDevices.allowedCategories.pop();
+    }
+  }
+
+  assert.ok(mutationError instanceof TypeError);
+
+  const result = createServiceInstance(remoteWorkWithRefrigerator(), templateContext());
+  assert.equal(result.success, false);
+  assert.ok(result.errors.some((error) => error.code === 'TEMPLATE_ROLE_CATEGORY'));
+});
+
 test('AC-08: required roles and non-empty 1..N bindings are enforced', () => {
   const missingRole = createServiceInstance(remoteWorkInput({
     dependencyBindings: { workDevices: ['device-laptop'] },
