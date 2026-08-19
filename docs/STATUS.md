@@ -8,9 +8,9 @@
 
 ## Активне завдання
 
-`React Demo v1 / Task 2 — Internet demo input adapter and engine integration tests` реалізовано; очікується fresh незалежний review.
+Наступне погоджене завдання: `React Demo v1 / Task 3 — Interactive scenario form and simulation execution`.
 
-Task 3 не розпочато.
+Task 2 прийнято після fresh незалежного review; Task 3 не розпочато.
 
 Канонічна специфікація:
 
@@ -30,11 +30,12 @@ Implementation plan:
 - підготовлено `React Demo v1` implementation plan із чотирьох послідовних Developer → fresh Reviewer tasks.
 - `React Demo v1 / Task 2` реалізовано: додано fixed `Internet` demo model, string-hours to minutes adapter та integration coverage з `simulate()`;
 - Task 2 implementation commit: `c64d6d7` (`feat: add Internet demo scenario adapter`).
+- `React Demo v1 / Task 2` прийнято: Critical/Major/Minor findings — немає.
 
 ## Поточні ролі
 
-- `Developer`: Task 2 передано на fresh незалежний review; не починати Task 3;
-- `Reviewer`: потрібно перевірити лише Task 2 відносно `docs/specs/react-demo-v1.md` і `docs/plans/react-demo-v1.md`;
+- `Developer`: наступним погодженим кроком є Task 3; не починати його до окремого Developer task;
+- `Reviewer`: Task 2 завершено й прийнято; активного review немає;
 - координація та рішення: користувач + ChatGPT.
 
 ## Відкриті питання
@@ -43,15 +44,15 @@ Implementation plan:
 
 ## Остання фактична перевірка
 
-Developer для `React Demo v1 / Task 2`, implementation commit `c64d6d7`:
+Reviewer для `React Demo v1 / Task 2`, implementation range `6d05de3..c64d6d7`:
 
-- RED: `cmd.exe /d /c "npm test -- test/demo/internet-demo.test.js"` у `apps/web`: exit `1`; очікувано `ERR_MODULE_NOT_FOUND` для ще відсутнього `src/demo/internet-demo.js`;
-- GREEN targeted: та сама команда: exit `0`, `6 passed`, `0 failed`, `0 skipped`, `0 todo`;
-- GREEN full: `cmd.exe /d /c npm test` у `apps/web`: exit `0`, `49 passed`, `0 failed`, `0 skipped`, `0 todo`;
-- перед implementation commit: `git diff --cached --check`: exit `0`;
-- implementation range містить лише `apps/web/src/demo/internet-demo.js` і `apps/web/test/demo/internet-demo.test.js`.
+- `cmd.exe /d /c "npm test -- test/demo/internet-demo.test.js"` у `apps/web`: exit `0`, `6 passed`, `0 failed`, `0 skipped`, `0 todo`;
+- `cmd.exe /d /c npm test` у `apps/web`: exit `0`, `49 passed`, `0 failed`, `0 skipped`, `0 todo`;
+- `git diff --check 6d05de3..c64d6d7`: exit `0`;
+- range містить лише `apps/web/src/demo/internet-demo.js` і `apps/web/test/demo/internet-demo.test.js`; dependencies і код Task 3 не змінювалися;
+- recorded Developer RED (`exit 1`, `ERR_MODULE_NOT_FOUND`) узгоджується з тим, що `6d05de3` не містить adapter, а доданий test імпортує його. Точний незафіксований RED output не можна незалежно відтворити після GREEN без зміни checkout; його не перезапускали.
 
-Task 2 implementation complete; review ще не виконано.
+Task 2 accepted.
 
 ## Актуальна база
 
@@ -76,4 +77,4 @@ Backend, persistence, DB, external integrations, UI framework і deploy у це�
 
 ## Наступна дія
 
-Виконати fresh незалежний review лише `React Demo v1 / Task 2 — Internet demo input adapter and engine integration tests`. Не починати Task 3 до verdict Task 2.
+Запустити окремий Developer task `React Demo v1 / Task 3 — Interactive scenario form and simulation execution` відповідно до `docs/plans/react-demo-v1.md`. Task 3 у цій Reviewer-сесії не розпочинати.
