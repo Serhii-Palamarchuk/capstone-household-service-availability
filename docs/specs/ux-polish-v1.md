@@ -1,6 +1,6 @@
 # UX Polish v1 — design specification
 
-Status: **Draft for final user review**  
+Status: **Accepted — 2026-08-20**  
 Date: 2026-08-20
 
 ## 1. Purpose
