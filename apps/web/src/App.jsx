@@ -5,6 +5,10 @@ import { ServicesScenarioStep } from './components/user-mvp/ServicesScenarioStep
 import { UserScenarioResult } from './components/user-mvp/UserScenarioResult.jsx';
 import { DeviceCategory } from './user-mvp/constants.js';
 import {
+  backupSourceDisplayLabels,
+  deviceDisplayLabels,
+} from './user-mvp/entity-labels.js';
+import {
   createInitialUserMvpState,
   normalizeUserMvpForm,
 } from './user-mvp/form-state.js';
@@ -39,6 +43,8 @@ export function App() {
   const nextServiceNumber = useRef(1);
   const nextSourceNumber = useRef(1);
   const t = createTranslator(language);
+  const deviceLabels = deviceDisplayLabels(formState.devices, t);
+  const backupSourceLabels = backupSourceDisplayLabels(formState.backupSources, t);
 
   function invalidateResult() {
     const next = invalidateResultState({ outcome, submittedInput, resultStale });
@@ -340,17 +346,21 @@ export function App() {
 
       {currentStep === 0 && (
         <EquipmentStep
+          deviceLabels={deviceLabels}
           devices={formState.devices}
           onAdd={addDevice}
           onChange={changeDevice}
           onRemove={removeDevice}
           onNext={() => setCurrentStep(1)}
+          t={t}
         />
       )}
       {currentStep === 1 && (
         <BackupStep
           assignments={formState.backupAssignmentsByDeviceId}
+          backupSourceLabels={backupSourceLabels}
           backupSources={formState.backupSources}
+          deviceLabels={deviceLabels}
           devices={formState.devices}
           onAdd={addBackupSource}
           onAssignmentChange={changeAssignment}
@@ -358,6 +368,7 @@ export function App() {
           onChange={changeBackupSource}
           onNext={() => setCurrentStep(2)}
           onRemove={removeBackupSource}
+          t={t}
         />
       )}
       {currentStep === 2 && (
