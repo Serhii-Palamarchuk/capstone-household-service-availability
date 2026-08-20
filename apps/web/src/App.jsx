@@ -8,6 +8,8 @@ import {
   createInitialUserMvpState,
   normalizeUserMvpForm,
 } from './user-mvp/form-state.js';
+import { createTranslator } from './user-mvp/i18n.js';
+import { invalidateResultState } from './user-mvp/result-state.js';
 import { runUserScenario } from './user-mvp/run-user-scenario.js';
 
 const steps = ['Equipment', 'Backup', 'Services & Scenario', 'Result'];
@@ -25,17 +27,28 @@ function withoutDependency(services, dependencyId) {
 }
 
 export function App() {
+  const [language, setLanguage] = useState('en');
   const [formState, setFormState] = useState(createInitialUserMvpState);
   const [currentStep, setCurrentStep] = useState(0);
   const [errors, setErrors] = useState([]);
   const [outcome, setOutcome] = useState(null);
   const [submittedInput, setSubmittedInput] = useState(null);
+  const [resultStale, setResultStale] = useState(false);
   const nextDeviceNumber = useRef(1);
   const nextProviderNumber = useRef(1);
   const nextServiceNumber = useRef(1);
   const nextSourceNumber = useRef(1);
+  const t = createTranslator(language);
+
+  function invalidateResult() {
+    const next = invalidateResultState({ outcome, submittedInput, resultStale });
+    setOutcome(next.outcome);
+    setSubmittedInput(next.submittedInput);
+    setResultStale(next.resultStale);
+  }
 
   function changeDevice(deviceId, field, value) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       devices: current.devices.map(device => (
@@ -45,6 +58,7 @@ export function App() {
   }
 
   function addDevice() {
+    invalidateResult();
     const id = `device-custom-${nextDeviceNumber.current}`;
     nextDeviceNumber.current += 1;
     setFormState(current => ({
@@ -60,6 +74,7 @@ export function App() {
   }
 
   function removeDevice(deviceId) {
+    invalidateResult();
     setFormState(current => {
       const { [deviceId]: removedAssignment, ...remainingAssignments } = (
         current.backupAssignmentsByDeviceId
@@ -81,6 +96,7 @@ export function App() {
   }
 
   function changeBackupSource(sourceId, field, value) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       backupSources: current.backupSources.map(source => (
@@ -90,6 +106,7 @@ export function App() {
   }
 
   function addBackupSource() {
+    invalidateResult();
     const id = `source-custom-${nextSourceNumber.current}`;
     nextSourceNumber.current += 1;
     setFormState(current => ({
@@ -105,6 +122,7 @@ export function App() {
   }
 
   function removeBackupSource(sourceId) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       backupSources: current.backupSources.filter(source => source.id !== sourceId),
@@ -118,6 +136,7 @@ export function App() {
   }
 
   function changeAssignment(deviceId, sourceId) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       backupAssignmentsByDeviceId: {
@@ -128,6 +147,7 @@ export function App() {
   }
 
   function addService() {
+    invalidateResult();
     const id = `service-custom-${nextServiceNumber.current}`;
     nextServiceNumber.current += 1;
     setFormState(current => ({
@@ -143,6 +163,7 @@ export function App() {
   }
 
   function changeService(serviceId, field, value) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       services: current.services.map(service => {
@@ -164,6 +185,7 @@ export function App() {
   }
 
   function removeService(serviceId) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       services: withoutDependency(
@@ -178,6 +200,7 @@ export function App() {
   }
 
   function changeRoleBinding(serviceId, roleId, ids) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       services: current.services.map(service => (
@@ -192,6 +215,7 @@ export function App() {
   }
 
   function addProvider() {
+    invalidateResult();
     const id = `provider-custom-${nextProviderNumber.current}`;
     nextProviderNumber.current += 1;
     setFormState(current => ({
@@ -201,6 +225,7 @@ export function App() {
   }
 
   function changeProvider(providerId, name) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       externalProviders: current.externalProviders.map(provider => (
@@ -210,6 +235,7 @@ export function App() {
   }
 
   function removeProvider(providerId) {
+    invalidateResult();
     setFormState(current => {
       const { [providerId]: removedAvailability, ...remainingAvailability } = (
         current.scenario.externalProviderAvailability
@@ -228,6 +254,7 @@ export function App() {
   }
 
   function changeProviderAvailability(providerId, value) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       scenario: {
@@ -241,6 +268,7 @@ export function App() {
   }
 
   function changeScenarioList(field, ids) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       scenario: { ...current.scenario, [field]: ids },
@@ -248,6 +276,7 @@ export function App() {
   }
 
   function changeOutage(value) {
+    invalidateResult();
     setFormState(current => ({
       ...current,
       scenario: { ...current.scenario, outageDurationMinutes: value },
@@ -266,6 +295,7 @@ export function App() {
     setErrors([]);
     setSubmittedInput(normalized);
     setOutcome(runUserScenario(normalized));
+    setResultStale(false);
     setCurrentStep(3);
   }
 
@@ -294,11 +324,19 @@ export function App() {
               key={step}
             >
               <span>{index + 1}</span>
-              {step}
+              {index < currentStep ? (
+                <button type="button" onClick={() => setCurrentStep(index)}>{step}</button>
+              ) : step}
             </li>
           ))}
         </ol>
       </nav>
+
+      {resultStale && (
+        <p className="step-label" role="status">
+          {t('result.needsRecalculation', { fallback: 'Result needs recalculation' })}
+        </p>
+      )}
 
       {currentStep === 0 && (
         <EquipmentStep
