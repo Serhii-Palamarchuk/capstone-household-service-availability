@@ -9,93 +9,90 @@
 - `Deploy v1`;
 - `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation, final whole-branch review, cleanup, merge у `main`, deployment і post-deploy live smoke.
 
-User-facing MVP feature branch `feature/user-facing-mvp-v1` fast-forward merged у `main`. Після push remote `main` і feature branch були ідентичні на commit `cd150c679cd38c92759affc308a1bea794e5ea59`.
-
 Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
-2026-08-20 користувач підтвердив, що live deployment відкривається після merge/push. Post-deploy browser smoke основного accepted flow AC-12 також пройдено на live deployment.
-
-## Supervisor checkpoint
-
-Weekly Capstone Progress Report — Week 2 відправлено Тетяні через LMS; у Slack надіслано report + live demo.
-
-Статус: **submitted → awaiting supervisor feedback**.
-
-## User-facing MVP v1 — deployed state
-
-Реалізований flow:
+Поточний deployed flow:
 
 ```text
 Equipment → Backup → Services & Scenario → Result
 ```
 
-Ключове:
+`Simulation Engine v1`, Availability Estimator formulas, service-template semantics і recommendation logic є стабільною базою та не повинні змінюватися в поточній UX-ітерації.
 
-- Device вводиться через category, `powerW` і optional internal battery без ручного `availabilityMinutes`;
-- BackupSource має usable capacity, optional max output і assignments;
-- target services визначають mandatory loads, additional loads задаються окремо;
-- ExternalProvider availability вводиться вручну;
-- `Simulation Engine v1` не змінювався.
+## Supervisor checkpoint — Week 2
 
-## Task 7 — browser acceptance
+Weekly Capstone Progress Report — Week 2 був відправлений Тетяні через LMS; repository + live demo також були надіслані.
 
-Локальний Browser walkthrough (HTTP `200`) підтвердив AC-12: Home backup `80 W` / `360 min`, Router і ONT/ONU по `360 min`, Laptop `480 min` (`360` external + `120` internal), Remote Work `Limited` / `360 min`, limiting dependencies Router + ONT/ONU та обидва causal paths.
+За повідомленням користувача 2026-08-20, завдання за Week 2 вже прийняте, але окремих текстових коментарів/нового feedback Тетяни не надійшло.
 
-Також перевірено:
+Користувач окремо вирішив не блокувати Week 3 очікуванням додаткового feedback і перейти до usability/UX polish без розширення MVP scope.
 
-- rerun без reload після provider `600 → 300`: Remote Work `300 min`, limiting Internet provider і відповідне пояснення;
-- TV (`Other Load`, `70 W`) додано окремо й вибрано як additional load: `150 W`, `192 min`, TV не став service dependency, а вимкнення TV покращує кожен selected target щонайменше на `168 min (2.8 h)`;
-- negative UI smoke без synthetic partial result: `INVALID_POSITIVE_NUMBER`, `BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED`, `MISSING_EXTERNAL_PROVIDER_AVAILABILITY`, `TEMPLATE_ROLE_CARDINALITY`.
+## Accepted deployed verification baseline
 
-## Final verification — 2026-08-20
+Перед UX Polish v1 поточна accepted реалізація має фактичну перевірену базу:
 
-Після cleanup у `2fb38d0` controller підтвердив:
+- full suite після cleanup/merge: `100 passed`, `0 failed`;
+- production build Vite `8.2.1` — successful;
+- локальний browser AC-14 walkthrough включав rerun без reload;
+- post-deploy live browser smoke AC-12 підтвердив основний accepted flow.
 
-- `cmd.exe /d /c npm test` у `apps/web` — exit `0`; `100 passed`, `0 failed`, `0 cancelled`, `0 skipped`, `0 todo`;
-- `cmd.exe /d /c npm run build` — exit `0`; Vite `8.2.1`, `32` modules transformed;
-- browser smoke повторених validation errors — passed; обидві помилки відрендерилися, console warnings/errors — `0`;
-- focused cleanup tests — `5/5 passed`, exit `0`;
-- `git diff --check` — exit `0`;
-- branch diff від merge base `6a18be4` під `apps/web/src/simulation` — `0` lines;
-- dependency diff для `apps/web/package.json` і `apps/web/package-lock.json` — exit `0`, empty;
-- implemented placeholder scan і branch-diff secret-pattern heuristic — по `0` matches.
-
-Після fast-forward merge у локальний `main` користувач повторно виконав перевірку:
-
-- `npm test` — `100 passed`, `0 failed`;
-- `npm run build` — Vite `8.2.1`, `32` modules transformed, build successful;
-- working tree був clean перед push;
-- `main` push-нуто до GitHub;
-- live deployment після push відкривається.
-
-Post-deploy live browser smoke AC-12 підтвердив на GitHub Pages:
+Post-deploy AC-12 controlled fixture:
 
 - Home backup: `80 W`, runtime `360 min`;
-- Router: `360 min` external, `360 min` total;
-- ONT/ONU: `360 min` external, `360 min` total;
-- Laptop: `360 min` external + `120 min` internal = `480 min` total;
-- target `Remote Work`: availability `360 min`, status `Limited`;
-- limiting dependencies: `ONT/ONU` і `Router`;
-- causal paths: `Remote Work → Internet — Home → ONT/ONU` та `Remote Work → Internet — Home → Router`;
-- warning `MISSING_BACKUP_SOURCE_MAX_OUTPUT` відображено очікувано, оскільки optional max output не задавався.
+- Router: `360 min`;
+- ONT/ONU: `360 min`;
+- Laptop: `360 min` external + `120 min` internal = `480 min`;
+- Remote Work: `Limited`, availability `360 min`;
+- limiting dependencies: Router + ONT/ONU;
+- causal paths через Internet до Router та ONT/ONU;
+- `MISSING_BACKUP_SOURCE_MAX_OUTPUT` показано очікувано.
 
-Ці значення є контрольними test fixtures accepted AC-12, а не результатами реальних вимірювань автономності.
+Ці значення є контрольними test fixtures, а не результатами реальних вимірювань автономності.
 
-## Final whole-branch review
+## Week 3 — UX Polish v1 design checkpoint
 
-Reviewer перевірив range `6a18be4..b8a027d` і повернув `CHANGES REQUESTED` для одного Major: `Remote Work` приймав `ServiceInstance`, що не є Internet. Єдина fix wave у `f1d0a92` додала metadata-driven allowed-template constraint, незалежне builder enforcement, UI/form filtering і regressions.
+2026-08-20 користувач провів usability review актуального live UI та погодив напрям **compact rows + progressive details** замість великих card-блоків.
 
-Scoped re-review: Major **ADDRESSED**, нових Critical/Major/Minor breakage немає. Final verdict: **All findings addressed, no new Critical/Major breakage**. Final whole-branch review accepted at `f1d0a92`.
+Підготовлено draft-документи для фінального user review:
 
-Усі чотири non-blocking Minor follow-ups закрито у `2fb38d0`: посилено AC-07 і AC-12 tests, виправлено React keys для повторених validation errors та актуалізовано product-scope text у `docs/specs/repository-workflow.md`. Scoped cleanup Reviewer verdict: **ACCEPTED**, Critical/Major/Minor findings немає.
+- `docs/specs/ux-polish-v1.md`;
+- `docs/specs/ux-polish-v1-acceptance.md` (`UX-01…UX-30`).
+
+Ключові погоджені UX-рішення:
+
+- desktop acceptance viewport: `1920 × 1080`;
+- density fixture: 5 Devices, 2 BackupSources, 3 ServiceInstances, 2 ExternalProviders; для Result усі 3 валідні ServiceInstances є targets;
+- default/collapsed state кожного з 4 кроків має вміщуватися без вертикального page scroll;
+- Device / BackupSource / Service custom `Name` стає optional і візуально другорядним;
+- технічні labels формуються автоматично, наприклад `Router · 15 W` і `Power station · 1000 Wh · 1200 W max`;
+- meaningful custom name показується як `Bedroom router (Router · 15 W)`;
+- дублікати name/type/category не повторюються;
+- однакові unnamed entities отримують компактний UI-disambiguator `#1`, `#2`;
+- Backup assignment: 1 source → on/off control; 2+ sources → on/off + selector;
+- Services показуються компактними rows із summary dependencies, target state і `Details`;
+- Result перетворюється на компактний dashboard із пріоритетом target status/availability/limiting cause;
+- Result дозволяє quick edit `usableCapacityWh`, `maxOutputPowerW` і outage duration з `Recalculate` через той самий pipeline;
+- stepper дозволяє пряме повернення на будь-який попередній крок; компактна `Back`-кнопка також залишається;
+- зміна upstream inputs робить попередній Result stale і вимагає нового run/recalculate;
+- UA/EN switch входить у UX Polish v1 як другий пріоритет після compact redesign; перемикання не скидає state;
+- нова third-party i18n dependency без окремого погодження не додається;
+- engine/estimator/domain semantics не змінюються.
+
+Статус UX Polish v1: **design draft written → awaiting final user review**. Coding cycle ще не починався.
 
 ## Source of truth
 
 - `docs/STATUS.md` — поточний operational snapshot;
-- `docs/specs/user-facing-mvp-v1.md` — accepted contract;
+- `docs/DECISIONS.md` — accepted суттєві рішення;
+- `docs/specs/user-facing-mvp-v1.md` — accepted User-facing MVP contract;
 - `docs/specs/user-facing-mvp-v1-acceptance.md` — accepted AC-01…AC-14;
+- `docs/specs/ux-polish-v1.md` — поточний UX Polish design draft;
+- `docs/specs/ux-polish-v1-acceptance.md` — поточний UX acceptance draft;
 - `docs/specs/repository-workflow.md` — agent workflow.
 
 ## Наступна дія
 
-Milestone `User-facing MVP v1` повністю інтегрований, deployed і перевірений на live accepted flow. Далі — Week 3: зафіксувати фактичний feedback Тетяни після перегляду актуального live demo та, лише якщо feedback не змінює напрям, продовжити первинне тестування/UX-polish без розширення scope.
+1. Користувач переглядає written `UX Polish v1` spec + acceptance draft.
+2. Якщо зміни не потрібні — зафіксувати UX рішення як Accepted у `docs/DECISIONS.md` і змінити draft-status у spec/acceptance.
+3. Після цього створити окремий implementation plan і лише потім передавати реалізацію Codex/Developer → Reviewer workflow.
+4. Паралельно готувати Weekly Capstone Progress Report — Week 3 лише з фактично виконаних робіт і перевірених результатів.
