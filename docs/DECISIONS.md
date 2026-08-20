@@ -253,3 +253,66 @@ Status: Accepted
 - `docs/DOMAIN_MODEL.md`
 - `docs/STATUS.md`
 - майбутні `docs/TEST_SCENARIOS.md` і implementation plan
+
+---
+
+## D-005 — UX Polish v1: compact rows + progressive details
+
+Date: 2026-08-20
+Status: Accepted
+
+### Context
+
+Після live acceptance User-facing MVP v1 користувач провів окремий usability review. Функціональний flow працює, але card-heavy подання на всіх чотирьох кроках займає надмірну вертикальну площу, повторює `Name`/type/category labels і змушує користувача часто скролити або повертатися на попередні кроки для простого порівняння backup-сценаріїв.
+
+### Alternatives
+
+1. Повністю табличний UI для Equipment, Backup, Services і Result.
+2. Compact rows + progressive `Details` із збереженням 4-step wizard.
+3. Один великий single-page dashboard/configurator без wizard.
+
+### Criteria
+
+- менше вертикального скролу й повторів;
+- зрозумілість для побутового користувача, а не вигляд admin editor;
+- збереження існуючої ментальної моделі 4-step flow;
+- можливість швидко змінити backup/outage після Result;
+- доступне повернення на попередній крок;
+- відсутність змін у Simulation Engine/Estimator/domain semantics;
+- реалістичний індивідуальний scope;
+- вимірюваний desktop acceptance criterion.
+
+### Decision
+
+Прийнято `docs/specs/ux-polish-v1.md` і `docs/specs/ux-polish-v1-acceptance.md` (`UX-01…UX-30`).
+
+Ключові рішення:
+
+- використовувати **compact rows + progressive details**;
+- зберегти 4-step wizard і компактну `Back`-кнопку;
+- stepper дозволяє прямий перехід на будь-який попередній крок, але не forward jump;
+- default/collapsed state перевіряється на CSS viewport `1920 × 1080` із 5 Devices, 2 BackupSources, 3 ServiceInstances, 2 ExternalProviders; на Result усі 3 сервіси — targets;
+- custom `Name` для Device/BackupSource/Service — optional і візуально другорядний; доменне `name` лишається непорожнім через deterministic fallback;
+- user-visible labels автоматично включають корисні технічні характеристики та не дублюють custom name/category/type;
+- 1 BackupSource → простий on/off assignment, 2+ → on/off + source selector;
+- Result має decision-first dashboard і quick edit тільки для `usableCapacityWh`, `maxOutputPowerW`, outage duration;
+- quick edit використовує той самий normalization → estimator → simulation pipeline;
+- upstream edit робить старий Result stale;
+- UA/EN входить у UX Polish v1 без нової third-party i18n dependency; English лишається initial/default;
+- ExternalProvider name лишається required;
+- Simulation Engine v1, Availability Estimator formulas, service-template role semantics, status semantics і recommendation rules не змінюються.
+
+### Rationale
+
+Обраний підхід напряму усуває зафіксовані usability-проблеми, але не розширює предметну модель і не створює новий технічний ризик для вже прийнятого simulation contract. Вимірюваний density baseline дозволяє перевірити результат як інженерну вимогу, а не лише суб’єктивне враження.
+
+### Affected
+
+- `docs/specs/ux-polish-v1.md`
+- `docs/specs/ux-polish-v1-acceptance.md`
+- `docs/plans/ux-polish-v1.md`
+- `apps/web/src/App.jsx`
+- `apps/web/src/components/user-mvp/**`
+- `apps/web/src/user-mvp/form-state.js` та presentation-only UX helpers
+- `apps/web/src/styles.css`
+- UX/regression tests
