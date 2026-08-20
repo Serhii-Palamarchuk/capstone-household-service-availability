@@ -1,296 +1,296 @@
-# UX Polish v1 — acceptance criteria
+# UX Polish v1 — критерії приймання
 
-Status: **Accepted — 2026-08-20**  
-Date: 2026-08-20
+Статус: **Прийнято — 2026-08-20**  
+Дата: 2026-08-20
 
-This document verifies `docs/specs/ux-polish-v1.md`. It adds UX acceptance only; accepted User-facing MVP v1 calculation semantics remain unchanged.
+Цей документ перевіряє `docs/specs/ux-polish-v1.md`. Він додає лише UX acceptance; погоджена семантика розрахунків User-facing MVP v1 не змінюється.
 
 ## UX-01 — Desktop density baseline
 
-**Given** a CSS viewport of `1920 × 1080`  
-**And** a valid configuration containing 5 Devices, 2 BackupSources, 3 ServiceInstances and 2 ExternalProviders  
-**And** for Step 4 all 3 valid ServiceInstances are selected as target services  
-**When** the user opens each wizard step in its default/collapsed state  
-**Then** the page has no vertical page scroll on Step 1, Step 2, Step 3 or Step 4.
+**Дано** CSS viewport `1920 × 1080`  
+**І** валідну конфігурацію з 5 `Device`, 2 `BackupSource`, 3 `ServiceInstance` і 2 `ExternalProvider`  
+**І** для Step 4 усі 3 валідні `ServiceInstance` вибрані як target services  
+**Коли** користувач відкриває кожен wizard step у default/collapsed state  
+**Тоді** Step 1, Step 2, Step 3 і Step 4 не мають вертикального page scroll.
 
-Expanded `Details`, dialogs/modals, dropdown menus, long validation lists and unusually long custom names are excluded from the no-scroll requirement.
+Відкриті `Details`, dialogs/modals, dropdown menus, довгі списки validation messages і надзвичайно довгі custom names не входять до вимоги no-scroll.
 
-## UX-02 — Equipment compact rows
+## UX-02 — Компактні рядки Equipment
 
-**Given** multiple Devices  
-**When** Step 1 is displayed  
-**Then** each Device is represented primarily as one compact row rather than a large standalone card  
-**And** category, power and battery summary are readable without opening details  
-**And** optional custom `Name` is not presented as the primary required field.
+**Дано** кілька `Device`  
+**Коли** відображається Step 1  
+**Тоді** кожен `Device` подається насамперед одним компактним рядком, а не великою окремою card  
+**І** category, power та battery summary читаються без відкриття details  
+**І** optional custom `Name` не подається як головне required field.
 
 ## UX-03 — Optional Device name
 
-**Given** a Device with valid category and power but empty custom `Name`  
-**When** the form is normalized and the scenario is valid  
-**Then** empty custom `Name` does not produce a required-name validation error  
-**And** the resulting domain entity still receives a deterministic non-empty internal name/fallback.
+**Дано** `Device` з валідними category і power та порожнім custom `Name`  
+**Коли** форма нормалізується і scenario валідний  
+**Тоді** порожній custom `Name` не створює required-name validation error  
+**І** resulting domain entity все одно отримує детермінований непорожній internal name/fallback.
 
 ## UX-04 — Device technical label
 
-**Given** a Router with `powerW = 15` and no custom name  
-**Then** its user-visible label is equivalent to:
+**Дано** Router з `powerW = 15` і без custom name  
+**Тоді** user-visible label еквівалентний:
 
 ```text
 Router · 15 W
 ```
 
-**Given** the same Device with custom name `Bedroom router`  
-**Then** its label is equivalent to:
+**Дано** той самий `Device` з custom name `Bedroom router`  
+**Тоді** label еквівалентний:
 
 ```text
 Bedroom router (Router · 15 W)
 ```
 
-## UX-05 — Duplicate label suppression and disambiguation
+## UX-05 — Приховування дублювання та розрізнення labels
 
-**Given** a custom Device name equal to its category or generated technical label after trim/case normalization  
-**Then** the UI does not render duplicated text such as `Router (Router · 15 W)` when the custom value adds no information.
+**Дано** custom Device name, що після trim/case normalization дорівнює category або generated technical label  
+**Тоді** UI не показує дубльований текст на кшталт `Router (Router · 15 W)`, якщо custom value не додає інформації.
 
-**Given** two unnamed Devices that otherwise resolve to the same visible label  
-**Then** the UI adds a compact deterministic disambiguator such as `#1` / `#2`.
+**Дано** два неназвані `Device`, які інакше мають однаковий visible label  
+**Тоді** UI додає компактний детермінований disambiguator, наприклад `#1` / `#2`.
 
-## UX-06 — BackupSource compact rows and optional name
+## UX-06 — Compact BackupSource rows і optional name
 
-**Given** a BackupSource with type `Power station`, `usableCapacityWh = 1000`, `maxOutputPowerW = 1200`, and no custom name  
-**Then** its technical label is equivalent to:
+**Дано** `BackupSource` з type `Power station`, `usableCapacityWh = 1000`, `maxOutputPowerW = 1200` і без custom name  
+**Тоді** technical label еквівалентний:
 
 ```text
 Power station · 1000 Wh · 1200 W max
 ```
 
-**And** empty custom `Name` does not block normalization/simulation  
-**And** a deterministic non-empty domain fallback is still available.
+**І** порожній custom `Name` не блокує normalization/simulation  
+**І** детермінований непорожній domain fallback залишається доступним.
 
-**Given** custom name `EcoFlow`  
-**Then** its user-visible label is equivalent to:
+**Дано** custom name `EcoFlow`  
+**Тоді** user-visible label еквівалентний:
 
 ```text
 EcoFlow (Power station · 1000 Wh · 1200 W max)
 ```
 
-## UX-07 — Single-source assignment simplification
+## UX-07 — Спрощення assignment для одного source
 
-**Given** exactly one BackupSource  
-**When** Step 2 is displayed  
-**Then** each Device uses a simple external-backup on/off control  
-**And** no redundant source dropdown is required  
-**And** turning backup on assigns the single source  
-**And** turning backup off removes the external assignment without removing an internal battery.
+**Дано** рівно один `BackupSource`  
+**Коли** відображається Step 2  
+**Тоді** кожен `Device` використовує простий external-backup on/off control  
+**І** redundant source dropdown не потрібен  
+**І** увімкнення backup призначає єдиний source  
+**І** вимкнення backup видаляє external assignment, не видаляючи internal battery.
 
-## UX-08 — Multi-source assignment
+## UX-08 — Assignment для кількох sources
 
-**Given** two or more BackupSources  
-**When** external backup is enabled for a Device  
-**Then** a compact source selector is available  
-**And** the Device can still have at most one external source in the scenario.
+**Дано** два або більше `BackupSource`  
+**Коли** external backup увімкнений для `Device`  
+**Тоді** доступний компактний source selector  
+**І** `Device` як і раніше може мати максимум одне external source у scenario.
 
-**When** external backup is disabled  
-**Then** no external assignment is included for that Device.
+**Коли** external backup вимкнений  
+**Тоді** external assignment для цього `Device` не включається.
 
-## UX-09 — Existing backup validation semantics preserved
+## UX-09 — Збереження чинної backup validation semantics
 
-**Given** a used BackupSource without `maxOutputPowerW`  
-**When** the scenario runs  
-**Then** calculation is allowed and the existing missing-max-output warning is still produced.
+**Дано** використаний `BackupSource` без `maxOutputPowerW`  
+**Коли** scenario запускається  
+**Тоді** calculation дозволений і чинний missing-max-output warning усе ще повертається.
 
-**Given** a known max output lower than active assigned load  
-**Then** the existing overload validation error still prevents simulation.
+**Дано** known max output, нижчий за active assigned load  
+**Тоді** чинний overload validation error усе ще блокує simulation.
 
-## UX-10 — Service compact rows
+## UX-10 — Compact Service rows
 
-**Given** multiple ServiceInstances  
-**When** Step 3 is displayed in collapsed state  
-**Then** each service is primarily represented by one compact row  
-**And** the row shows template/variant identity, dependency summary, target state and a `Details` action  
-**And** required role editors are not all expanded by default.
+**Дано** кілька `ServiceInstance`  
+**Коли** Step 3 показано в collapsed state  
+**Тоді** кожен service насамперед представлений одним compact row  
+**І** row показує template/variant identity, dependency summary, target state і `Details` action  
+**І** усі required role editors не розгорнуті за замовчуванням.
 
 ## UX-11 — Optional Service name
 
-**Given** a valid ServiceInstance template/variant/bindings and empty custom `Name`  
-**When** the form is normalized  
-**Then** empty custom `Name` does not produce a required-name validation error  
-**And** the ServiceInstance still receives a deterministic non-empty internal fallback.
+**Дано** валідні template/variant/bindings `ServiceInstance` і порожній custom `Name`  
+**Коли** форма нормалізується  
+**Тоді** порожній custom `Name` не створює required-name validation error  
+**І** `ServiceInstance` усе одно отримує детермінований непорожній internal fallback.
 
-Example default labels include:
+Приклади default labels:
 
 ```text
 Internet · Fiber
 Remote Work
 ```
 
-## UX-12 — ExternalProvider naming remains explicit
+## UX-12 — Explicit naming для ExternalProvider зберігається
 
-**Given** an ExternalProvider  
-**Then** provider name remains an explicit required user-facing field  
-**Because** the current model has no independent provider category/type that can safely generate an equivalent label.
+**Дано** `ExternalProvider`  
+**Тоді** provider name залишається явним required user-facing field  
+**Тому що** поточна модель не має незалежного provider category/type, з якого можна безпечно сформувати рівноцінний label.
 
-## UX-13 — Target selection integrated with service row
+## UX-13 — Target selection інтегровано в service row
 
-**Given** a ServiceInstance on Step 3  
-**When** the user changes its target state  
-**Then** `scenario.targetServiceIds` reflects the change  
-**And** the underlying target/mandatory-load semantics remain unchanged.
+**Дано** `ServiceInstance` на Step 3  
+**Коли** користувач змінює його target state  
+**Тоді** `scenario.targetServiceIds` відображає зміну  
+**І** underlying target/mandatory-load semantics не змінюються.
 
 ## UX-14 — Progressive details
 
-**Given** a collapsed Device, BackupSource or Service row  
-**When** the user activates `Details`  
-**Then** secondary/editing fields become available  
-**And** the control exposes expanded/collapsed state accessibly  
-**And** collapsing the row does not discard entered values.
+**Дано** collapsed `Device`, `BackupSource` або Service row  
+**Коли** користувач активує `Details`  
+**Тоді** secondary/editing fields стають доступними  
+**І** control доступно повідомляє expanded/collapsed state  
+**І** згортання row не втрачає введені values.
 
-## UX-15 — Validation inside collapsed details remains discoverable
+## UX-15 — Validation у collapsed details залишається помітною
 
-**Given** an invalid field that is currently inside collapsed `Details`  
-**When** validation runs  
-**Then** the user can identify which entity/field is invalid  
-**And** the affected details area is exposed or clearly marked  
-**And** the error is not silently hidden by the compact layout.
+**Дано** invalid field, який зараз знаходиться всередині collapsed `Details`  
+**Коли** запускається validation  
+**Тоді** користувач може визначити, яка entity/field невалідна  
+**І** affected details area відкривається або чітко позначається  
+**І** error не приховується через compact layout.
 
-## UX-16 — Result information hierarchy
+## UX-16 — Ієрархія інформації Result
 
-**Given** a successful scenario  
-**When** Step 4 is shown  
-**Then** target service status, availability versus outage duration, and limiting dependency/dependencies appear before subsystem detail  
-**And** causal paths remain readable  
-**And** BackupSource and Device results use compact summaries rather than one large card per item.
+**Дано** successful scenario  
+**Коли** показується Step 4  
+**Тоді** target service status, availability порівняно з outage duration і limiting dependency/dependencies відображаються перед subsystem details  
+**І** causal paths залишаються читабельними  
+**І** результати `BackupSource` та `Device` використовують compact summaries замість однієї великої card на кожен item.
 
-## UX-17 — Empty warnings/recommendations do not create large blank sections
+## UX-17 — Порожні warnings/recommendations не створюють великих блоків
 
-**Given** zero warnings or zero recommendations  
-**Then** the corresponding empty state does not reserve a large card/block of vertical space.
+**Дано** zero warnings або zero recommendations  
+**Тоді** відповідний empty state не резервує великий card/block вертикального простору.
 
-**Given** warnings or recommendations exist  
-**Then** their existing semantics and text meaning remain available in a compact readable presentation.
+**Дано** warnings або recommendations існують  
+**Тоді** їхня чинна семантика й зміст тексту залишаються доступними в компактному читабельному представленні.
 
 ## UX-18 — Quick edit BackupSource
 
-**Given** a successful Result with at least one used BackupSource  
-**When** the user chooses `Edit` for a specific source  
-**Then** the user can change only:
+**Дано** successful Result із принаймні одним використаним `BackupSource`  
+**Коли** користувач обирає `Edit` для конкретного source  
+**Тоді** користувач може змінити лише:
 
 - `usableCapacityWh`;
 - `maxOutputPowerW`.
 
-**And** source type, assignments, Devices and service structure are not edited in this quick editor.
+**І** source type, assignments, `Device` та service structure не редагуються в цьому quick editor.
 
-**When** the user confirms `Recalculate`  
-**Then** the standard normalization → estimator → simulation pipeline runs again.
+**Коли** користувач підтверджує `Recalculate`  
+**Тоді** стандартний normalization → estimator → simulation pipeline запускається повторно.
 
 ## UX-19 — Quick edit outage duration
 
-**Given** a successful Result  
-**When** the user changes outage duration through quick edit and selects `Recalculate`  
-**Then** the scenario is recalculated through the standard pipeline  
-**And** the new Result uses the changed outage duration  
-**And** no full page reload is required.
+**Дано** successful Result  
+**Коли** користувач змінює outage duration через quick edit і обирає `Recalculate`  
+**Тоді** scenario перераховується через стандартний pipeline  
+**І** новий Result використовує змінену outage duration  
+**І** full page reload не потрібен.
 
 ## UX-20 — Quick-edit validation
 
-**Given** an invalid quick-edit capacity, max output or outage duration  
-**When** the user attempts recalculation  
-**Then** the same validation rules as the wizard are applied  
-**And** no synthetic or partial Result is shown as current.
+**Дано** invalid quick-edit capacity, max output або outage duration  
+**Коли** користувач намагається виконати recalculation  
+**Тоді** застосовуються ті самі validation rules, що й у wizard  
+**І** synthetic або partial Result не показується як актуальний.
 
-## UX-21 — Interactive backward stepper
+## UX-21 — Інтерактивний backward stepper
 
-**Given** the user is on Step 2  
-**Then** Step 1 in the stepper is interactive.
+**Дано** користувач на Step 2  
+**Тоді** Step 1 у stepper інтерактивний.
 
-**Given** the user is on Step 3  
-**Then** Step 1 and Step 2 in the stepper are interactive.
+**Дано** користувач на Step 3  
+**Тоді** Step 1 і Step 2 у stepper інтерактивні.
 
-**Given** the user is on Step 4  
-**Then** Step 1, Step 2 and Step 3 are interactive.
+**Дано** користувач на Step 4  
+**Тоді** Step 1, Step 2 і Step 3 у stepper інтерактивні.
 
-**When** the user clicks an earlier completed step  
-**Then** the wizard navigates there without discarding form data.
+**Коли** користувач натискає earlier completed step  
+**Тоді** wizard переходить до нього без втрати form data.
 
-**And** forward progression continues through `Continue` / `Run scenario`; clickable forward jumps are not required.
+**І** forward progression продовжується через `Continue` / `Run scenario`; clickable forward jumps не потрібні.
 
-## UX-22 — Back button retained
+## UX-22 — Back button зберігається
 
-**Given** Step 2, Step 3 or Step 4  
-**Then** a compact secondary `Back` action remains available in addition to stepper navigation.
+**Дано** Step 2, Step 3 або Step 4  
+**Тоді** компактна secondary дія `Back` залишається доступною разом зі stepper navigation.
 
-## UX-23 — Stepper keyboard accessibility
+## UX-23 — Keyboard accessibility stepper
 
-**Given** keyboard-only navigation  
-**Then** interactive earlier stepper items are focusable and activatable without a pointing device.
+**Дано** keyboard-only navigation  
+**Тоді** interactive earlier stepper items можна сфокусувати та активувати без pointing device.
 
-## UX-24 — Stale Result protection
+## UX-24 — Захист від stale Result
 
-**Given** a successful Result exists  
-**When** the user returns to an earlier step and changes upstream scenario/configuration data  
-**Then** the prior Result is marked stale/not-current  
-**And** it must not be presented as a current calculated result  
-**And** a fresh `Run scenario` or `Recalculate` is required.
+**Дано** successful Result уже існує  
+**Коли** користувач повертається на попередній step і змінює upstream scenario/configuration data  
+**Тоді** previous Result позначається stale/not-current  
+**І** не подається як актуальний calculated result  
+**І** потрібен новий `Run scenario` або `Recalculate`.
 
-**Given** the user navigates backward and makes no changes  
-**Then** previously valid entered data is preserved.
+**Дано** користувач повернувся назад і нічого не змінив  
+**Тоді** раніше валідні введені data зберігаються.
 
-## UX-25 — UA/EN switch preserves state
+## UX-25 — UA/EN switch зберігає state
 
-**Given** the user has entered Devices, BackupSources, assignments, services and scenario data  
-**When** the user switches between English and Ukrainian  
-**Then** current form values, assignments, current step and current valid Result are preserved  
-**And** no page reload/reset is required.
+**Дано** користувач ввів `Device`, `BackupSource`, assignments, services і scenario data  
+**Коли** користувач перемикається між English та Ukrainian  
+**Тоді** current form values, assignments, current step і current valid Result зберігаються  
+**І** page reload/reset не потрібен.
 
 ## UX-26 — Translation coverage
 
-**When** UA is selected  
-**Then** visible application labels, helper text, action buttons, validation messages, warnings, recommendations and displayed statuses have Ukrainian UI text.
+**Коли** вибрано UA  
+**Тоді** visible application labels, helper text, action buttons, validation messages, warnings, recommendations і displayed statuses мають український UI text.
 
-**When** EN is selected  
-**Then** the equivalent content is presented in English.
+**Коли** вибрано EN  
+**Тоді** еквівалентний content подається англійською.
 
-**And** underlying status values, validation/error codes and recommendation identifiers remain unchanged.
+**І** underlying status values, validation/error codes і recommendation identifiers не змінюються.
 
-Technical identifiers used only for debugging/internal diagnostics do not need to replace the user-facing message.
+Technical identifiers, що використовуються лише для debugging/internal diagnostics, не повинні замінювати user-facing message.
 
-## UX-27 — Language implementation scope
+## UX-27 — Межі реалізації language switch
 
-**Then** UX Polish v1 does not add a new third-party i18n dependency without separate user approval  
-**And** English remains the initial/default language for v1  
-**And** locale autodetection and cross-session language persistence are not required.
+**Тоді** UX Polish v1 не додає нову third-party i18n dependency без окремого погодження користувача  
+**І** English залишається initial/default language для v1  
+**І** locale autodetection та cross-session language persistence не потрібні.
 
-## UX-28 — Simulation regression protection
+## UX-28 — Regression protection симуляції
 
-Using existing accepted controlled fixtures, including AC-12:
+Використовуючи чинні accepted controlled fixtures, включно з AC-12:
 
-**When** only UX presentation/navigation changes are introduced  
-**Then** estimator and Simulation Engine numerical outputs remain unchanged for identical normalized inputs.
+**Коли** змінюються лише UX presentation/navigation  
+**Тоді** numerical outputs Availability Estimator і Simulation Engine залишаються незмінними для ідентичних normalized inputs.
 
-For the accepted AC-12 fixture this includes the previously established controlled expectations such as Home backup `80 W / 360 min` and Remote Work `Limited / 360 min`; these are test-fixture values, not real autonomy measurements.
+Для accepted AC-12 fixture це включає раніше зафіксовані контрольні очікування, зокрема Home backup `80 W / 360 min` і Remote Work `Limited / 360 min`; це test-fixture values, а не реальні вимірювання автономності.
 
-## UX-29 — No domain-scope expansion
+## UX-29 — Без розширення domain scope
 
-A UX Polish v1 implementation is not accepted if it requires changing:
+Реалізація UX Polish v1 не приймається, якщо для неї потрібно змінити:
 
-- Availability Estimator formulas;
-- Simulation Engine status/dependency logic;
-- service-template role semantics;
+- формули Availability Estimator;
+- status/dependency logic Simulation Engine;
+- семантику service-template roles;
 - recommendation rules;
 - accepted domain scope.
 
-Any such requirement must be treated as a separate design decision rather than silently bundled into UX polish.
+Будь-яка така потреба оформлюється як окреме design decision, а не мовчки додається до UX polish.
 
-## UX-30 — Browser verification evidence
+## UX-30 — Evidence browser verification
 
-Before merge/deploy, record factual verification using the existing project workflow:
+Перед merge/deploy фактично зафіксувати verification через чинний project workflow:
 
-- full existing test suite result;
-- production build result;
-- focused UX tests added for this iteration;
-- manual `1920 × 1080` density walkthrough for all four steps with the UX-01 fixture;
+- результат full existing test suite;
+- результат production build;
+- focused UX tests, додані для цієї ітерації;
+- manual `1920 × 1080` density walkthrough усіх чотирьох steps із fixture UX-01;
 - navigation + stale-result walkthrough;
 - quick-edit rerun walkthrough;
 - UA/EN state-preservation walkthrough;
-- browser console observations if checked.
+- browser console observations, якщо вони перевірялися.
 
-Do not report a pass, performance figure or usability result unless it was actually observed/tested.
+Не повідомляти про pass, performance figure або usability result, якщо вони фактично не були спостережені або протестовані.
