@@ -1,4 +1,9 @@
 import { DeviceCategory } from './constants.js';
+import {
+  fallbackBackupSourceName,
+  fallbackDeviceName,
+  fallbackServiceName,
+} from './entity-labels.js';
 import { createServiceInstance } from './service-builder.js';
 
 function uiError(code, field, message) {
@@ -64,9 +69,10 @@ function integerNumber(value, field, label, errors, { allowZero = false, optiona
 function normalizeDevice(device, index, errors) {
   const prefix = `devices.${index}`;
   const id = requiredText(device.id, `${prefix}.id`, 'Device id', errors);
-  const name = requiredText(device.name, `${prefix}.name`, 'Device name', errors);
   const category = requiredText(device.category, `${prefix}.category`, 'Device category', errors);
   const powerW = positiveNumber(device.powerW, `${prefix}.powerW`, 'Device power', errors);
+  const customName = typeof device.name === 'string' ? device.name.trim() : '';
+  const name = customName || fallbackDeviceName({ ...device, category, powerW });
   const internalBatteryWh = positiveNumber(
     device.internalBatteryWh,
     `${prefix}.internalBatteryWh`,
@@ -89,7 +95,6 @@ function normalizeDevice(device, index, errors) {
 function normalizeBackupSource(source, index, errors) {
   const prefix = `backupSources.${index}`;
   const id = requiredText(source.id, `${prefix}.id`, 'Backup source id', errors);
-  const name = requiredText(source.name, `${prefix}.name`, 'Backup source name', errors);
   const type = requiredText(source.type, `${prefix}.type`, 'Backup source type', errors);
   const usableCapacityWh = positiveNumber(
     source.usableCapacityWh,
@@ -104,6 +109,13 @@ function normalizeBackupSource(source, index, errors) {
     errors,
     true,
   );
+  const customName = typeof source.name === 'string' ? source.name.trim() : '';
+  const name = customName || fallbackBackupSourceName({
+    ...source,
+    type,
+    usableCapacityWh,
+    maxOutputPowerW,
+  });
 
   return {
     id,
@@ -151,7 +163,6 @@ function normalizeServices(serviceForms, context, errors) {
 
   for (const [index, serviceForm] of serviceForms.entries()) {
     const id = requiredText(serviceForm.id, `services.${index}.id`, 'Service id', errors);
-    const name = requiredText(serviceForm.name, `services.${index}.name`, 'Service name', errors);
     const templateId = requiredText(
       serviceForm.templateId,
       `services.${index}.templateId`,
@@ -161,6 +172,8 @@ function normalizeServices(serviceForms, context, errors) {
     const variantText = typeof serviceForm.variantId === 'string'
       ? serviceForm.variantId.trim()
       : serviceForm.variantId;
+    const customName = typeof serviceForm.name === 'string' ? serviceForm.name.trim() : '';
+    const name = customName || fallbackServiceName({ templateId, variantId: variantText });
     const input = {
       id,
       name,

@@ -291,7 +291,6 @@ test('one optional source selection per Device serializes into scenario assignme
 
 test('blank and invalid required values return UI errors without a domain payload', () => {
   const state = createInitialUserMvpState();
-  state.devices[0].name = ' ';
   state.devices[0].powerW = '';
   state.devices[1].powerW = 'ten';
   state.backupSources[0].usableCapacityWh = '0';
@@ -301,7 +300,6 @@ test('blank and invalid required values return UI errors without a domain payloa
 
   assert.equal(result.success, false);
   assert.deepEqual(result.errors.map(({ field, code }) => [field, code]), [
-    ['devices.0.name', 'REQUIRED_FIELD'],
     ['devices.0.powerW', 'REQUIRED_POSITIVE_NUMBER'],
     ['devices.1.powerW', 'INVALID_POSITIVE_NUMBER'],
     ['backupSources.0.usableCapacityWh', 'INVALID_POSITIVE_NUMBER'],
@@ -310,6 +308,36 @@ test('blank and invalid required values return UI errors without a domain payloa
   assert.equal(Object.hasOwn(result, 'model'), false);
   assert.equal(Object.hasOwn(result, 'backupSources'), false);
   assert.equal(Object.hasOwn(result, 'scenario'), false);
+});
+
+test('blank Device, BackupSource, and Service names receive deterministic domain fallbacks', () => {
+  const state = createInitialUserMvpState();
+  state.devices[0].name = ' ';
+  state.backupSources[0].name = '';
+  state.services[0].name = '  ';
+  state.services[1].name = '';
+
+  const result = normalizeUserMvpForm(state);
+
+  assert.equal(result.success, true);
+  assert.equal(result.model.devices[0].name, 'Router · 10 W');
+  assert.equal(result.backupSources[0].name, 'Power station · 480 Wh');
+  assert.equal(result.model.services[0].name, 'Internet · Fiber');
+  assert.equal(result.model.services[1].name, 'RemoteWork');
+});
+
+test('blank ExternalProvider name remains required', () => {
+  const state = createInitialUserMvpState();
+  state.externalProviders[0].name = ' ';
+
+  const result = normalizeUserMvpForm(state);
+
+  assert.equal(result.success, false);
+  assert.deepEqual(result.errors, [{
+    code: 'REQUIRED_FIELD',
+    field: 'externalProviders.0.name',
+    message: 'External provider name is required.',
+  }]);
 });
 
 test('an assignment to an unknown source is rejected at the form boundary', () => {
