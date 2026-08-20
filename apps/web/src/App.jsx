@@ -14,7 +14,7 @@ import {
   normalizeUserMvpForm,
 } from './user-mvp/form-state.js';
 import { createTranslator } from './user-mvp/i18n.js';
-import { applyQuickEdit } from './user-mvp/quick-edit.js';
+import { applyQuickEdit, QuickEditContractError } from './user-mvp/quick-edit.js';
 import { invalidateResultState } from './user-mvp/result-state.js';
 import { runUserScenario } from './user-mvp/run-user-scenario.js';
 
@@ -37,7 +37,7 @@ export function executeQuickRecalculation(formState, patch, onSuccess) {
   try {
     nextState = applyQuickEdit(formState, patch);
   } catch (error) {
-    if (!(error instanceof TypeError)) throw error;
+    if (!(error instanceof QuickEditContractError)) throw error;
     return {
       success: false,
       errors: [{ code: 'INVALID_QUICK_EDIT_PATCH', message: error.message }],

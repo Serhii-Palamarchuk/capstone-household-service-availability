@@ -7,6 +7,13 @@ const allowedPatchKeys = new Set([
 
 const sourceFieldNames = ['usableCapacityWh', 'maxOutputPowerW'];
 
+export class QuickEditContractError extends TypeError {
+  constructor(message) {
+    super(message);
+    this.name = 'QuickEditContractError';
+  }
+}
+
 function hasOwn(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key);
 }
@@ -14,7 +21,7 @@ function hasOwn(object, key) {
 export function applyQuickEdit(formState, patch) {
   for (const key of Object.keys(patch)) {
     if (!allowedPatchKeys.has(key)) {
-      throw new TypeError(`Quick edit field is not allowed: ${key}`);
+      throw new QuickEditContractError(`Quick edit field is not allowed: ${key}`);
     }
   }
 
@@ -27,7 +34,9 @@ export function applyQuickEdit(formState, patch) {
   if (touchedSourceFields.length > 0) {
     const sourceIndex = backupSources.findIndex(source => source.id === patch.sourceId);
     if (sourceIndex === -1) {
-      throw new TypeError('Quick edit sourceId must identify an existing backup source');
+      throw new QuickEditContractError(
+        'Quick edit sourceId must identify an existing backup source',
+      );
     }
 
     const source = backupSources[sourceIndex];

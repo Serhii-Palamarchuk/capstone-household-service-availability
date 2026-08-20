@@ -60,3 +60,21 @@ test('invalid quick-edit patch returns errors without committing or mutating cur
   assert.deepEqual(currentForm, formSnapshot);
   assert.deepEqual(currentOutcome, outcomeSnapshot);
 });
+
+test('unexpected TypeError from corrupted state propagates without committing', () => {
+  const corruptedForm = {
+    ...createInitialUserMvpState(),
+    backupSources: null,
+  };
+  let commitCalls = 0;
+
+  assert.throws(
+    () => executeQuickRecalculation(
+      corruptedForm,
+      { sourceId: 'source-home', usableCapacityWh: '960' },
+      () => { commitCalls += 1; },
+    ),
+    error => error instanceof TypeError && error.name === 'TypeError',
+  );
+  assert.equal(commitCalls, 0);
+});
