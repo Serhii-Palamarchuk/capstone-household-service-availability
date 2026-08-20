@@ -7,15 +7,17 @@
 - `Simulation Engine v1`;
 - `React Demo v1`;
 - `Deploy v1`;
-- `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation plan і final whole-branch review.
+- `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation, final whole-branch review і cleanup усіх погоджених Minor follow-ups.
 
 Feature branch: `feature/user-facing-mvp-v1`.
 
-Релевантний accepted implementation commit:
+Релевантні accepted commits:
 
 `f1d0a9293c8484d0f7468caa7177e75a559baf9c` (`fix: enforce Remote Work Internet role`)
 
-Branch збережено для окремого рішення користувача. `main`, live demo та deployment не змінювалися; push, merge і deploy не виконувалися.
+`2fb38d056e2320250129b70be36c7a8392c3abe2` (`chore: resolve user-facing MVP review minors`)
+
+Feature branch push-нуто до `origin/feature/user-facing-mvp-v1`. Merge у `main` і deploy не виконувалися; `main`, live demo та deployment не змінювалися.
 
 ## Supervisor checkpoint
 
@@ -51,17 +53,16 @@ Equipment → Backup → Services & Scenario → Result
 
 ## Final verification — 2026-08-20
 
-На `f1d0a92` controller виконав:
+Після cleanup у `2fb38d0` controller підтвердив:
 
 - `cmd.exe /d /c npm test` у `apps/web` — exit `0`; `100 passed`, `0 failed`, `0 cancelled`, `0 skipped`, `0 todo`;
 - `cmd.exe /d /c npm run build` — exit `0`; Vite `8.2.1`, `32` modules transformed;
-- worktree був чистим перед цим STATUS update;
-- worktree і branch `git diff --check` — exit `0`;
+- browser smoke повторених validation errors — passed; обидві помилки відрендерилися, console warnings/errors — `0`;
+- focused cleanup tests — `5/5 passed`, exit `0`;
+- `git diff --check` — exit `0`;
 - branch diff від merge base `6a18be4` під `apps/web/src/simulation` — `0` lines;
 - dependency diff для `apps/web/package.json` і `apps/web/package-lock.json` — exit `0`, empty;
 - implemented placeholder scan і branch-diff secret-pattern heuristic — по `0` matches.
-
-До цього STATUS update branch містив `13` implementation/documentation commits.
 
 ## Final whole-branch review
 
@@ -69,14 +70,7 @@ Reviewer перевірив range `6a18be4..b8a027d` і повернув `CHANGE
 
 Scoped re-review: Major **ADDRESSED**, нових Critical/Major/Minor breakage немає. Final verdict: **All findings addressed, no new Critical/Major breakage**. Final whole-branch review accepted at `f1d0a92`.
 
-Неblocking follow-up context:
-
-- AC-07 test використовує equivalent models замість exact same model;
-- AC-12 integration test не має direct assertions `totalPowerW === 80` і nested Internet `360`;
-- повторені same-code/same-field React validation errors можуть мати duplicate keys;
-- `docs/specs/repository-workflow.md` містить stale W/Wh-out-of-scope prose. Його не змінювати без окремого user approval; accepted user-facing spec залишається binding.
-
-Попередній Minor щодо blank `maxOutputPowerW` закрито: current test прямо перевіряє omission.
+Усі чотири non-blocking Minor follow-ups закрито у `2fb38d0`: посилено AC-07 і AC-12 tests, виправлено React keys для повторених validation errors та актуалізовано product-scope text у `docs/specs/repository-workflow.md`. Scoped cleanup Reviewer verdict: **ACCEPTED**, Critical/Major/Minor findings немає.
 
 ## Source of truth
 
@@ -87,4 +81,4 @@ Scoped re-review: Major **ADDRESSED**, нових Critical/Major/Minor breakage 
 
 ## Наступна дія
 
-Потрібне окреме рішення користувача перед merge у `main` або deployment. Optional Minor cleanup і рішення щодо stale workflow documentation виконувати лише в окремому погодженому scope.
+Remote diff review для `origin/feature/user-facing-mvp-v1`, після чого потрібне окреме явне рішення користувача щодо merge. Deploy залишається окремою, не виконаною дією.
