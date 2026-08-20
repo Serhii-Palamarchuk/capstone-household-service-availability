@@ -7,17 +7,13 @@
 - `Simulation Engine v1`;
 - `React Demo v1`;
 - `Deploy v1`;
-- `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation, final whole-branch review і cleanup усіх погоджених Minor follow-ups.
+- `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation, final whole-branch review, cleanup, merge у `main` і deployment.
 
-Feature branch: `feature/user-facing-mvp-v1`.
+User-facing MVP feature branch `feature/user-facing-mvp-v1` fast-forward merged у `main`. Після push remote `main` і feature branch були ідентичні на commit `cd150c679cd38c92759affc308a1bea794e5ea59`.
 
-Релевантні accepted commits:
+Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
-`f1d0a9293c8484d0f7468caa7177e75a559baf9c` (`fix: enforce Remote Work Internet role`)
-
-`2fb38d056e2320250129b70be36c7a8392c3abe2` (`chore: resolve user-facing MVP review minors`)
-
-Feature branch push-нуто до `origin/feature/user-facing-mvp-v1`. Merge у `main` і deploy не виконувалися; `main`, live demo та deployment не змінювалися.
+2026-08-20 користувач підтвердив, що live deployment відкривається після merge/push. Повний post-deploy browser smoke accepted flow ще не зафіксований окремо.
 
 ## Supervisor checkpoint
 
@@ -25,7 +21,7 @@ Weekly Capstone Progress Report — Week 2 відправлено Тетяні �
 
 Статус: **submitted → awaiting supervisor feedback**.
 
-## User-facing MVP v1 — accepted branch state
+## User-facing MVP v1 — deployed state
 
 Реалізований flow:
 
@@ -64,6 +60,14 @@ Equipment → Backup → Services & Scenario → Result
 - dependency diff для `apps/web/package.json` і `apps/web/package-lock.json` — exit `0`, empty;
 - implemented placeholder scan і branch-diff secret-pattern heuristic — по `0` matches.
 
+Після fast-forward merge у локальний `main` користувач повторно виконав перевірку:
+
+- `npm test` — `100 passed`, `0 failed`;
+- `npm run build` — Vite `8.2.1`, `32` modules transformed, build successful;
+- working tree був clean перед push;
+- `main` push-нуто до GitHub;
+- live deployment після push відкривається.
+
 ## Final whole-branch review
 
 Reviewer перевірив range `6a18be4..b8a027d` і повернув `CHANGES REQUESTED` для одного Major: `Remote Work` приймав `ServiceInstance`, що не є Internet. Єдина fix wave у `f1d0a92` додала metadata-driven allowed-template constraint, незалежне builder enforcement, UI/form filtering і regressions.
@@ -81,4 +85,4 @@ Scoped re-review: Major **ADDRESSED**, нових Critical/Major/Minor breakage 
 
 ## Наступна дія
 
-Remote diff review для `origin/feature/user-facing-mvp-v1`, після чого потрібне окреме явне рішення користувача щодо merge. Deploy залишається окремою, не виконаною дією.
+Виконати короткий post-deploy live smoke основного user-facing flow. Після цього зафіксувати milestone як повністю перевірений на live deployment і продовжити Week 3 з урахуванням фактичного feedback Тетяни; до отримання feedback не вигадувати зміни scope.
