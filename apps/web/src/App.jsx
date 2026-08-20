@@ -14,6 +14,7 @@ import {
   normalizeUserMvpForm,
 } from './user-mvp/form-state.js';
 import { createTranslator } from './user-mvp/i18n.js';
+import { applyQuickEdit } from './user-mvp/quick-edit.js';
 import { invalidateResultState } from './user-mvp/result-state.js';
 import { runUserScenario } from './user-mvp/run-user-scenario.js';
 
@@ -311,6 +312,23 @@ export function App() {
     setCurrentStep(3);
   }
 
+  function quickRecalculate(patch) {
+    const nextState = applyQuickEdit(formState, patch);
+    const normalized = normalizeUserMvpForm(nextState);
+    if (!normalized.success) return { success: false, errors: normalized.errors };
+
+    const nextOutcome = runUserScenario(normalized);
+    if (!nextOutcome.success) return { success: false, errors: nextOutcome.errors };
+
+    setFormState(nextState);
+    setErrors([]);
+    setSubmittedInput(normalized);
+    setOutcome(nextOutcome);
+    setResultStale(false);
+    setCurrentStep(3);
+    return { success: true };
+  }
+
   return (
     <main className="app-shell">
       <header className="hero">
@@ -401,9 +419,15 @@ export function App() {
       )}
       {currentStep === 3 && outcome && submittedInput && (
         <UserScenarioResult
+          backupSourceLabels={backupSourceLabels}
+          deviceLabels={deviceLabels}
           input={submittedInput}
           outcome={outcome}
           onBack={() => setCurrentStep(2)}
+          onQuickRecalculate={quickRecalculate}
+          providerLabels={providerLabels}
+          serviceLabels={serviceLabels}
+          t={t}
         />
       )}
     </main>
