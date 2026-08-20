@@ -1,6 +1,6 @@
 # UX Polish v1 — acceptance criteria
 
-Status: **Draft for final user review**  
+Status: **Accepted — 2026-08-20**  
 Date: 2026-08-20
 
 This document verifies `docs/specs/ux-polish-v1.md`. It adds UX acceptance only; accepted User-facing MVP v1 calculation semantics remain unchanged.
