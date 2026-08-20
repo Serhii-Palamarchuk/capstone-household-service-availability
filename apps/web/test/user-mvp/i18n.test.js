@@ -22,6 +22,34 @@ test('English and Ukrainian UI strings resolve', () => {
   assert.equal(uk('missing.key', { fallback: 'Fallback' }), 'Fallback');
 });
 
+test('current form and result copy has English and Ukrainian translations', () => {
+  const en = createTranslator('en');
+  const uk = createTranslator('uk');
+
+  assert.equal(en('formErrors.heading'), 'Correct the scenario before running it');
+  assert.equal(uk('formErrors.heading'), 'Виправте сценарій перед запуском');
+  assert.equal(en('formErrors.fallback'), 'Check this value.');
+  assert.equal(uk('formErrors.fallback'), 'Перевірте це значення.');
+  assert.equal(en('result.failureTitle'), 'Scenario could not run');
+  assert.equal(uk('result.failureTitle'), 'Сценарій не вдалося запустити');
+  assert.equal(
+    en('result.failureDescription'),
+    'Correct these errors and run the scenario again. No partial result is shown.',
+  );
+  assert.equal(
+    uk('result.failureDescription'),
+    'Виправте ці помилки й запустіть сценарій ще раз. Частковий результат не показано.',
+  );
+  assert.equal(en('result.errorFallback'), 'Review the scenario input.');
+  assert.equal(uk('result.errorFallback'), 'Перевірте введені дані сценарію.');
+  assert.equal(en('result.heading'), 'Availability result');
+  assert.equal(uk('result.heading'), 'Результат доступності');
+  assert.equal(en('result.availability'), 'Availability:');
+  assert.equal(uk('result.availability'), 'Доступність:');
+  assert.equal(en('role.oneOrMore'), 'one or more');
+  assert.equal(uk('role.oneOrMore'), 'один або більше');
+});
+
 test('category, backup type, and service template identifiers have distinct Ukrainian labels', () => {
   const en = createTranslator('en');
   const uk = createTranslator('uk');
