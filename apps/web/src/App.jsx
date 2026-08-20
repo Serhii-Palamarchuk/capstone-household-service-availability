@@ -7,6 +7,7 @@ import { DeviceCategory } from './user-mvp/constants.js';
 import {
   backupSourceDisplayLabels,
   deviceDisplayLabels,
+  serviceDisplayLabels,
 } from './user-mvp/entity-labels.js';
 import {
   createInitialUserMvpState,
@@ -45,6 +46,11 @@ export function App() {
   const t = createTranslator(language);
   const deviceLabels = deviceDisplayLabels(formState.devices, t);
   const backupSourceLabels = backupSourceDisplayLabels(formState.backupSources, t);
+  const serviceLabels = serviceDisplayLabels(formState.services, t);
+  const providerLabels = new Map(formState.externalProviders.map(provider => [
+    provider.id,
+    provider.name.trim(),
+  ]));
 
   function invalidateResult() {
     const next = invalidateResultState({ outcome, submittedInput, resultStale });
@@ -373,6 +379,7 @@ export function App() {
       )}
       {currentStep === 2 && (
         <ServicesScenarioStep
+          deviceLabels={deviceLabels}
           errors={errors}
           formState={formState}
           onAddProvider={addProvider}
@@ -387,6 +394,9 @@ export function App() {
           onServiceChange={changeService}
           onServiceRemove={removeService}
           onSubmit={submitScenario}
+          providerLabels={providerLabels}
+          serviceLabels={serviceLabels}
+          t={t}
         />
       )}
       {currentStep === 3 && outcome && submittedInput && (
