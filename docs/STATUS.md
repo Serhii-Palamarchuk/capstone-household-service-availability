@@ -7,13 +7,13 @@
 - `Simulation Engine v1`;
 - `React Demo v1`;
 - `Deploy v1`;
-- `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation, final whole-branch review, cleanup, merge у `main` і deployment.
+- `User-facing MVP v1`: design, acceptance scenarios `AC-01…AC-14`, implementation, final whole-branch review, cleanup, merge у `main`, deployment і post-deploy live smoke.
 
 User-facing MVP feature branch `feature/user-facing-mvp-v1` fast-forward merged у `main`. Після push remote `main` і feature branch були ідентичні на commit `cd150c679cd38c92759affc308a1bea794e5ea59`.
 
 Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
-2026-08-20 користувач підтвердив, що live deployment відкривається після merge/push. Повний post-deploy browser smoke accepted flow ще не зафіксований окремо.
+2026-08-20 користувач підтвердив, що live deployment відкривається після merge/push. Post-deploy browser smoke основного accepted flow AC-12 також пройдено на live deployment.
 
 ## Supervisor checkpoint
 
@@ -68,6 +68,19 @@ Equipment → Backup → Services & Scenario → Result
 - `main` push-нуто до GitHub;
 - live deployment після push відкривається.
 
+Post-deploy live browser smoke AC-12 підтвердив на GitHub Pages:
+
+- Home backup: `80 W`, runtime `360 min`;
+- Router: `360 min` external, `360 min` total;
+- ONT/ONU: `360 min` external, `360 min` total;
+- Laptop: `360 min` external + `120 min` internal = `480 min` total;
+- target `Remote Work`: availability `360 min`, status `Limited`;
+- limiting dependencies: `ONT/ONU` і `Router`;
+- causal paths: `Remote Work → Internet — Home → ONT/ONU` та `Remote Work → Internet — Home → Router`;
+- warning `MISSING_BACKUP_SOURCE_MAX_OUTPUT` відображено очікувано, оскільки optional max output не задавався.
+
+Ці значення є контрольними test fixtures accepted AC-12, а не результатами реальних вимірювань автономності.
+
 ## Final whole-branch review
 
 Reviewer перевірив range `6a18be4..b8a027d` і повернув `CHANGES REQUESTED` для одного Major: `Remote Work` приймав `ServiceInstance`, що не є Internet. Єдина fix wave у `f1d0a92` додала metadata-driven allowed-template constraint, незалежне builder enforcement, UI/form filtering і regressions.
@@ -85,4 +98,4 @@ Scoped re-review: Major **ADDRESSED**, нових Critical/Major/Minor breakage 
 
 ## Наступна дія
 
-Виконати короткий post-deploy live smoke основного user-facing flow. Після цього зафіксувати milestone як повністю перевірений на live deployment і продовжити Week 3 з урахуванням фактичного feedback Тетяни; до отримання feedback не вигадувати зміни scope.
+Milestone `User-facing MVP v1` повністю інтегрований, deployed і перевірений на live accepted flow. Далі — Week 3: зафіксувати фактичний feedback Тетяни після перегляду актуального live demo та, лише якщо feedback не змінює напрям, продовжити первинне тестування/UX-polish без розширення scope.
