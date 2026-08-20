@@ -9,12 +9,11 @@ This document verifies `docs/specs/ux-polish-v1.md`. It adds UX acceptance only;
 
 **Given** a CSS viewport of `1920 × 1080`  
 **And** a valid configuration containing 5 Devices, 2 BackupSources, 3 ServiceInstances and 2 ExternalProviders  
+**And** for Step 4 all 3 valid ServiceInstances are selected as target services  
 **When** the user opens each wizard step in its default/collapsed state  
 **Then** the page has no vertical page scroll on Step 1, Step 2, Step 3 or Step 4.
 
 Expanded `Details`, dialogs/modals, dropdown menus, long validation lists and unusually long custom names are excluded from the no-scroll requirement.
-
-For Result density verification, the controlled fixture should exercise multiple target summaries, preferably all three valid ServiceInstances, so the criterion is not satisfied only by a single-result happy path.
 
 ## UX-02 — Equipment compact rows
 
@@ -200,6 +199,9 @@ Remote Work
 
 ## UX-21 — Interactive backward stepper
 
+**Given** the user is on Step 2  
+**Then** Step 1 in the stepper is interactive.
+
 **Given** the user is on Step 3  
 **Then** Step 1 and Step 2 in the stepper are interactive.
 
@@ -209,6 +211,8 @@ Remote Work
 **When** the user clicks an earlier completed step  
 **Then** the wizard navigates there without discarding form data.
 
+**And** forward progression continues through `Continue` / `Run scenario`; clickable forward jumps are not required.
+
 ## UX-22 — Back button retained
 
 **Given** Step 2, Step 3 or Step 4  
@@ -217,7 +221,7 @@ Remote Work
 ## UX-23 — Stepper keyboard accessibility
 
 **Given** keyboard-only navigation  
-**Then** interactive completed stepper items are focusable and activatable without a pointing device.
+**Then** interactive earlier stepper items are focusable and activatable without a pointing device.
 
 ## UX-24 — Stale Result protection
 
@@ -240,10 +244,12 @@ Remote Work
 ## UX-26 — Translation coverage
 
 **When** UA is selected  
-**Then** visible application labels, helper text, action buttons, validation messages, warnings, recommendations and statuses have Ukrainian UI text.
+**Then** visible application labels, helper text, action buttons, validation messages, warnings, recommendations and displayed statuses have Ukrainian UI text.
 
 **When** EN is selected  
 **Then** the equivalent content is presented in English.
+
+**And** underlying status values, validation/error codes and recommendation identifiers remain unchanged.
 
 Technical identifiers used only for debugging/internal diagnostics do not need to replace the user-facing message.
 
@@ -281,7 +287,7 @@ Before merge/deploy, record factual verification using the existing project work
 - full existing test suite result;
 - production build result;
 - focused UX tests added for this iteration;
-- manual `1920 × 1080` density walkthrough for all four steps;
+- manual `1920 × 1080` density walkthrough for all four steps with the UX-01 fixture;
 - navigation + stale-result walkthrough;
 - quick-edit rerun walkthrough;
 - UA/EN state-preservation walkthrough;
