@@ -18,7 +18,12 @@ import { applyQuickEdit, QuickEditContractError } from './user-mvp/quick-edit.js
 import { invalidateResultState } from './user-mvp/result-state.js';
 import { runUserScenario } from './user-mvp/run-user-scenario.js';
 
-const steps = ['Equipment', 'Backup', 'Services & Scenario', 'Result'];
+const stepKeys = [
+  'step.equipment',
+  'step.backup',
+  'step.servicesScenario',
+  'step.result',
+];
 
 function withoutDependency(services, dependencyId) {
   return services.map(service => ({
@@ -348,39 +353,56 @@ export function App() {
   return (
     <main className="app-shell">
       <header className="hero">
-        <p className="eyebrow">Household outage planner</p>
-        <h1>Configure the equipment behind your essential services</h1>
-        <p>
-          Describe device loads and backup energy first. The system will use them to estimate
-          service availability instead of asking you for ready-made availability minutes.
-        </p>
+        <div className="hero-toolbar">
+          <p className="eyebrow">{t('app.eyebrow')}</p>
+          <div className="language-switch" aria-label={t('language.label')}>
+            <button
+              aria-pressed={language === 'en'}
+              onClick={() => setLanguage('en')}
+              type="button"
+            >
+              EN
+            </button>
+            <button
+              aria-pressed={language === 'uk'}
+              onClick={() => setLanguage('uk')}
+              type="button"
+            >
+              UA
+            </button>
+          </div>
+        </div>
+        <h1>{t('app.title')}</h1>
+        <p>{t('app.introduction')}</p>
       </header>
 
       <aside className="fixture-notice">
-        <strong>Editable example data.</strong>{' '}
-        The starting values come from acceptance test AC-12; they are not measured device
-        specifications or claims about real-world runtime.
+        <strong>{t('fixture.title')}</strong>{' '}
+        {t('fixture.description')}
       </aside>
 
-      <nav className="step-navigation" aria-label="Scenario steps">
+      <nav className="step-navigation" aria-label={t('navigation.steps')}>
         <ol>
-          {steps.map((step, index) => (
-            <li
-              className={index === currentStep ? 'current-step' : index > currentStep ? 'future-step' : ''}
-              key={step}
-            >
-              <span>{index + 1}</span>
-              {index < currentStep ? (
-                <button type="button" onClick={() => setCurrentStep(index)}>{step}</button>
-              ) : step}
-            </li>
-          ))}
+          {stepKeys.map((stepKey, index) => {
+            const step = t(stepKey);
+            return (
+              <li
+                className={index === currentStep ? 'current-step' : index > currentStep ? 'future-step' : ''}
+                key={stepKey}
+              >
+                <span>{index + 1}</span>
+                {index < currentStep ? (
+                  <button type="button" onClick={() => setCurrentStep(index)}>{step}</button>
+                ) : step}
+              </li>
+            );
+          })}
         </ol>
       </nav>
 
       {resultStale && (
         <p className="step-label" role="status">
-          {t('result.needsRecalculation', { fallback: 'Result needs recalculation' })}
+          {t('result.needsRecalculation')}
         </p>
       )}
 

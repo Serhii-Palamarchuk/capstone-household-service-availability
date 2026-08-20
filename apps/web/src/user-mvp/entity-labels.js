@@ -58,7 +58,14 @@ export function fallbackServiceName(service) {
 export function deviceDisplayLabels(devices, t) {
   return displayLabels(
     devices,
-    device => `${translated(t, `category.${device.category}`, clean(device.category) || 'Device')} · ${clean(device.powerW)} W`,
+    device => `${translated(
+      t,
+      `category.${device.category}`,
+      clean(device.category) || translated(t, 'label.genericDevice', 'Device'),
+    )} · ${t('unit.watts', {
+      value: clean(device.powerW),
+      fallback: `${clean(device.powerW)} W`,
+    })}`,
     device => device.category,
   );
 }
@@ -69,9 +76,21 @@ export function backupSourceDisplayLabels(sources, t) {
     source => {
       const type = source.type === 'PowerStation'
         ? translated(t, 'backupType.PowerStation', 'Power station')
-        : translated(t, `backupType.${source.type}`, clean(source.type) || 'Backup source');
-      const parts = [type, `${clean(source.usableCapacityWh)} Wh`];
-      if (clean(source.maxOutputPowerW)) parts.push(`${clean(source.maxOutputPowerW)} W max`);
+        : translated(
+          t,
+          `backupType.${source.type}`,
+          clean(source.type) || translated(t, 'label.genericBackupSource', 'Backup source'),
+        );
+      const parts = [type, t('unit.wattHours', {
+        value: clean(source.usableCapacityWh),
+        fallback: `${clean(source.usableCapacityWh)} Wh`,
+      })];
+      if (clean(source.maxOutputPowerW)) {
+        parts.push(t('unit.maximumWatts', {
+          value: clean(source.maxOutputPowerW),
+          fallback: `${clean(source.maxOutputPowerW)} W max`,
+        }));
+      }
       return parts.join(' · ');
     },
     source => source.type,
@@ -82,7 +101,11 @@ export function serviceDisplayLabels(services, t) {
   return displayLabels(
     services,
     service => [
-      translated(t, `template.${service.templateId}`, clean(service.templateId) || 'Service'),
+      translated(
+        t,
+        `template.${service.templateId}`,
+        clean(service.templateId) || translated(t, 'label.genericService', 'Service'),
+      ),
       clean(service.variantId)
         ? translated(t, `variant.${service.variantId}`, clean(service.variantId))
         : '',

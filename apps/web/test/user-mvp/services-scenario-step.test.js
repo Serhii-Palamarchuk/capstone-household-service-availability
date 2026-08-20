@@ -174,5 +174,6 @@ test('UX-15: affected service details open and row fields expose their validatio
   assert.match(html, /id="outage-duration"[^>]*aria-invalid="true"/);
   assert.match(html, /aria-describedby="outage-duration-errors"/);
   assert.match(html, /<section class="input-errors" role="alert"/);
-  assert.match(html, /<strong>INVALID_POSITIVE_NUMBER<\/strong>/);
+  assert.match(html, /Enter a value greater than zero\./);
+  assert.doesNotMatch(html, />INVALID_POSITIVE_NUMBER</);
 });

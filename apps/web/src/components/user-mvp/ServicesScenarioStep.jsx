@@ -78,7 +78,7 @@ function FormErrors({ errors, t }) {
       <ul>
         {errors.map((error, index) => (
           <li key={`${error.code}-${error.field ?? 'global'}-${index}`}>
-            <strong>{error.code}</strong>: {translateValidationError(error, t)}
+            {translateValidationError(error, t)}
           </li>
         ))}
       </ul>
@@ -113,7 +113,8 @@ function ServiceRole({
 }) {
   const options = getRoleBindingOptions(role, formState, serviceIndex);
   const selectedIds = service.dependencyBindings?.[role.id] ?? [];
-  const label = labelForIdentifier(role.id);
+  const label = t(`role.${role.id}`, { fallback: labelForIdentifier(role.id) });
+  const entityType = t(`entityType.${role.entityType}`, { fallback: role.entityType });
   const field = `services.${serviceIndex}.dependencyBindings.${role.id}`;
   const roleErrors = errorsForField(errors, field);
   const aria = validationAttributes(roleErrors, errorId);
@@ -121,7 +122,7 @@ function ServiceRole({
   if (role.cardinality === '1') {
     return (
       <label htmlFor={`${service.id}-${role.id}`}>
-        {label} <span className="role-type">{role.entityType}</span>
+        {label} <span className="role-type">{entityType}</span>
         <select
           id={`${service.id}-${role.id}`}
           value={selectedIds[0] ?? ''}
@@ -147,7 +148,7 @@ function ServiceRole({
     <fieldset className="role-group" {...aria}>
       <legend>
         {label}{' '}
-        <span className="role-type">{role.entityType}, {t('role.oneOrMore')}</span>
+        <span className="role-type">{entityType}, {t('role.oneOrMore')}</span>
       </legend>
       {options.length === 0 ? (
         <p className="empty-state">{t('empty.noCompatibleItems')}</p>

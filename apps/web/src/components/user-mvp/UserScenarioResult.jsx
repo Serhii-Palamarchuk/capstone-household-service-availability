@@ -7,10 +7,13 @@ import {
   translateWarning,
 } from '../../user-mvp/i18n.js';
 
-function formatDuration(minutes) {
+function formatDuration(minutes, t) {
   const hours = minutes / 60;
   const hoursText = Number.isInteger(hours) ? String(hours) : hours.toFixed(2).replace(/0+$/, '');
-  return `${minutes} min (${hoursText} h)`;
+  return t('duration.minutesHours', {
+    hours: hoursText,
+    minutes,
+  });
 }
 
 function ResultErrors({ errors, id, t }) {
@@ -59,10 +62,9 @@ function SourceQuickEdit({ editor, nameFor, onCancel, onRecalculate, setEditor, 
       className="quick-edit-dialog"
       role="dialog"
     >
-      <p className="step-label">{t('result.quickEdit', { fallback: 'Quick edit' })}</p>
+      <p className="step-label">{t('result.quickEdit')}</p>
       <h3 id="source-quick-edit-title">
         {t('result.editBackupSource', {
-          fallback: 'Edit backup source: {source}',
           source: sourceLabel,
         })}
       </h3>
@@ -100,7 +102,7 @@ function SourceQuickEdit({ editor, nameFor, onCancel, onRecalculate, setEditor, 
         <ResultErrors errors={editor.errors} id="source-quick-edit-errors" t={t} />
         <div className="quick-edit-actions">
           <button className="secondary-button" type="button" onClick={onCancel}>
-            {t('actions.cancel', { fallback: 'Cancel' })}
+            {t('actions.cancel')}
           </button>
           <button className="primary-button" type="submit">
             {t('actions.recalculate')}
@@ -126,9 +128,9 @@ function OutageQuickEdit({ editor, onCancel, onRecalculate, setEditor, t }) {
       className="quick-edit-dialog"
       role="dialog"
     >
-      <p className="step-label">{t('result.quickEdit', { fallback: 'Quick edit' })}</p>
+      <p className="step-label">{t('result.quickEdit')}</p>
       <h3 id="outage-quick-edit-title">
-        {t('result.editOutage', { fallback: 'Edit outage duration' })}
+        {t('result.editOutage')}
       </h3>
       <form noValidate onSubmit={submit}>
         <div className="quick-edit-fields quick-edit-fields-single">
@@ -154,7 +156,7 @@ function OutageQuickEdit({ editor, onCancel, onRecalculate, setEditor, t }) {
         <ResultErrors errors={editor.errors} id="outage-quick-edit-errors" t={t} />
         <div className="quick-edit-actions">
           <button className="secondary-button" type="button" onClick={onCancel}>
-            {t('actions.cancel', { fallback: 'Cancel' })}
+            {t('actions.cancel')}
           </button>
           <button className="primary-button" type="submit">
             {t('actions.recalculate')}
@@ -187,7 +189,7 @@ export function UserScenarioResult({
         <ul>
           {outcome.errors.map((error, index) => (
             <li key={`${error.code}-${index}`}>
-              <strong>{error.code}</strong>: {translateValidationError(error, t)}
+              {translateValidationError(error, t)}
             </li>
           ))}
         </ul>
@@ -215,7 +217,7 @@ export function UserScenarioResult({
   );
   const warnings = outcome.estimation.warnings;
   const recommendations = outcome.recommendations;
-  const outageDuration = formatDuration(input.scenario.outageDurationMinutes);
+  const outageDuration = formatDuration(input.scenario.outageDurationMinutes, t);
 
   function openSourceEditor(sourceId) {
     const source = input.backupSources.find(item => item.id === sourceId);
@@ -259,13 +261,12 @@ export function UserScenarioResult({
             <h3 id="target-results-title">{t('label.targetServices')}</h3>
             <p>
               {t('result.outageSummary', {
-                fallback: 'Outage: {outage}',
                 outage: outageDuration,
               })}
             </p>
           </div>
           <button className="text-button" type="button" onClick={openOutageEditor}>
-            {t('actions.editOutage', { fallback: 'Edit outage' })}
+            {t('actions.editOutage')}
           </button>
         </div>
         <div className="target-result-list">
@@ -277,9 +278,8 @@ export function UserScenarioResult({
                   {translateStatus(target.status, t)}
                 </span>
                 <p>
-                  <strong>{formatDuration(target.availabilityDurationMinutes)}</strong>{' '}
+                  <strong>{formatDuration(target.availabilityDurationMinutes, t)}</strong>{' '}
                   {t('result.availableOfOutage', {
-                    fallback: 'available of {outage} outage',
                     outage: outageDuration,
                   })}
                 </p>
@@ -337,15 +337,19 @@ export function UserScenarioResult({
             {outcome.estimation.sourceResults.map(source => (
               <article className="compact-result-row" key={source.sourceId}>
                 <strong>{nameFor(source.sourceId)}</strong>
-                <span>{t('label.totalActiveLoad')}: {source.totalPowerW} W</span>
-                <span>{t('label.runtime')}: {formatDuration(source.runtimeMinutes)}</span>
+                <span>
+                  {t('label.totalActiveLoad')}: {t('unit.watts', {
+                    value: source.totalPowerW,
+                  })}
+                </span>
+                <span>{t('label.runtime')}: {formatDuration(source.runtimeMinutes, t)}</span>
                 <button
-                  aria-label={`${t('actions.edit', { fallback: 'Edit' })}: ${nameFor(source.sourceId)}`}
+                  aria-label={`${t('actions.edit')}: ${nameFor(source.sourceId)}`}
                   className="text-button"
                   type="button"
                   onClick={() => openSourceEditor(source.sourceId)}
                 >
-                  {t('actions.edit', { fallback: 'Edit' })}
+                  {t('actions.edit')}
                 </button>
               </article>
             ))}
@@ -369,10 +373,10 @@ export function UserScenarioResult({
           {outcome.estimation.deviceResults.map(device => (
             <article className="compact-result-row device-result-row" key={device.deviceId}>
               <strong>{nameFor(device.deviceId)}</strong>
-              <span>{t('label.total')}: {formatDuration(device.availabilityMinutes)}</span>
+              <span>{t('label.total')}: {formatDuration(device.availabilityMinutes, t)}</span>
               <span>
-                {t('label.external')}: {formatDuration(device.externalRuntimeMinutes)} ·{' '}
-                {t('label.internal')}: {formatDuration(device.internalRuntimeMinutes)}
+                {t('label.external')}: {formatDuration(device.externalRuntimeMinutes, t)} ·{' '}
+                {t('label.internal')}: {formatDuration(device.internalRuntimeMinutes, t)}
               </span>
             </article>
           ))}

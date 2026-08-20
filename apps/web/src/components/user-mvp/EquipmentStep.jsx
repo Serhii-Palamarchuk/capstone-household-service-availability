@@ -33,7 +33,7 @@ export function EquipmentStep({
                   <strong>{deviceLabels.get(device.id)}</strong>
                   <span className="compact-row-secondary">
                     {t('field.internalBattery')}: {device.internalBatteryWh
-                      ? `${device.internalBatteryWh} Wh`
+                      ? t('unit.wattHours', { value: device.internalBatteryWh })
                       : '—'}
                   </span>
                   <span className="details-label">{t('actions.details')}</span>
