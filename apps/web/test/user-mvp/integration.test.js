@@ -75,28 +75,27 @@ test('AC-11: manual provider availability reaches the engine and missing input s
   });
 });
 
-test('AC-12: estimates the accepted Remote Work fixture and simulates its bottlenecks', () => {
-  const result = runUserScenarioCore(endToEndRemoteWorkFixture());
+test('AC-12: preserves the controlled Remote Work fixture outputs', () => {
+  const outcome = runUserScenarioCore(endToEndRemoteWorkFixture());
 
-  assert.equal(result.success, true);
-  assert.equal(result.estimation.sourceResults[0].totalPowerW, 80);
-  assert.equal(result.estimation.sourceResults[0].runtimeMinutes, 360);
-  assert.equal(result.estimation.availability['device-router'], 360);
-  assert.equal(result.estimation.availability['device-ont'], 360);
-  assert.equal(result.estimation.availability['device-laptop'], 480);
+  assert.equal(outcome.success, true);
+  assert.equal(outcome.estimation.sourceResults[0].totalPowerW, 80);
+  assert.equal(outcome.estimation.sourceResults[0].runtimeMinutes, 360);
+  assert.equal(outcome.estimation.availability['device-router'], 360);
+  assert.equal(outcome.estimation.availability['device-ont'], 360);
+  assert.equal(outcome.estimation.availability['device-laptop'], 480);
   assert.equal(
-    result.simulation.serviceResults.get('service-internet-home').availabilityDurationMinutes,
+    outcome.simulation.serviceResults.get('service-internet-home').availabilityDurationMinutes,
     360,
   );
 
-  const remoteWork = result.simulation.targetResults[0];
-  assert.equal(remoteWork.availabilityDurationMinutes, 360);
-  assert.equal(remoteWork.status, 'Limited');
-  assert.deepEqual(remoteWork.limitingDependencyIds.sort(), [
+  assert.equal(outcome.simulation.targetResults[0].availabilityDurationMinutes, 360);
+  assert.equal(outcome.simulation.targetResults[0].status, 'Limited');
+  assert.deepEqual(outcome.simulation.targetResults[0].limitingDependencyIds.sort(), [
     'device-ont',
     'device-router',
   ]);
-  assert.deepEqual(remoteWork.causalPaths, [
+  assert.deepEqual(outcome.simulation.targetResults[0].causalPaths, [
     ['service-remote-work', 'service-internet-home', 'device-ont'],
     ['service-remote-work', 'service-internet-home', 'device-router'],
   ]);

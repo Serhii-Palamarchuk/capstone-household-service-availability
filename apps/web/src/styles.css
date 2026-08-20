@@ -59,8 +59,8 @@ body {
 }
 
 .language-switch button:focus-visible {
-  outline: 3px solid rgb(147 197 253 / 55%);
-  outline-offset: 0.125rem;
+  outline: 3px solid #1d4ed8;
+  outline-offset: 0.1875rem;
 }
 
 .hero h1 {
@@ -126,6 +126,20 @@ body {
   place-items: center;
   border-radius: 50%;
   background: #e2e8f0;
+}
+
+.step-navigation button {
+  min-width: 0;
+  padding: 0.125rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+  cursor: pointer;
 }
 
 .step-navigation .current-step {
@@ -349,8 +363,8 @@ body {
 
 .row-details summary:focus-visible {
   border-radius: 0.25rem;
-  outline: 3px solid rgb(147 197 253 / 55%);
-  outline-offset: 0.25rem;
+  outline: 3px solid #1d4ed8;
+  outline-offset: 0.1875rem;
 }
 
 .compact-row-summary {
@@ -426,7 +440,8 @@ body {
 
 .wizard-panel input:focus,
 .wizard-panel select:focus {
-  outline: 3px solid rgb(147 197 253 / 55%);
+  outline: 3px solid #1d4ed8;
+  outline-offset: 0.1875rem;
   border-color: #2563eb;
 }
 
@@ -466,6 +481,11 @@ body {
   padding: 0.25rem;
   border: 0;
   background: transparent;
+}
+
+button:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 0.1875rem;
 }
 
 .danger-button {
@@ -1025,6 +1045,87 @@ body {
   border-color: #dc2626;
   background: #fef2f2;
   color: #991b1b;
+}
+
+@media (min-width: 64rem) {
+  .app-shell {
+    padding-block: 1.5rem;
+  }
+
+  .hero {
+    line-height: 1.35;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+  }
+
+  .hero p:last-child {
+    margin: 0.375rem 0 0;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.375rem;
+  }
+
+  .fixture-notice {
+    margin-top: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    line-height: 1.35;
+  }
+
+  .step-navigation {
+    margin-top: 0.75rem;
+  }
+
+  .step-navigation ol {
+    gap: 0.5rem;
+  }
+
+  .step-navigation li {
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    line-height: 1.25;
+  }
+
+  .wizard-panel {
+    margin-top: 0.75rem;
+    padding: 1rem 1.125rem;
+  }
+
+  .section-heading {
+    gap: 0.75rem;
+  }
+
+  .section-heading h2,
+  .result-panel > h2,
+  .result-failure h2 {
+    font-size: 1.375rem;
+    line-height: 1.2;
+  }
+
+  .section-heading p:last-child,
+  .subsection-heading p,
+  .result-section-heading p {
+    margin-top: 0.25rem;
+    line-height: 1.35;
+  }
+
+  .step-label {
+    margin-bottom: 0.25rem;
+  }
+
+  .step-actions {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+  }
+
+  .step-actions .primary-button,
+  .step-actions .secondary-button {
+    padding: 0.625rem 0.875rem;
+  }
 }
 
 @media (max-width: 36rem) {
