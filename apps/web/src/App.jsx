@@ -32,6 +32,28 @@ function withoutDependency(services, dependencyId) {
   }));
 }
 
+export function executeQuickRecalculation(formState, patch, onSuccess) {
+  let nextState;
+  try {
+    nextState = applyQuickEdit(formState, patch);
+  } catch (error) {
+    if (!(error instanceof TypeError)) throw error;
+    return {
+      success: false,
+      errors: [{ code: 'INVALID_QUICK_EDIT_PATCH', message: error.message }],
+    };
+  }
+
+  const normalized = normalizeUserMvpForm(nextState);
+  if (!normalized.success) return { success: false, errors: normalized.errors };
+
+  const nextOutcome = runUserScenario(normalized);
+  if (!nextOutcome.success) return { success: false, errors: nextOutcome.errors };
+
+  onSuccess({ nextState, normalized, nextOutcome });
+  return { success: true };
+}
+
 export function App() {
   const [language, setLanguage] = useState('en');
   const [formState, setFormState] = useState(createInitialUserMvpState);
@@ -313,20 +335,14 @@ export function App() {
   }
 
   function quickRecalculate(patch) {
-    const nextState = applyQuickEdit(formState, patch);
-    const normalized = normalizeUserMvpForm(nextState);
-    if (!normalized.success) return { success: false, errors: normalized.errors };
-
-    const nextOutcome = runUserScenario(normalized);
-    if (!nextOutcome.success) return { success: false, errors: nextOutcome.errors };
-
-    setFormState(nextState);
-    setErrors([]);
-    setSubmittedInput(normalized);
-    setOutcome(nextOutcome);
-    setResultStale(false);
-    setCurrentStep(3);
-    return { success: true };
+    return executeQuickRecalculation(formState, patch, ({ nextState, normalized, nextOutcome }) => {
+      setFormState(nextState);
+      setErrors([]);
+      setSubmittedInput(normalized);
+      setOutcome(nextOutcome);
+      setResultStale(false);
+      setCurrentStep(3);
+    });
   }
 
   return (
