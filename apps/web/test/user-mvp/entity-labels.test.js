@@ -26,6 +26,14 @@ test('duplicate custom category name is suppressed', () => {
   assert.equal(labels.get('r1'), 'Router · 15 W');
 });
 
+test('duplicate custom technical label is suppressed after trim and case normalization', () => {
+  const labels = deviceDisplayLabels([
+    { id: 'r1', name: ' router · 15 w ', category: 'Router', powerW: 15 },
+  ], t);
+
+  assert.equal(labels.get('r1'), 'Router · 15 W');
+});
+
 test('meaningful custom name is retained', () => {
   const labels = deviceDisplayLabels([
     { id: 'r1', name: 'Bedroom router', category: 'Router', powerW: 15 },
