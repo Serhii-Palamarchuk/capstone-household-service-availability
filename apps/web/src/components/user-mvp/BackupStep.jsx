@@ -131,6 +131,7 @@ export function BackupStep({
                   <strong>{deviceLabels.get(device.id)}</strong>
                   <label className="assignment-toggle" htmlFor={toggleId}>
                     <input
+                      aria-label={`${t('step.backup')}: ${deviceLabels.get(device.id)}`}
                       checked={enabled}
                       id={toggleId}
                       type="checkbox"
