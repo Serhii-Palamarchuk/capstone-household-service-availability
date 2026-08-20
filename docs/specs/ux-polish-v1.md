@@ -82,6 +82,8 @@ Baseline configuration for density testing:
 - 3 ServiceInstances;
 - 2 ExternalProviders.
 
+For Step 4 density verification, the controlled valid fixture selects all 3 ServiceInstances as target services.
+
 In the default/collapsed state, each of the four steps must fit within this viewport **without vertical page scrolling**.
 
 The no-scroll requirement applies to the normal collapsed state. Expanded `Details`, dropdown menus, dialogs/modals, validation states with multiple messages, or unusually long user-entered names may use local or page scrolling when necessary.
@@ -352,12 +354,15 @@ The four-step wizard remains:
 1 Equipment → 2 Backup → 3 Services & Scenario → 4 Result
 ```
 
-The top stepper becomes interactive:
+The top stepper becomes interactive for direct backward navigation:
 
-- a user may click any earlier completed step;
-- previously completed later steps may be revisited only while their upstream data remains valid/not stale;
-- navigating between steps never discards current form data;
+- from Step 2, Step 1 is clickable;
+- from Step 3, Steps 1 and 2 are clickable;
+- from Step 4, Steps 1, 2 and 3 are clickable;
+- navigating backward never discards current form data;
 - stepper controls are keyboard accessible.
+
+Forward navigation remains explicit through the existing context actions such as `Continue` and `Run scenario`; UX Polish v1 does not require clickable forward jumps in the stepper.
 
 A compact `Back` button remains as a secondary action because it is a familiar and explicit navigation affordance. The stepper is a faster alternative, not the only way back.
 
@@ -374,6 +379,7 @@ Requirements:
 - visible compact language switch in the application header;
 - switching language does not reset form data, current step, assignments or current valid result;
 - labels, helper text, validation errors, warnings, recommendation text, statuses and action buttons are translated consistently;
+- underlying status values, error codes and recommendation identifiers remain unchanged;
 - no automatic locale detection is required for v1;
 - preserve English as the initial/default language unless changed by the user;
 - no persistence across browser sessions is required for v1.
@@ -424,4 +430,4 @@ Numerical results must continue to come from actual test executions or controlle
 
 UX Polish v1 succeeds when a household user can configure, inspect, revise and rerun the accepted User-facing MVP flow with substantially less visual clutter and unnecessary navigation, while the accepted simulation semantics remain unchanged.
 
-The measurable desktop criterion is: with 5 Devices, 2 BackupSources, 3 ServiceInstances and 2 ExternalProviders, each default/collapsed wizard step fits within a 1920 × 1080 viewport without vertical page scrolling.
+The measurable desktop criterion is: with 5 Devices, 2 BackupSources, 3 ServiceInstances and 2 ExternalProviders, each default/collapsed wizard step fits within a 1920 × 1080 viewport without vertical page scrolling; the Step 4 density fixture uses all 3 ServiceInstances as targets.
