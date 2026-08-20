@@ -23,7 +23,7 @@ Equipment → Backup → Services & Scenario → Result
 
 Weekly Capstone Progress Report — Week 2 був відправлений Тетяні через LMS; repository + live demo також були надіслані.
 
-За повідомленням користувача 2026-08-20, Week 2 завдання вже прийняте, але окремих текстових коментарів/нового feedback Тетяни не надійшло. Користувач вирішив не блокувати Week 3 очікуванням додаткового feedback і перейти до usability/UX polish без розширення MVP scope.
+За повідомленням користувача 2026-08-20, Week 2 завдання вже прийняте, але окремих текстових коментарів/нового feedback Тетяни не надійшло. Користувач вирішив не блокувати наступну UX-ітерацію очікуванням додаткового feedback і продовжити без розширення MVP scope.
 
 ## Accepted deployed verification baseline before UX Polish v1
 
@@ -92,6 +92,21 @@ Accepted docs:
 
 План вимагає TDD/focused tests для нових pure helpers, повний existing suite, production build, manual `1920 × 1080` walkthrough, quick-edit/navigation/language smoke та whole-branch review. Числові/успішні результати не фіксуються до фактичного виконання перевірок.
 
+## Week 3 report submission
+
+`Weekly Capstone Progress Report — Week 3` підготовлено як ретроспективний звіт за погодженою з керівником звітною послідовністю.
+
+Scope Week 3 report:
+
+- User-facing MVP v1 — реалізація, інтеграція, merge/deploy і первинне тестування;
+- post-deploy live smoke;
+- виявлені usability-проблеми;
+- UX Polish v1 design + acceptance criteria + implementation plan як підготовка наступної ітерації.
+
+2026-08-20 звіт за Week 3 відправлено Тетяні через LMS і продубльовано у Slack. Поточний статус: `submitted → awaiting supervisor feedback`.
+
+Реалізація UX Polish v1 відноситься до Week 4 report. Користувач уже запустив Codex для цієї реалізації, але нові test/build/browser/merge/deploy results ще не зафіксовані.
+
 ## Source of truth
 
 - `docs/STATUS.md` — current operational snapshot;
@@ -105,8 +120,8 @@ Accepted docs:
 
 ## Наступна дія
 
-Перед початком coding cycle синхронізувати локальний `main` із `origin/main`, оскільки після попереднього merge у remote `main` додано docs-only commits.
+UX Polish v1 coding cycle запущено користувачем через Codex в ізольованій гілці/worktree. До отримання фінального звіту не фіксувати успішні test/build/browser results і не заявляти merge/deploy.
 
-Потім створити ізольовану feature branch/worktree від актуального `main` і передати `docs/plans/ux-polish-v1.md` Codex/Developer для task-by-task реалізації з reviewer gate після кожного task. Merge/deploy виконувати тільки після full verification, whole-branch review та окремого рішення користувача.
+Після завершення Codex: перевірити фактичні результати, whole-branch review і стан branch; лише після цього окремо вирішити merge/deploy. Перевірені результати використовувати для Week 4 report.
 
-Паралельно готувати Weekly Capstone Progress Report — Week 3 лише з фактично виконаних робіт і перевірених результатів.
+Паралельно готуватися до Week 5: Розділ 3 «Методологія» та перша версія Розділу 4 «Результати та обговорення».
