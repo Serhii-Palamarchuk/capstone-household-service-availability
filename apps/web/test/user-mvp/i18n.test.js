@@ -46,6 +46,7 @@ test('current form and result copy has English and Ukrainian translations', () =
   assert.equal(uk('result.heading'), 'Результат доступності');
   assert.equal(en('result.availability'), 'Availability:');
   assert.equal(uk('result.availability'), 'Доступність:');
+  assert.equal(uk('result.needsRecalculation'), 'Результат потребує перерахунку.');
   assert.equal(en('role.oneOrMore'), 'one or more');
   assert.equal(uk('role.oneOrMore'), 'один або більше');
 });
