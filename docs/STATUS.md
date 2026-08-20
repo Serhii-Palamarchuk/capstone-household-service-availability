@@ -79,7 +79,7 @@ Accepted docs:
 
 ## Implementation plan
 
-`docs/plans/ux-polish-v1.md` розбиває реалізацію на послідовні reviewer gates:
+`docs/plans/ux-polish-v1.md` містить 8 послідовних reviewer gates:
 
 1. optional names + deterministic/display labels;
 2. local EN/UA translation layer;
@@ -88,8 +88,7 @@ Accepted docs:
 5. compact Services & Scenario + discoverable validation;
 6. compact Result + allow-listed quick edit;
 7. повне EN/UA wiring;
-8. density/accessibility polish;
-9. full regression/browser verification + evidence.
+8. density/accessibility polish + final regression/browser verification + evidence.
 
 План вимагає TDD/focused tests для нових pure helpers, повний existing suite, production build, manual `1920 × 1080` walkthrough, quick-edit/navigation/language smoke та whole-branch review. Числові/успішні результати не фіксуються до фактичного виконання перевірок.
 
