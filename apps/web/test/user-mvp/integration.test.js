@@ -10,11 +10,16 @@ import {
 } from './fixtures.js';
 
 test('AC-07: additional TV load reduces Internet runtime without becoming a dependency', () => {
-  const withoutTv = additionalLoadInternetFixture(false);
-  const withTv = additionalLoadInternetFixture(true);
+  const input = additionalLoadInternetFixture(false);
 
-  const baseline = runUserScenarioCore(withoutTv);
-  const loaded = runUserScenarioCore(withTv);
+  const baseline = runUserScenarioCore(input);
+  const loaded = runUserScenarioCore({
+    ...input,
+    scenario: {
+      ...input.scenario,
+      additionalActiveDeviceIds: ['device-tv'],
+    },
+  });
 
   assert.equal(baseline.success, true);
   assert.equal(baseline.simulation.targetResults[0].availabilityDurationMinutes, 1200);
@@ -22,12 +27,12 @@ test('AC-07: additional TV load reduces Internet runtime without becoming a depe
   assert.equal(loaded.success, true);
   assert.equal(loaded.simulation.targetResults[0].availabilityDurationMinutes, 360);
   assert.equal(loaded.simulation.targetResults[0].status, 'Limited');
-  assert.deepEqual(withTv.model.services[0].dependencyIds, [
+  assert.deepEqual(input.model.services[0].dependencyIds, [
     'device-router',
     'device-ont',
     'provider-internet',
   ]);
-  assert.equal(withTv.model.services[0].dependencyIds.includes('device-tv'), false);
+  assert.equal(input.model.services[0].dependencyIds.includes('device-tv'), false);
 });
 
 test('AC-10: two Remote Work targets reuse one shared Internet service result', () => {
@@ -74,10 +79,15 @@ test('AC-12: estimates the accepted Remote Work fixture and simulates its bottle
   const result = runUserScenarioCore(endToEndRemoteWorkFixture());
 
   assert.equal(result.success, true);
+  assert.equal(result.estimation.sourceResults[0].totalPowerW, 80);
   assert.equal(result.estimation.sourceResults[0].runtimeMinutes, 360);
   assert.equal(result.estimation.availability['device-router'], 360);
   assert.equal(result.estimation.availability['device-ont'], 360);
   assert.equal(result.estimation.availability['device-laptop'], 480);
+  assert.equal(
+    result.simulation.serviceResults.get('service-internet-home').availabilityDurationMinutes,
+    360,
+  );
 
   const remoteWork = result.simulation.targetResults[0];
   assert.equal(remoteWork.availabilityDurationMinutes, 360);

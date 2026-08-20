@@ -20,7 +20,7 @@ function FormErrors({ errors }) {
       <h2 id="form-errors-title">Correct the scenario before running it</h2>
       <ul>
         {errors.map((error, index) => (
-          <li key={`${error.code}-${error.field ?? index}`}>
+          <li key={`${error.code}-${error.field ?? 'global'}-${index}`}>
             <strong>{error.code}</strong>: {error.message ?? 'Check this value.'}
           </li>
         ))}
