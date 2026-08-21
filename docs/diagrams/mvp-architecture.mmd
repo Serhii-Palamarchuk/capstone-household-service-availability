@@ -1,4 +1,4 @@
-flowchart LR
+flowchart TB
     U["Користувач"]
 
     subgraph B["React SPA — виконується у браузері"]
@@ -25,4 +25,4 @@ flowchart LR
         GH["GitHub main"] --> GA["GitHub Actions"] --> GP["GitHub Pages"]
     end
 
-    GP --> B
+    GP --> UI
