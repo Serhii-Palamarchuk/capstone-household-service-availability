@@ -59,6 +59,26 @@ export function executeQuickRecalculation(formState, patch, onSuccess) {
   return { success: true };
 }
 
+export function executeScenarioSubmission(formState) {
+  const submittedInput = normalizeUserMvpForm(formState);
+  if (!submittedInput.success) {
+    return {
+      success: false,
+      errors: submittedInput.errors,
+      outcome: null,
+      submittedInput: null,
+    };
+  }
+
+  const outcome = runUserScenario(submittedInput);
+  return {
+    success: outcome.success,
+    errors: outcome.success ? [] : outcome.errors,
+    outcome,
+    submittedInput,
+  };
+}
+
 export function App() {
   const [language, setLanguage] = useState('en');
   const [formState, setFormState] = useState(createInitialUserMvpState);
@@ -324,17 +344,14 @@ export function App() {
   }
 
   function submitScenario() {
-    const normalized = normalizeUserMvpForm(formState);
-    if (!normalized.success) {
-      setErrors(normalized.errors);
-      setOutcome(null);
-      setSubmittedInput(null);
+    const submission = executeScenarioSubmission(formState);
+    setErrors(submission.errors);
+    setOutcome(submission.outcome);
+    setSubmittedInput(submission.submittedInput);
+    if (!submission.submittedInput) {
       return;
     }
 
-    setErrors([]);
-    setSubmittedInput(normalized);
-    setOutcome(runUserScenario(normalized));
     setResultStale(false);
     setCurrentStep(3);
   }
@@ -410,6 +427,7 @@ export function App() {
         <EquipmentStep
           deviceLabels={deviceLabels}
           devices={formState.devices}
+          errors={errors}
           onAdd={addDevice}
           onChange={changeDevice}
           onRemove={removeDevice}
@@ -424,6 +442,7 @@ export function App() {
           backupSources={formState.backupSources}
           deviceLabels={deviceLabels}
           devices={formState.devices}
+          errors={errors}
           onAdd={addBackupSource}
           onAssignmentChange={changeAssignment}
           onBack={() => setCurrentStep(0)}
@@ -435,6 +454,7 @@ export function App() {
       )}
       {currentStep === 2 && (
         <ServicesScenarioStep
+          backupSourceLabels={backupSourceLabels}
           deviceLabels={deviceLabels}
           errors={errors}
           formState={formState}

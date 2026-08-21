@@ -61,6 +61,45 @@ test('invalid quick-edit patch returns errors without committing or mutating cur
   assert.deepEqual(currentOutcome, outcomeSnapshot);
 });
 
+test('unknown quick-edit key is rejected at the App boundary without committing state or result', () => {
+  const currentForm = createInitialUserMvpState();
+  const submittedInput = normalizeUserMvpForm(currentForm);
+  const currentOutcome = runUserScenario(submittedInput);
+  const formSnapshot = structuredClone(currentForm);
+  const inputSnapshot = structuredClone(submittedInput);
+  const outcomeSnapshot = structuredClone(currentOutcome);
+  let commitCalls = 0;
+  let renderedForm = currentForm;
+  let renderedInput = submittedInput;
+  let renderedOutcome = currentOutcome;
+
+  const response = executeQuickRecalculation(
+    currentForm,
+    { sourceId: 'source-home', type: 'UPS' },
+    ({ nextOutcome, nextState, normalized }) => {
+      commitCalls += 1;
+      renderedForm = nextState;
+      renderedInput = normalized;
+      renderedOutcome = nextOutcome;
+    },
+  );
+
+  assert.deepEqual(response, {
+    success: false,
+    errors: [{
+      code: 'INVALID_QUICK_EDIT_PATCH',
+      message: 'Quick edit field is not allowed: type',
+    }],
+  });
+  assert.equal(commitCalls, 0);
+  assert.equal(renderedForm, currentForm);
+  assert.equal(renderedInput, submittedInput);
+  assert.equal(renderedOutcome, currentOutcome);
+  assert.deepEqual(currentForm, formSnapshot);
+  assert.deepEqual(submittedInput, inputSnapshot);
+  assert.deepEqual(currentOutcome, outcomeSnapshot);
+});
+
 test('unexpected TypeError from corrupted state propagates without committing', () => {
   const corruptedForm = {
     ...createInitialUserMvpState(),

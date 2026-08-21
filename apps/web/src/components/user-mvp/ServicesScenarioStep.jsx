@@ -69,7 +69,7 @@ function dependencySummary(service, selectedTemplate, labelMaps, t) {
   return labels.join(', ') || t('empty.incomplete');
 }
 
-function FormErrors({ errors, t }) {
+function FormErrors({ errors, nameFor, t }) {
   if (errors.length === 0) return null;
 
   return (
@@ -78,7 +78,7 @@ function FormErrors({ errors, t }) {
       <ul>
         {errors.map((error, index) => (
           <li key={`${error.code}-${error.field ?? 'global'}-${index}`}>
-            {translateValidationError(error, t)}
+            {translateValidationError(error, t, nameFor)}
           </li>
         ))}
       </ul>
@@ -86,14 +86,14 @@ function FormErrors({ errors, t }) {
   );
 }
 
-function RowErrors({ errors, id, t }) {
+function RowErrors({ errors, id, nameFor, t }) {
   if (errors.length === 0) return null;
 
   return (
     <ul className="row-errors" id={id} role="status">
       {errors.map((error, index) => (
         <li key={`${error.code}-${error.field ?? 'global'}-${index}`}>
-          {translateValidationError(error, t)}
+          {translateValidationError(error, t, nameFor)}
         </li>
       ))}
     </ul>
@@ -178,6 +178,7 @@ function ServiceRole({
 }
 
 export function ServicesScenarioStep({
+  backupSourceLabels,
   deviceLabels,
   errors,
   formState,
@@ -198,6 +199,13 @@ export function ServicesScenarioStep({
   t,
 }) {
   const labelMaps = { deviceLabels, providerLabels, serviceLabels };
+  const nameFor = id => (
+    backupSourceLabels?.get(id)
+    ?? deviceLabels.get(id)
+    ?? providerLabels.get(id)
+    ?? serviceLabels.get(id)
+    ?? id
+  );
   const outageErrors = errorsForField(errors, 'scenario.outageDurationMinutes');
 
   return (
@@ -213,7 +221,7 @@ export function ServicesScenarioStep({
         </button>
       </div>
 
-      <FormErrors errors={errors} t={t} />
+      <FormErrors errors={errors} nameFor={nameFor} t={t} />
 
       <div className="entity-list compact-service-list">
         {formState.services.map((service, serviceIndex) => {
@@ -271,7 +279,7 @@ export function ServicesScenarioStep({
                     <span className="details-label">{t('actions.details')}</span>
                     {hasErrors && <span className="error-badge">{serviceErrors.length}</span>}
                   </summary>
-                  <RowErrors errors={serviceErrors} id={errorId} t={t} />
+                  <RowErrors errors={serviceErrors} id={errorId} nameFor={nameFor} t={t} />
                   <div className="details-fields service-details-fields">
                     <label className="secondary-field" htmlFor={`${service.id}-name`}>
                       <span>
@@ -393,11 +401,13 @@ export function ServicesScenarioStep({
             const availabilityErrors = errorsForField(
               errors,
               `scenario.externalProviderAvailability.${provider.id}`,
-            );
-            const providerErrors = [
-              ...errorsForPrefix(errors, `externalProviders.${providerIndex}`),
-              ...availabilityErrors,
-            ];
+            ).concat(errors.filter(error => error.providerId === provider.id));
+            const providerErrors = errors.filter(error => (
+              error.field === `externalProviders.${providerIndex}`
+              || error.field?.startsWith(`externalProviders.${providerIndex}.`)
+              || error.field === `scenario.externalProviderAvailability.${provider.id}`
+              || error.providerId === provider.id
+            ));
             const errorId = `${provider.id}-errors`;
             const hasErrors = providerErrors.length > 0;
 
@@ -441,7 +451,7 @@ export function ServicesScenarioStep({
                 >
                   {t('actions.remove')}
                 </button>
-                <RowErrors errors={providerErrors} id={errorId} t={t} />
+                <RowErrors errors={providerErrors} id={errorId} nameFor={nameFor} t={t} />
               </article>
             );
           })}

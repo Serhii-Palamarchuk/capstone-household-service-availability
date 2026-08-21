@@ -318,10 +318,11 @@ body {
   grid-row: 1;
 }
 
+.compact-entity-row.has-errors,
 .compact-service-row.has-errors,
 .compact-provider-row.has-errors,
 .outage-field.has-errors,
-.service-row-details.has-errors .details-fields {
+.row-details.has-errors .details-fields {
   border-color: #dc2626;
 }
 
@@ -393,6 +394,9 @@ body {
 }
 
 .details-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
   color: #1d4ed8;
   font-size: 0.8125rem;
   font-weight: 700;
@@ -1247,6 +1251,29 @@ button:focus-visible {
   .step-actions .primary-button,
   .step-actions .secondary-button {
     padding: 0.625rem 0.875rem;
+  }
+}
+
+@media (max-width: 50rem) {
+  .target-result-row,
+  .target-causes,
+  .compact-result-row,
+  .device-result-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .target-causes {
+    padding-top: 1rem;
+    padding-left: 0;
+    border-top: 1px solid #dbeafe;
+    border-left: 0;
+  }
+
+  .target-result-row > *,
+  .target-causes > *,
+  .compact-result-row > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 }
 

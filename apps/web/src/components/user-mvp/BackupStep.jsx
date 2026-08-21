@@ -1,4 +1,32 @@
+import { translateValidationError } from '../../user-mvp/i18n.js';
+
 const backupTypes = ['PowerStation', 'UPS', 'Other'];
+
+function errorsForField(errors, field) {
+  return errors.filter(error => error.field === field);
+}
+
+function validationAttributes(errors, errorId) {
+  if (errors.length === 0) return {};
+  return {
+    'aria-describedby': errorId,
+    'aria-invalid': true,
+  };
+}
+
+function RowErrors({ errors, id, nameFor, t }) {
+  if (errors.length === 0) return null;
+
+  return (
+    <ul className="row-errors" id={id} role="status">
+      {errors.map((error, index) => (
+        <li key={`${error.code}-${error.field ?? error.sourceId ?? 'global'}-${index}`}>
+          {translateValidationError(error, t, nameFor)}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export function BackupStep({
   assignments,
@@ -6,6 +34,7 @@ export function BackupStep({
   backupSources,
   deviceLabels,
   devices,
+  errors = [],
   onAdd,
   onAssignmentChange,
   onBack,
@@ -30,22 +59,63 @@ export function BackupStep({
       </div>
 
       <div className="entity-list compact-entity-list">
-        {backupSources.map(source => (
-          <article className="compact-entity-row" key={source.id}>
-            <details className="row-details">
-              <summary>
-                <span className="compact-row-summary compact-row-summary-source">
-                  <strong>{backupSourceLabels.get(source.id)}</strong>
-                  <span className="details-label">{t('actions.details')}</span>
-                </span>
-              </summary>
-              <div className="details-fields">
+        {backupSources.map((source, sourceIndex) => {
+          const sourceErrors = errors.filter(error => (
+            error.field === `backupSources.${sourceIndex}`
+            || error.field?.startsWith(`backupSources.${sourceIndex}.`)
+            || error.sourceId === source.id
+          ));
+          const errorId = `${source.id}-errors`;
+          const hasErrors = sourceErrors.length > 0;
+          const nameErrors = errorsForField(errors, `backupSources.${sourceIndex}.name`);
+          const typeErrors = errorsForField(errors, `backupSources.${sourceIndex}.type`);
+          const capacityErrors = errorsForField(
+            errors,
+            `backupSources.${sourceIndex}.usableCapacityWh`,
+          );
+          const maximumOutputErrors = errorsForField(
+            errors,
+            `backupSources.${sourceIndex}.maxOutputPowerW`,
+          ).concat(sourceErrors.filter(error => (
+            error.sourceId === source.id
+            && [
+              'BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED',
+              'INVALID_BACKUP_SOURCE_MAX_OUTPUT',
+            ].includes(error.code)
+          )));
+
+          return (
+            <article
+            className={`compact-entity-row${hasErrors ? ' has-errors' : ''}`}
+            key={source.id}
+          >
+              <details
+              className={`row-details${hasErrors ? ' has-errors' : ''}`}
+              open={hasErrors || undefined}
+            >
+                <summary aria-describedby={hasErrors ? errorId : undefined}>
+                  <span className="compact-row-summary compact-row-summary-source">
+                    <strong>{backupSourceLabels.get(source.id)}</strong>
+                    <span className="details-label">
+                      {t('actions.details')}
+                      {hasErrors && <span className="error-badge">{sourceErrors.length}</span>}
+                    </span>
+                  </span>
+                </summary>
+                <RowErrors
+                errors={sourceErrors}
+                id={errorId}
+                nameFor={id => backupSourceLabels.get(id) ?? id}
+                t={t}
+                />
+                <div className="details-fields">
                 <label htmlFor={`${source.id}-type`}>
                   {t('field.type')}
                   <select
                     id={`${source.id}-type`}
                     value={source.type}
                     onChange={event => onChange(source.id, 'type', event.target.value)}
+                    {...validationAttributes(typeErrors, errorId)}
                   >
                     {backupTypes.map(type => (
                       <option key={type} value={type}>
@@ -64,6 +134,7 @@ export function BackupStep({
                     type="number"
                     value={source.usableCapacityWh}
                     onChange={event => onChange(source.id, 'usableCapacityWh', event.target.value)}
+                    {...validationAttributes(capacityErrors, errorId)}
                   />
                 </label>
                 <label htmlFor={`${source.id}-max-output`}>
@@ -79,6 +150,7 @@ export function BackupStep({
                     type="number"
                     value={source.maxOutputPowerW}
                     onChange={event => onChange(source.id, 'maxOutputPowerW', event.target.value)}
+                    {...validationAttributes(maximumOutputErrors, errorId)}
                   />
                 </label>
                 <label className="secondary-field" htmlFor={`${source.id}-name`}>
@@ -91,20 +163,22 @@ export function BackupStep({
                     type="text"
                     value={source.name}
                     onChange={event => onChange(source.id, 'name', event.target.value)}
+                    {...validationAttributes(nameErrors, errorId)}
                   />
                 </label>
-              </div>
-            </details>
-            <button
+                </div>
+              </details>
+              <button
               aria-label={`${t('actions.remove')}: ${backupSourceLabels.get(source.id)}`}
               className="text-button danger-button"
               type="button"
               onClick={() => onRemove(source.id)}
-            >
-              {t('actions.remove')}
-            </button>
-          </article>
-        ))}
+              >
+                {t('actions.remove')}
+              </button>
+            </article>
+          );
+        })}
       </div>
 
       <div className="assignment-section">

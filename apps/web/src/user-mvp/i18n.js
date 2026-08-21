@@ -183,8 +183,10 @@ const messages = {
     'validation.BACKUP_ASSIGNMENT_DEVICE_NOT_FOUND': 'The backup assignment refers to an unavailable device.',
     'validation.BACKUP_ASSIGNMENT_SOURCE_NOT_FOUND': 'Choose an available backup source.',
     'validation.MISSING_EXTERNAL_PROVIDER_AVAILABILITY': 'Enter the external provider availability.',
+    'validation.MISSING_EXTERNAL_PROVIDER_AVAILABILITY.withEntity': 'Enter availability for {entity}.',
     'validation.INVALID_EXTERNAL_PROVIDER_AVAILABILITY': 'External provider availability must be a whole number of zero or more.',
     'validation.BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED': 'The active load exceeds the backup source maximum output.',
+    'validation.BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED.withEntity': 'The active load exceeds the maximum output of {entity}.',
     'validation.INVALID_OUTAGE_DURATION': 'Outage duration must be a whole number greater than zero.',
     'validation.EMPTY_TARGET_SERVICES': 'Select at least one target service.',
     'validation.DUPLICATE_TARGET_SERVICE': 'Each target service can be selected only once.',
@@ -383,8 +385,10 @@ const messages = {
     'validation.BACKUP_ASSIGNMENT_DEVICE_NOT_FOUND': 'Призначення резервного живлення посилається на недоступний пристрій.',
     'validation.BACKUP_ASSIGNMENT_SOURCE_NOT_FOUND': 'Оберіть доступне резервне джерело.',
     'validation.MISSING_EXTERNAL_PROVIDER_AVAILABILITY': 'Вкажіть доступність зовнішнього постачальника.',
+    'validation.MISSING_EXTERNAL_PROVIDER_AVAILABILITY.withEntity': 'Вкажіть доступність для {entity}.',
     'validation.INVALID_EXTERNAL_PROVIDER_AVAILABILITY': 'Доступність зовнішнього постачальника має бути цілим числом, не меншим за нуль.',
     'validation.BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED': 'Потужність навантаження перевищує максимальну вихідну потужність резервного джерела.',
+    'validation.BACKUP_SOURCE_MAX_OUTPUT_EXCEEDED.withEntity': 'Активне навантаження перевищує максимальну вихідну потужність {entity}.',
     'validation.INVALID_OUTAGE_DURATION': 'Тривалість відключення має бути цілим числом, більшим за нуль.',
     'validation.EMPTY_TARGET_SERVICES': 'Оберіть принаймні одну цільову послугу.',
     'validation.DUPLICATE_TARGET_SERVICE': 'Кожну цільову послугу можна обрати лише один раз.',
@@ -419,8 +423,15 @@ export function translateStatus(status, t) {
   return t(`status.${status}`, { fallback: status });
 }
 
-export function translateValidationError(error, t) {
-  return t(`validation.${error.code}`, { fallback: error.message ?? error.code });
+export function translateValidationError(error, t, nameFor) {
+  const message = t(`validation.${error.code}`, { fallback: error.message ?? error.code });
+  const entityId = error.providerId ?? error.sourceId;
+  if (!entityId || !nameFor) return message;
+
+  return t(`validation.${error.code}.withEntity`, {
+    entity: nameFor(entityId),
+    fallback: message,
+  });
 }
 
 export function translateWarning(warning, t, nameFor) {

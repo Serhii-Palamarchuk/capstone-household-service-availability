@@ -27,11 +27,11 @@ function withOrdinals(entries) {
   }));
 }
 
-function displayLabels(entities, technicalLabel, rawName) {
+function displayLabels(entities, technicalLabel, comparisonNames) {
   return withOrdinals(entities.map((entity) => {
     const technical = technicalLabel(entity);
     const customName = clean(entity.name);
-    const comparisons = [rawName(entity), technical];
+    const comparisons = [...comparisonNames(entity), technical];
     const isDuplicate = comparisons.some(value => comparable(customName) === comparable(value));
     return {
       id: entity.id,
@@ -66,7 +66,14 @@ export function deviceDisplayLabels(devices, t) {
       value: clean(device.powerW),
       fallback: `${clean(device.powerW)} W`,
     })}`,
-    device => device.category,
+    device => [
+      device.category,
+      translated(
+        t,
+        `category.${device.category}`,
+        clean(device.category) || translated(t, 'label.genericDevice', 'Device'),
+      ),
+    ],
   );
 }
 
@@ -93,7 +100,16 @@ export function backupSourceDisplayLabels(sources, t) {
       }
       return parts.join(' · ');
     },
-    source => source.type,
+    source => [
+      source.type,
+      source.type === 'PowerStation'
+        ? translated(t, 'backupType.PowerStation', 'Power station')
+        : translated(
+          t,
+          `backupType.${source.type}`,
+          clean(source.type) || translated(t, 'label.genericBackupSource', 'Backup source'),
+        ),
+    ],
   );
 }
 
@@ -110,6 +126,13 @@ export function serviceDisplayLabels(services, t) {
         ? translated(t, `variant.${service.variantId}`, clean(service.variantId))
         : '',
     ].filter(Boolean).join(' · '),
-    service => service.templateId,
+    service => [
+      service.templateId,
+      translated(
+        t,
+        `template.${service.templateId}`,
+        clean(service.templateId) || translated(t, 'label.genericService', 'Service'),
+      ),
+    ],
   );
 }

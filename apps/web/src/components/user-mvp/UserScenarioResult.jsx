@@ -16,14 +16,14 @@ function formatDuration(minutes, t) {
   });
 }
 
-function ResultErrors({ errors, id, t }) {
+function ResultErrors({ errors, id, nameFor, t }) {
   if (errors.length === 0) return null;
 
   return (
     <ul className="quick-edit-errors" id={id} role="alert">
       {errors.map((error, index) => (
         <li key={`${error.code}-${error.field ?? error.sourceId ?? 'global'}-${index}`}>
-          {translateValidationError(error, t)}
+          {translateValidationError(error, t, nameFor)}
         </li>
       ))}
     </ul>
@@ -99,7 +99,12 @@ function SourceQuickEdit({ editor, nameFor, onCancel, onRecalculate, setEditor, 
             />
           </label>
         </div>
-        <ResultErrors errors={editor.errors} id="source-quick-edit-errors" t={t} />
+        <ResultErrors
+          errors={editor.errors}
+          id="source-quick-edit-errors"
+          nameFor={nameFor}
+          t={t}
+        />
         <div className="quick-edit-actions">
           <button className="secondary-button" type="button" onClick={onCancel}>
             {t('actions.cancel')}
@@ -179,29 +184,6 @@ export function UserScenarioResult({
   t,
 }) {
   const [editor, setEditor] = useState(null);
-
-  if (!outcome.success) {
-    return (
-      <section className="wizard-panel result-failure" role="alert">
-        <p className="step-label">{t('step.numberOfTotal', { number: 4, total: 4 })}</p>
-        <h2>{t('result.failureTitle')}</h2>
-        <p>{t('result.failureDescription')}</p>
-        <ul>
-          {outcome.errors.map((error, index) => (
-            <li key={`${error.code}-${index}`}>
-              {translateValidationError(error, t)}
-            </li>
-          ))}
-        </ul>
-        <div className="step-actions">
-          <button className="secondary-button" type="button" onClick={onBack}>
-            {t('actions.backToServicesScenario')}
-          </button>
-        </div>
-      </section>
-    );
-  }
-
   const allEntities = [
     ...input.model.services,
     ...input.model.devices,
@@ -215,6 +197,29 @@ export function UserScenarioResult({
     ?? submittedNamesById.get(id)
     ?? id
   );
+
+  if (!outcome.success) {
+    return (
+      <section className="wizard-panel result-failure" role="alert">
+        <p className="step-label">{t('step.numberOfTotal', { number: 4, total: 4 })}</p>
+        <h2>{t('result.failureTitle')}</h2>
+        <p>{t('result.failureDescription')}</p>
+        <ul>
+          {outcome.errors.map((error, index) => (
+            <li key={`${error.code}-${index}`}>
+              {translateValidationError(error, t, nameFor)}
+            </li>
+          ))}
+        </ul>
+        <div className="step-actions">
+          <button className="secondary-button" type="button" onClick={onBack}>
+            {t('actions.backToServicesScenario')}
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   const warnings = outcome.estimation.warnings;
   const recommendations = outcome.recommendations;
   const outageDuration = formatDuration(input.scenario.outageDurationMinutes, t);

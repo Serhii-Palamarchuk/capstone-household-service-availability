@@ -1,10 +1,44 @@
 import { DeviceCategory } from '../../user-mvp/constants.js';
+import { translateValidationError } from '../../user-mvp/i18n.js';
 
 const categoryOptions = Object.values(DeviceCategory);
+
+function errorsForPrefix(errors, prefix) {
+  return errors.filter(error => (
+    error.field === prefix || error.field?.startsWith(`${prefix}.`)
+  ));
+}
+
+function errorsForField(errors, field) {
+  return errors.filter(error => error.field === field);
+}
+
+function validationAttributes(errors, errorId) {
+  if (errors.length === 0) return {};
+  return {
+    'aria-describedby': errorId,
+    'aria-invalid': true,
+  };
+}
+
+function RowErrors({ errors, id, t }) {
+  if (errors.length === 0) return null;
+
+  return (
+    <ul className="row-errors" id={id} role="status">
+      {errors.map((error, index) => (
+        <li key={`${error.code}-${error.field ?? 'global'}-${index}`}>
+          {translateValidationError(error, t)}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export function EquipmentStep({
   deviceLabels,
   devices,
+  errors = [],
   onAdd,
   onChange,
   onRemove,
@@ -25,27 +59,50 @@ export function EquipmentStep({
       </div>
 
       <div className="entity-list compact-entity-list">
-        {devices.map(device => (
-          <article className="compact-entity-row" key={device.id}>
-            <details className="row-details">
-              <summary>
-                <span className="compact-row-summary">
-                  <strong>{deviceLabels.get(device.id)}</strong>
-                  <span className="compact-row-secondary">
-                    {t('field.internalBattery')}: {device.internalBatteryWh
-                      ? t('unit.wattHours', { value: device.internalBatteryWh })
-                      : '—'}
+        {devices.map((device, deviceIndex) => {
+          const deviceErrors = errorsForPrefix(errors, `devices.${deviceIndex}`);
+          const errorId = `${device.id}-errors`;
+          const hasErrors = deviceErrors.length > 0;
+          const nameErrors = errorsForField(errors, `devices.${deviceIndex}.name`);
+          const categoryErrors = errorsForField(errors, `devices.${deviceIndex}.category`);
+          const powerErrors = errorsForField(errors, `devices.${deviceIndex}.powerW`);
+          const batteryErrors = errorsForField(
+            errors,
+            `devices.${deviceIndex}.internalBatteryWh`,
+          );
+
+          return (
+            <article
+            className={`compact-entity-row${hasErrors ? ' has-errors' : ''}`}
+            key={device.id}
+          >
+              <details
+              className={`row-details${hasErrors ? ' has-errors' : ''}`}
+              open={hasErrors || undefined}
+            >
+                <summary aria-describedby={hasErrors ? errorId : undefined}>
+                  <span className="compact-row-summary">
+                    <strong>{deviceLabels.get(device.id)}</strong>
+                    <span className="compact-row-secondary">
+                      {t('field.internalBattery')}: {device.internalBatteryWh
+                        ? t('unit.wattHours', { value: device.internalBatteryWh })
+                        : '—'}
+                    </span>
+                    <span className="details-label">
+                      {t('actions.details')}
+                      {hasErrors && <span className="error-badge">{deviceErrors.length}</span>}
+                    </span>
                   </span>
-                  <span className="details-label">{t('actions.details')}</span>
-                </span>
-              </summary>
-              <div className="details-fields">
+                </summary>
+                <RowErrors errors={deviceErrors} id={errorId} t={t} />
+                <div className="details-fields">
                 <label htmlFor={`${device.id}-category`}>
                   {t('field.category')}
                   <select
                     id={`${device.id}-category`}
                     value={device.category}
                     onChange={event => onChange(device.id, 'category', event.target.value)}
+                    {...validationAttributes(categoryErrors, errorId)}
                   >
                     {categoryOptions.map(category => (
                       <option key={category} value={category}>
@@ -64,6 +121,7 @@ export function EquipmentStep({
                     type="number"
                     value={device.powerW}
                     onChange={event => onChange(device.id, 'powerW', event.target.value)}
+                    {...validationAttributes(powerErrors, errorId)}
                   />
                 </label>
                 <label htmlFor={`${device.id}-battery`}>
@@ -79,6 +137,7 @@ export function EquipmentStep({
                     type="number"
                     value={device.internalBatteryWh}
                     onChange={event => onChange(device.id, 'internalBatteryWh', event.target.value)}
+                    {...validationAttributes(batteryErrors, errorId)}
                   />
                 </label>
                 <label className="secondary-field" htmlFor={`${device.id}-name`}>
@@ -91,20 +150,22 @@ export function EquipmentStep({
                     type="text"
                     value={device.name}
                     onChange={event => onChange(device.id, 'name', event.target.value)}
+                    {...validationAttributes(nameErrors, errorId)}
                   />
                 </label>
-              </div>
-            </details>
-            <button
+                </div>
+              </details>
+              <button
               aria-label={`${t('actions.remove')}: ${deviceLabels.get(device.id)}`}
               className="text-button danger-button"
               type="button"
               onClick={() => onRemove(device.id)}
-            >
-              {t('actions.remove')}
-            </button>
-          </article>
-        ))}
+              >
+                {t('actions.remove')}
+              </button>
+            </article>
+          );
+        })}
       </div>
 
       <div className="step-actions step-actions-end">
