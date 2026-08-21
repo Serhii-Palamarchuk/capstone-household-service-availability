@@ -23,7 +23,7 @@ Equipment → Backup → Services & Scenario → Result
 
 Weekly Capstone Progress Report — Week 2 був відправлений Тетяні через LMS; repository + live demo також були надіслані.
 
-За повідомленням користувача 2026-08-20, Week 2 завдання вже прийняте, але окремих текстових коментарів/нового feedback Тетяни не надійшло. Користувач вирішив не блокувати Week 3 очікуванням додаткового feedback і перейти до usability/UX polish без розширення MVP scope.
+За повідомленням користувача 2026-08-20, Week 2 завдання вже прийняте, але окремих текстових коментарів/нового feedback Тетяни не надійшло. Користувач вирішив не блокувати наступну UX-ітерацію очікуванням додаткового feedback і продовжити без розширення MVP scope.
 
 ## Accepted deployed verification baseline before UX Polish v1
 
@@ -107,7 +107,22 @@ Accepted docs:
 - whole-branch review `main...feature/ux-polish-v1`: усі знайдені `2 Major` і `2 Minor` issues виправлено та повторно перевірено; нових `Critical` / `Major` / `Minor` findings немає; фінальний verdict — `ACCEPTED`;
 - scope audit не виявив змін у `Simulation Engine v1`, Availability Estimator, service templates, recommendations або dependency manifests.
 
-Push, merge і deploy для `UX Polish v1` не виконувалися. Контрольні числові значення acceptance walkthrough є test fixtures, а не результатами реальних вимірювань автономності.
+Push, merge у `main` і deploy для `UX Polish v1` не виконувалися. Контрольні числові значення acceptance walkthrough є test fixtures, а не результатами реальних вимірювань автономності.
+
+## Week 3 report submission
+
+`Weekly Capstone Progress Report — Week 3` підготовлено як ретроспективний звіт за погодженою з керівником звітною послідовністю.
+
+Scope Week 3 report:
+
+- User-facing MVP v1 — реалізація, інтеграція, merge/deploy і первинне тестування;
+- post-deploy live smoke;
+- виявлені usability-проблеми;
+- UX Polish v1 design + acceptance criteria + implementation plan як підготовка наступної ітерації.
+
+2026-08-20 звіт за Week 3 відправлено Тетяні через LMS і продубльовано у Slack. Поточний статус: `submitted → awaiting supervisor feedback`.
+
+Звітна межа зафіксована так: реалізація UX Polish v1 не входила до submitted Week 3 report і відноситься до Week 4 report. Її фактичні test/build/browser/review results наведено вище; merge у `main` і deploy ще не виконувалися.
 
 ## Source of truth
 
@@ -122,6 +137,6 @@ Push, merge і deploy для `UX Polish v1` не виконувалися. Ко�
 
 ## Наступна дія
 
-Прийняти окреме рішення щодо push/merge/deploy branch `feature/ux-polish-v1`. До такого рішення branch залишається локальною; автоматичний push, merge або deploy не виконувати.
+Після синхронізації feature branch з актуальним `origin/main` прийняти окреме рішення щодо merge/deploy `feature/ux-polish-v1`. Перевірені результати використовувати для Week 4 report; до окремого рішення не заявляти merge у `main` або deploy.
 
-Паралельно готувати Weekly Capstone Progress Report — Week 3 лише з фактично виконаних робіт і перевірених результатів.
+Паралельно готуватися до Week 5: Розділ 3 «Методологія» та перша версія Розділу 4 «Результати та обговорення».
