@@ -1,0 +1,28 @@
+flowchart LR
+    U["Користувач"]
+
+    subgraph B["React SPA — виконується у браузері"]
+        UI["4-кроковий UI\nEquipment → Backup → Services & Scenario → Result"]
+        NV["Нормалізація та валідація сценарію"]
+        AE["Availability Estimator\npowerW + usableCapacityWh → Device availability"]
+        ST["Service templates і dependency bindings"]
+        SE["Simulation Engine v1\nDAG → availability → status → limiting dependencies → causal paths"]
+        RR["Формування результату\nstatus / availability / warnings / recommendations"]
+
+        UI --> NV
+        ST --> NV
+        NV --> AE
+        AE --> SE
+        NV --> SE
+        SE --> RR
+        RR --> UI
+    end
+
+    EP["External Provider availability\nручний параметр сценарію"] --> NV
+    U <--> UI
+
+    subgraph D["Розгортання"]
+        GH["GitHub main"] --> GA["GitHub Actions"] --> GP["GitHub Pages"]
+    end
+
+    GP --> B
