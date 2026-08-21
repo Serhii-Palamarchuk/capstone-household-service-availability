@@ -5,22 +5,22 @@
 ```mermaid
 flowchart TB
     U["Користувач"]
-    ST["Service templates<br/>і dependency bindings"]
-    EP["External Provider availability<br/>ручний параметр сценарію"]
+    ST["Шаблони сервісів<br/>і прив’язки залежностей"]
+    EP["Доступність External Provider<br/>ручний параметр сценарію"]
 
     subgraph SPA["React SPA — виконується у браузері"]
         UI["4-кроковий UI<br/>Equipment → Backup → Services & Scenario → Result"]
-        V["Нормалізація та валідація<br/>обладнання, backup, services і scenario"]
-        AE["Availability Estimator<br/>powerW + usableCapacityWh → Device availability"]
+        V["Нормалізація та валідація<br/>обладнання, резервного живлення,<br/>сервісів і сценарію"]
+        AE["Availability Estimator<br/>powerW + usableCapacityWh → доступність Device"]
         SA["Scenario.availability<br/>часова доступність Device"]
         SE["Simulation Engine v1<br/>DAG → T → status → limiting dependencies → causal paths"]
-        R["Result view — крок 4 UI<br/>availability / status / warnings / deterministic recommendations"]
+        R["Представлення результату — крок 4 UI<br/>availability / status / warnings /<br/>детерміновані рекомендації"]
 
         UI --> V
         V --> AE
         AE --> SA
         SA --> SE
-        V -->|service graph + outage scenario| SE
+        V -->|граф сервісів + сценарій відключення| SE
         SE --> R
     end
 
@@ -32,12 +32,12 @@ flowchart TB
 ## Що показує схема
 
 - Користувач вводить дані через 4-кроковий React UI: `Equipment → Backup → Services & Scenario → Result`.
-- `Service templates` задають дозволену структуру залежностей; довільного редактора графа в MVP немає.
+- Шаблони сервісів задають дозволену структуру залежностей; довільного редактора графа в MVP немає.
 - Нормалізація та валідація перевіряють користувацьку конфігурацію перед розрахунком.
 - `Availability Estimator` перетворює `powerW` і доступну енергоємність у часову доступність `Device` та формує `Scenario.availability`.
-- `Simulation Engine v1` отримує валідовану модель сервісів, outage scenario та `Scenario.availability`, після чого розраховує тривалість доступності сервісів, статус, обмежувальні залежності й причинні шляхи.
-- `External Provider availability` залишається ручним параметром сценарію.
-- `Result view` є частиною четвертого кроку UI й показує availability/status, warnings та лише детерміновані рекомендації, що прямо випливають із моделі.
+- `Simulation Engine v1` отримує валідовану модель сервісів, сценарій відключення та `Scenario.availability`, після чого розраховує тривалість доступності сервісів, статус, обмежувальні залежності й причинні шляхи.
+- Доступність `External Provider` залишається ручним параметром сценарію.
+- Представлення результату є частиною четвертого кроку UI й показує availability/status, warnings та лише детерміновані рекомендації, що прямо випливають із моделі.
 - Backend і база даних у поточному MVP відсутні. Deployment окремо зафіксований у D-002: `main → GitHub Actions → GitHub Pages`.
 
 ## Source of truth
