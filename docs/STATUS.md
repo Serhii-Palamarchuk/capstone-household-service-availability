@@ -24,9 +24,9 @@ Equipment → Backup → Services & Scenario → Result
 
 Weekly Capstone Progress Report — Week 2 прийнятий Тетяною; окремих текстових коментарів або нового feedback після прийняття не зафіксовано.
 
-Weekly Capstone Progress Report — Week 3 відправлено Тетяні через LMS і продубльовано у Slack 2026-08-20. Поточний статус: `submitted → awaiting supervisor feedback`.
+Weekly Capstone Progress Report — Week 3 прийнятий Тетяною в LMS 2026-08-21. Окремого текстового feedback, зауважень або нових вимог після прийняття не зафіксовано.
 
-Звітна межа зберігається: submitted Week 3 report охоплює User-facing MVP v1, його testing/deploy/live smoke та підготовку UX Polish v1. Реалізація, verification, merge/deploy і live smoke UX Polish v1 належать до Week 4 report.
+Week 3 reporting checkpoint закритий як accepted. Звітна межа зберігається: Week 3 report охоплює User-facing MVP v1, його testing/deploy/live smoke та підготовку UX Polish v1. Реалізація, verification, merge/deploy і live smoke UX Polish v1 належать до Week 4 report.
 
 ## UX Polish v1 — accepted contract
 
