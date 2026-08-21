@@ -7,7 +7,8 @@
 - `Simulation Engine v1`;
 - `React Demo v1`;
 - `Deploy v1`;
-- `User-facing MVP v1`: design, `AC-01…AC-14`, implementation, review/cleanup, merge у `main`, deployment і post-deploy live smoke.
+- `User-facing MVP v1` — design, `AC-01…AC-14`, implementation, review/cleanup, merge, deployment і post-deploy live smoke;
+- `UX Polish v1` — accepted design, `UX-01…UX-30`, implementation, review, merge у `main`, deployment і post-deploy live smoke.
 
 Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
@@ -17,126 +18,86 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 Equipment → Backup → Services & Scenario → Result
 ```
 
-`Simulation Engine v1`, Availability Estimator formulas, service-template semantics, status semantics і recommendation logic є стабільною базою та не повинні змінюватися в поточній UX-ітерації.
+`Simulation Engine v1`, Availability Estimator formulas, service-template semantics, status semantics і recommendation logic залишаються незмінними відносно accepted User-facing MVP v1 contract.
 
-## Supervisor checkpoint — Week 2
+## Supervisor / reporting checkpoint
 
-Weekly Capstone Progress Report — Week 2 був відправлений Тетяні через LMS; repository + live demo також були надіслані.
+Weekly Capstone Progress Report — Week 2 прийнятий Тетяною; окремих текстових коментарів або нового feedback після прийняття не зафіксовано.
 
-За повідомленням користувача 2026-08-20, Week 2 завдання вже прийняте, але окремих текстових коментарів/нового feedback Тетяни не надійшло. Користувач вирішив не блокувати наступну UX-ітерацію очікуванням додаткового feedback і продовжити без розширення MVP scope.
+Weekly Capstone Progress Report — Week 3 відправлено Тетяні через LMS і продубльовано у Slack 2026-08-20. Поточний статус: `submitted → awaiting supervisor feedback`.
 
-## Accepted deployed verification baseline before UX Polish v1
+Звітна межа зберігається: submitted Week 3 report охоплює User-facing MVP v1, його testing/deploy/live smoke та підготовку UX Polish v1. Реалізація, verification, merge/deploy і live smoke UX Polish v1 належать до Week 4 report.
 
-Остання фактично перевірена база User-facing MVP v1:
-
-- full suite після cleanup/merge: `100 passed`, `0 failed`;
-- production build Vite `8.2.1` — successful;
-- локальний browser AC-14 walkthrough включав rerun без reload;
-- post-deploy live browser smoke AC-12 підтвердив основний accepted flow.
-
-Post-deploy AC-12 controlled fixture:
-
-- Home backup: `80 W`, runtime `360 min`;
-- Router: `360 min`;
-- ONT/ONU: `360 min`;
-- Laptop: `360 min` external + `120 min` internal = `480 min`;
-- Remote Work: `Limited`, availability `360 min`;
-- limiting dependencies: Router + ONT/ONU;
-- causal paths через Internet до Router та ONT/ONU;
-- `MISSING_BACKUP_SOURCE_MAX_OUTPUT` показано очікувано.
-
-Ці значення є контрольними test fixtures, а не результатами реальних вимірювань автономності.
-
-## Week 3 — UX Polish v1 accepted design
-
-2026-08-20 користувач затвердив `UX Polish v1`.
+## UX Polish v1 — accepted contract
 
 Accepted docs:
 
 - `docs/specs/ux-polish-v1.md`;
 - `docs/specs/ux-polish-v1-acceptance.md` (`UX-01…UX-30`);
 - `docs/DECISIONS.md` — D-005;
-- `docs/plans/ux-polish-v1.md` — implementation plan.
+- `docs/plans/ux-polish-v1.md` — 8-task implementation plan.
 
-Ключовий accepted UX contract:
+Ключовий contract:
 
-- підхід **compact rows + progressive details**;
-- 4-step wizard з інтерактивним backward stepper і окремою компактною `Back`-кнопкою;
-- desktop acceptance viewport `1920 × 1080`;
-- density fixture: 5 Devices, 2 BackupSources, 3 ServiceInstances, 2 ExternalProviders; на Result усі 3 сервіси є targets;
-- кожен default/collapsed step має вміщуватися без vertical page scroll;
-- Device / BackupSource / Service custom `Name` — optional і візуально другорядний; normalized domain `name` лишається non-empty через deterministic fallback;
-- user-facing technical labels містять корисні характеристики та не дублюють custom name/category/type;
-- Backup assignment: 1 source → on/off; 2+ sources → on/off + selector;
-- Services — compact rows із dependency summary, target state і Details;
-- Result — decision-first compact dashboard;
-- quick edit із Result: `usableCapacityWh`, `maxOutputPowerW`, outage duration, лише через standard normalization → estimator → simulation pipeline;
-- upstream edit робить попередній Result stale;
-- UA/EN входить у UX Polish v1; English initial/default; language switch не скидає state/result;
-- нова third-party i18n dependency не додається;
+- compact rows + progressive details;
+- 4-step wizard із backward stepper та окремою `Back`-кнопкою;
+- desktop acceptance viewport `1920 × 1080` і no-scroll baseline для density fixture;
+- optional custom `Name` для Device / BackupSource / Service з deterministic fallback;
+- adaptive backup assignment;
+- compact Services і decision-first Result;
+- quick edit `usableCapacityWh`, `maxOutputPowerW` та outage duration через standard normalization → estimator → simulation pipeline;
+- stale-result protection;
+- UA/EN без third-party i18n dependency;
 - ExternalProvider name лишається required;
-- engine/estimator/template/recommendation semantics не змінюються.
+- без змін engine/estimator/template/recommendation semantics.
 
-## Implementation plan
+## Week 4 — UX Polish v1 verification та integration
 
-`docs/plans/ux-polish-v1.md` містить 8 послідовних reviewer gates:
+Фінальна verification evidence до merge:
 
-1. optional names + deterministic/display labels;
-2. local EN/UA translation layer;
-3. backward stepper + stale-result state;
-4. compact Equipment + Backup;
-5. compact Services & Scenario + discoverable validation;
-6. compact Result + allow-listed quick edit;
-7. повне EN/UA wiring;
-8. density/accessibility polish + final regression/browser verification + evidence.
-
-План вимагає TDD/focused tests для нових pure helpers, повний existing suite, production build, manual `1920 × 1080` walkthrough, quick-edit/navigation/language smoke та whole-branch review. Числові/успішні результати не фіксуються до фактичного виконання перевірок.
-
-## Week 3 — UX Polish v1 implementation verification
-
-2026-08-21 реалізацію `UX Polish v1` завершено у feature branch `feature/ux-polish-v1`; Task 8 пройшов фінальний acceptance/review gate.
-
-Фактична verification evidence:
-
-- fresh full suite: `140 passed`, `0 failed`, `0 skipped`;
+- full suite: `140 passed`, `0 failed`, `0 skipped`;
 - production build: Vite `8.2.1`, `36 modules transformed`, успішно;
 - `git diff --check` — без помилок;
-- worktree перед оновленням цього status — clean;
-- browser walkthrough у production preview підтвердив desktop density fixture `1920 × 1080`, navigation/state retention, stale-result flow, validation discoverability, quick edit, rerun без page reload, UA/EN state retention, видимі текстові statuses/causal paths і відсутність console warnings/errors;
-- користувач окремо підтвердив у звичайному Chrome keyboard acceptance для Details, backward stepper, UA/EN switch, Back/Continue, quick-edit dialog і Run scenario — усі перевірки `PASS`;
-- whole-branch review `main...feature/ux-polish-v1`: усі знайдені `2 Major` і `2 Minor` issues виправлено та повторно перевірено; нових `Critical` / `Major` / `Minor` findings немає; фінальний verdict — `ACCEPTED`;
-- scope audit не виявив змін у `Simulation Engine v1`, Availability Estimator, service templates, recommendations або dependency manifests.
+- whole-branch review: початкові `2 Major` і `2 Minor` виправлено; нових `Critical` / `Major` / `Minor` findings немає; verdict `ACCEPTED`;
+- browser/manual acceptance: desktop density, navigation/state retention, stale Result, validation discoverability, quick edit, rerun без reload, UA/EN state retention, keyboard acceptance — `PASS`;
+- scope audit: без змін у `Simulation Engine v1`, Availability Estimator formulas, service templates, recommendations і dependency manifests.
 
-Push, merge у `main` і deploy для `UX Polish v1` не виконувалися. Контрольні числові значення acceptance walkthrough є test fixtures, а не результатами реальних вимірювань автономності.
+Integration:
 
-## Week 3 report submission
+- feature branch синхронізовано з `origin/main` без rebase/переписування history;
+- merge-ready remote HEAD: `0d6e383c0ae71c12b1497efe21f0a47ec80e068c`;
+- локальний `main` fast-forward merged до `0d6e383c…`;
+- перед push у `main` повторно запущено full suite: `140 passed`, `0 failed`, `0 skipped`;
+- повторний production build: Vite `8.2.1`, `36 modules transformed`, успішно;
+- повторні `git diff --check` і clean worktree — PASS;
+- `main` push виконано; remote `main` і `feature/ux-polish-v1` після push були `identical` на `0d6e383c…`;
+- GitHub Pages deployment для цього push завершився успішно за підтвердженням користувача.
 
-`Weekly Capstone Progress Report — Week 3` підготовлено як ретроспективний звіт за погодженою з керівником звітною послідовністю.
+## Post-deploy live smoke — UX Polish v1
 
-Scope Week 3 report:
+Користувач фактично перевірив live GitHub Pages після deployment:
 
-- User-facing MVP v1 — реалізація, інтеграція, merge/deploy і первинне тестування;
-- post-deploy live smoke;
-- виявлені usability-проблеми;
-- UX Polish v1 design + acceptance criteria + implementation plan як підготовка наступної ітерації.
+- новий compact Step 1 відкривається, EN/UA control видимий — PASS;
+- EN → UA → EN зберігає current step і введені дані — PASS;
+- backward stepper повертає на попередній step без втрати змінених values — PASS;
+- Result запускається без page reload; backup quick edit + `Recalculate` оновлює result — PASS;
+- після upstream зміни старий Result не подається як актуальний і потрібен новий run/recalculation — PASS.
 
-2026-08-20 звіт за Week 3 відправлено Тетяні через LMS і продубльовано у Slack. Поточний статус: `submitted → awaiting supervisor feedback`.
-
-Звітна межа зафіксована так: реалізація UX Polish v1 не входила до submitted Week 3 report і відноситься до Week 4 report. Її фактичні test/build/browser/review results наведено вище; merge у `main` і deploy ще не виконувалися.
+Цей smoke підтверджує ключові live UX flows після deployment. Він не замінює окреме screen-reader testing; такого результату не зафіксовано.
 
 ## Source of truth
 
 - `docs/STATUS.md` — current operational snapshot;
 - `docs/DECISIONS.md` — accepted суттєві рішення;
-- `docs/specs/user-facing-mvp-v1.md` — accepted User-facing MVP contract;
-- `docs/specs/user-facing-mvp-v1-acceptance.md` — accepted AC-01…AC-14;
-- `docs/specs/ux-polish-v1.md` — accepted UX Polish v1 design;
-- `docs/specs/ux-polish-v1-acceptance.md` — accepted UX-01…UX-30;
-- `docs/plans/ux-polish-v1.md` — implementation plan;
-- `docs/specs/repository-workflow.md` — Developer → Reviewer workflow.
+- `docs/specs/user-facing-mvp-v1.md`;
+- `docs/specs/user-facing-mvp-v1-acceptance.md`;
+- `docs/specs/ux-polish-v1.md`;
+- `docs/specs/ux-polish-v1-acceptance.md`;
+- `docs/plans/ux-polish-v1.md`;
+- `docs/specs/repository-workflow.md`.
 
 ## Наступна дія
 
-Після синхронізації feature branch з актуальним `origin/main` прийняти окреме рішення щодо merge/deploy `feature/ux-polish-v1`. Перевірені результати використовувати для Week 4 report; до окремого рішення не заявляти merge у `main` або deploy.
+UX Polish v1 milestone закритий як implemented → verified → merged → deployed → live-smoked.
 
-Паралельно готуватися до Week 5: Розділ 3 «Методологія» та перша версія Розділу 4 «Результати та обговорення».
+Наступний основний фокус: Week 4 report з фактичними UX Polish v1 результатами та підготовка до Week 5 — завершення основних компонентів MVP, розширене тестування, Розділ 3 «Методологія» і перша версія Розділу 4 «Результати та обговорення».
