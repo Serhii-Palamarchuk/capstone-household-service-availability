@@ -9,25 +9,24 @@ flowchart LR
 
         UI["UI<br/>4 кроки"]
         ST["Шаблони сервісів"]
-        EP["External Provider<br/>availability"]
+        EP["Доступність<br/>External Provider"]
         V["Нормалізація<br/>та валідація"]
-        AE["Availability<br/>Estimator"]
+        AE["Availability Estimator<br/>оцінювання доступності Device"]
         SE["Simulation<br/>Engine v1"]
-        R["Result<br/>статус · час · причини"]
+        R["Result<br/>статус · доступність · причини"]
 
         UI --> V
         ST --> V
         EP --> V
-        V --> AE
-        AE -->|доступність Device| SE
-        V -->|граф сервісів + сценарій| SE
+        V -->|валідована модель| AE
+        AE -->|підготовлена модель сценарію| SE
         SE --> R
     end
 
     U --> UI
 ```
 
-Схема показує фактичний runtime flow поточного MVP. Шаблони сервісів і ручна доступність External Provider є частиною клієнтського сценарію та обробляються всередині React SPA. Availability Estimator формує часову доступність Device, а Simulation Engine v1 використовує її разом із графом сервісів і сценарієм відключення для формування результату. Backend і база даних у поточному MVP відсутні.
+Схема показує фактичний runtime flow поточного MVP. Шаблони сервісів і ручна доступність External Provider є частиною клієнтського сценарію та обробляються всередині React SPA. Після нормалізації й валідації Availability Estimator доповнює валідовану модель розрахованою часовою доступністю Device. Підготовлена модель сценарію передається до Simulation Engine v1, який визначає доступність сервісу, статус і причини обмеження. Backend і база даних у поточному MVP відсутні.
 
 Контракт схеми узгоджений із `docs/specs/user-facing-mvp-v1.md`, `docs/DECISIONS.md` і `docs/STATUS.md`.
 
