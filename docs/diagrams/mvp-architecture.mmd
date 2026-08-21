@@ -1,28 +1,31 @@
 flowchart TB
     U["Користувач"]
+    EP["External Provider availability<br/>ручний параметр сценарію"]
 
-    subgraph B["React SPA — виконується у браузері"]
-        UI["4-кроковий UI\nEquipment → Backup → Services & Scenario → Result"]
-        NV["Нормалізація та валідація сценарію"]
-        AE["Availability Estimator\npowerW + usableCapacityWh → Device availability"]
-        ST["Service templates і dependency bindings"]
-        SE["Simulation Engine v1\nDAG → availability → status → limiting dependencies → causal paths"]
-        RR["Формування результату\nstatus / availability / warnings / recommendations"]
+    subgraph SPA["React SPA — виконується у браузері"]
+        UI["4-кроковий UI<br/>Equipment → Backup → Services & Scenario → Result"]
+        ST["Service templates<br/>і dependency bindings"]
+        V["Нормалізація та валідація<br/>обладнання, backup, services і scenario"]
+        AE["Availability Estimator<br/>powerW + usableCapacityWh → Device availability"]
+        SA["Scenario.availability<br/>часова доступність Device"]
+        SE["Simulation Engine v1<br/>DAG → T → status → limiting dependencies → causal paths"]
+        R["Result<br/>availability / status / warnings / deterministic recommendations"]
 
-        UI --> NV
-        ST --> NV
-        NV --> AE
-        AE --> SE
-        NV --> SE
-        SE --> RR
-        RR --> UI
+        UI --> V
+        ST --> V
+        V --> AE
+        AE --> SA
+        SA --> SE
+        V --> SE
+        SE --> R
+        R --> UI
     end
 
-    EP["External Provider availability\nручний параметр сценарію"] --> NV
     U <--> UI
+    EP --> V
 
-    subgraph D["Розгортання"]
+    subgraph DEPLOY["Розгортання статичного застосунку"]
         GH["GitHub main"] --> GA["GitHub Actions"] --> GP["GitHub Pages"]
     end
 
-    GP --> UI
+    GP -. "deployed SPA" .-> UI
