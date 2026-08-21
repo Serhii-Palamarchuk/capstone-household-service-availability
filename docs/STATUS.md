@@ -28,6 +28,10 @@ Weekly Capstone Progress Report — Week 3 прийнятий Тетяною в 
 
 Week 3 reporting checkpoint закритий як accepted. Звітна межа зберігається: Week 3 report охоплює User-facing MVP v1, його testing/deploy/live smoke та підготовку UX Polish v1. Реалізація, verification, merge/deploy і live smoke UX Polish v1 належать до Week 4 report.
 
+Підготовлено робочу чернетку `Weekly Capstone Progress Report — Week 4`: https://docs.google.com/document/d/1GC0L-_VHXMbJqyynj_lUVf2aCitn8hfnef8pvYpJUK8/edit?usp=drivesdk. У ній уже зафіксовано фактичні результати UX Polish v1, testing/review/deploy/live smoke, проблеми та план Week 5, а також додано посилання на робочу пояснювальну записку з підготовленими Розділами 1–2.
+
+Чернетка Week 4 ще не є submission-ready: за офіційними вимогами Week 4 потрібно провести друге демо й зафіксувати фактичний feedback керівника. Друге демо на цій контрольній точці ще не проведено; feedback не вигадувати.
+
 ## UX Polish v1 — accepted contract
 
 Accepted docs:
@@ -100,4 +104,4 @@ Integration:
 
 UX Polish v1 milestone закритий як implemented → verified → merged → deployed → live-smoked.
 
-Наступний основний фокус: Week 4 report з фактичними UX Polish v1 результатами та підготовка до Week 5 — завершення основних компонентів MVP, розширене тестування, Розділ 3 «Методологія» і перша версія Розділу 4 «Результати та обговорення».
+Наступний безпосередній крок — провести друге демо, зафіксувати лише фактичний feedback Тетяни й після цього фіналізувати Week 4 report. Після подання Week 4 перейти до Week 5: завершення основних компонентів MVP без scope creep, розширене тестування, актуалізація Розділу 3 «Методологія» під фактичний User-facing MVP/Availability Estimator/UX Polish та перша версія Розділу 4 «Результати та обговорення».
