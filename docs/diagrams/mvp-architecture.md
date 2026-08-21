@@ -21,9 +21,8 @@ flowchart TB
         V --> AE
         AE --> SA
         SA --> SE
-        V --> SE
+        V -->|service graph + outage scenario| SE
         SE --> R
-        R --> UI
     end
 
     U <--> UI
@@ -42,7 +41,7 @@ flowchart TB
 - `Service templates` задають дозволену структуру залежностей; довільного редактора графа в MVP немає.
 - Нормалізація та валідація перевіряють користувацьку конфігурацію перед розрахунком.
 - `Availability Estimator` перетворює `powerW` і доступну енергоємність у часову доступність `Device` та формує `Scenario.availability`.
-- Незмінений `Simulation Engine v1` розраховує тривалість доступності сервісів, статус, обмежувальні залежності й причинні шляхи.
+- `Simulation Engine v1` отримує валідовану модель сервісів, outage scenario та `Scenario.availability`, після чого розраховує тривалість доступності сервісів, статус, обмежувальні залежності й причинні шляхи.
 - `External Provider availability` залишається ручним параметром сценарію.
 - Результат містить availability/status, warnings і лише детерміновані рекомендації, що прямо випливають із моделі.
 - Backend і база даних у поточному MVP відсутні; застосунок збирається з `main` через GitHub Actions і розгортається на GitHub Pages.
