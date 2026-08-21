@@ -14,7 +14,7 @@ flowchart TB
         AE["Availability Estimator<br/>powerW + usableCapacityWh → Device availability"]
         SA["Scenario.availability<br/>часова доступність Device"]
         SE["Simulation Engine v1<br/>DAG → T → status → limiting dependencies → causal paths"]
-        R["Result view<br/>availability / status / warnings / deterministic recommendations"]
+        R["Result view — крок 4 UI<br/>availability / status / warnings / deterministic recommendations"]
 
         UI --> V
         V --> AE
@@ -25,7 +25,6 @@ flowchart TB
     end
 
     U --> UI
-    R --> U
     ST --> V
     EP --> V
 ```
@@ -38,7 +37,7 @@ flowchart TB
 - `Availability Estimator` перетворює `powerW` і доступну енергоємність у часову доступність `Device` та формує `Scenario.availability`.
 - `Simulation Engine v1` отримує валідовану модель сервісів, outage scenario та `Scenario.availability`, після чого розраховує тривалість доступності сервісів, статус, обмежувальні залежності й причинні шляхи.
 - `External Provider availability` залишається ручним параметром сценарію.
-- `Result view` показує availability/status, warnings і лише детерміновані рекомендації, що прямо випливають із моделі.
+- `Result view` є частиною четвертого кроку UI й показує availability/status, warnings та лише детерміновані рекомендації, що прямо випливають із моделі.
 - Backend і база даних у поточному MVP відсутні. Deployment окремо зафіксований у D-002: `main → GitHub Actions → GitHub Pages`.
 
 ## Source of truth
