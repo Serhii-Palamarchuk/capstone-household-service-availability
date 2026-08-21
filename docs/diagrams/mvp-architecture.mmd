@@ -1,22 +1,23 @@
-flowchart LR
+flowchart TB
     U["Користувач"]
 
     subgraph SPA["React SPA — браузер"]
-        direction LR
+        direction TB
 
         UI["UI<br/>4 кроки"]
-        ST["Шаблони сервісів"]
-        EP["Доступність<br/>External Provider"]
         V["Нормалізація<br/>та валідація"]
         AE["Availability Estimator<br/>оцінювання доступності Device"]
-        SE["Simulation<br/>Engine v1"]
+        SE["Simulation Engine v1"]
         R["Result<br/>статус · доступність · причини"]
+
+        ST["Шаблони сервісів"]
+        EP["Доступність<br/>External Provider"]
 
         UI --> V
         ST --> V
         EP --> V
-        V -->|валідована модель| AE
-        AE -->|підготовлена модель сценарію| SE
+        V --> AE
+        AE --> SE
         SE --> R
     end
 
