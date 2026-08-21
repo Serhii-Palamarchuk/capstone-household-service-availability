@@ -1,21 +1,21 @@
 flowchart TB
     U["Користувач"]
-    ST["Service templates<br/>і dependency bindings"]
-    EP["External Provider availability<br/>ручний параметр сценарію"]
+    ST["Шаблони сервісів<br/>і прив’язки залежностей"]
+    EP["Доступність External Provider<br/>ручний параметр сценарію"]
 
     subgraph SPA["React SPA — виконується у браузері"]
         UI["4-кроковий UI<br/>Equipment → Backup → Services & Scenario → Result"]
-        V["Нормалізація та валідація<br/>обладнання, backup, services і scenario"]
-        AE["Availability Estimator<br/>powerW + usableCapacityWh → Device availability"]
+        V["Нормалізація та валідація<br/>обладнання, резервного живлення,<br/>сервісів і сценарію"]
+        AE["Availability Estimator<br/>powerW + usableCapacityWh → доступність Device"]
         SA["Scenario.availability<br/>часова доступність Device"]
         SE["Simulation Engine v1<br/>DAG → T → status → limiting dependencies → causal paths"]
-        R["Result view — крок 4 UI<br/>availability / status / warnings / deterministic recommendations"]
+        R["Представлення результату — крок 4 UI<br/>availability / status / warnings /<br/>детерміновані рекомендації"]
 
         UI --> V
         V --> AE
         AE --> SA
         SA --> SE
-        V -->|service graph + outage scenario| SE
+        V -->|граф сервісів + сценарій відключення| SE
         SE --> R
     end
 
