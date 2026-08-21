@@ -92,6 +92,23 @@ Accepted docs:
 
 План вимагає TDD/focused tests для нових pure helpers, повний existing suite, production build, manual `1920 × 1080` walkthrough, quick-edit/navigation/language smoke та whole-branch review. Числові/успішні результати не фіксуються до фактичного виконання перевірок.
 
+## Week 3 — UX Polish v1 implementation verification
+
+2026-08-21 реалізацію `UX Polish v1` завершено у feature branch `feature/ux-polish-v1`; Task 8 пройшов фінальний acceptance/review gate.
+
+Фактична verification evidence:
+
+- fresh full suite: `140 passed`, `0 failed`, `0 skipped`;
+- production build: Vite `8.2.1`, `36 modules transformed`, успішно;
+- `git diff --check` — без помилок;
+- worktree перед оновленням цього status — clean;
+- browser walkthrough у production preview підтвердив desktop density fixture `1920 × 1080`, navigation/state retention, stale-result flow, validation discoverability, quick edit, rerun без page reload, UA/EN state retention, видимі текстові statuses/causal paths і відсутність console warnings/errors;
+- користувач окремо підтвердив у звичайному Chrome keyboard acceptance для Details, backward stepper, UA/EN switch, Back/Continue, quick-edit dialog і Run scenario — усі перевірки `PASS`;
+- whole-branch review `main...feature/ux-polish-v1`: усі знайдені `2 Major` і `2 Minor` issues виправлено та повторно перевірено; нових `Critical` / `Major` / `Minor` findings немає; фінальний verdict — `ACCEPTED`;
+- scope audit не виявив змін у `Simulation Engine v1`, Availability Estimator, service templates, recommendations або dependency manifests.
+
+Push, merge і deploy для `UX Polish v1` не виконувалися. Контрольні числові значення acceptance walkthrough є test fixtures, а не результатами реальних вимірювань автономності.
+
 ## Source of truth
 
 - `docs/STATUS.md` — current operational snapshot;
@@ -105,8 +122,6 @@ Accepted docs:
 
 ## Наступна дія
 
-Перед початком coding cycle синхронізувати локальний `main` із `origin/main`, оскільки після попереднього merge у remote `main` додано docs-only commits.
-
-Потім створити ізольовану feature branch/worktree від актуального `main` і передати `docs/plans/ux-polish-v1.md` Codex/Developer для task-by-task реалізації з reviewer gate після кожного task. Merge/deploy виконувати тільки після full verification, whole-branch review та окремого рішення користувача.
+Прийняти окреме рішення щодо push/merge/deploy branch `feature/ux-polish-v1`. До такого рішення branch залишається локальною; автоматичний push, merge або deploy не виконувати.
 
 Паралельно готувати Weekly Capstone Progress Report — Week 3 лише з фактично виконаних робіт і перевірених результатів.
