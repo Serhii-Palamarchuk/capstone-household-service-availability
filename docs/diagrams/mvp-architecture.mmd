@@ -6,18 +6,17 @@ flowchart LR
 
         UI["UI<br/>4 кроки"]
         ST["Шаблони сервісів"]
-        EP["External Provider<br/>availability"]
+        EP["Доступність<br/>External Provider"]
         V["Нормалізація<br/>та валідація"]
-        AE["Availability<br/>Estimator"]
+        AE["Availability Estimator<br/>оцінювання доступності Device"]
         SE["Simulation<br/>Engine v1"]
-        R["Result<br/>статус · час · причини"]
+        R["Result<br/>статус · доступність · причини"]
 
         UI --> V
         ST --> V
         EP --> V
-        V --> AE
-        AE -->|доступність Device| SE
-        V -->|граф сервісів + сценарій| SE
+        V -->|валідована модель| AE
+        AE -->|підготовлена модель сценарію| SE
         SE --> R
     end
 
