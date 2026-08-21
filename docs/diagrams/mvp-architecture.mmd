@@ -9,7 +9,7 @@ flowchart TB
         AE["Availability Estimator<br/>powerW + usableCapacityWh → Device availability"]
         SA["Scenario.availability<br/>часова доступність Device"]
         SE["Simulation Engine v1<br/>DAG → T → status → limiting dependencies → causal paths"]
-        R["Result view<br/>availability / status / warnings / deterministic recommendations"]
+        R["Result view — крок 4 UI<br/>availability / status / warnings / deterministic recommendations"]
 
         UI --> V
         V --> AE
@@ -20,6 +20,5 @@ flowchart TB
     end
 
     U --> UI
-    R --> U
     ST --> V
     EP --> V
