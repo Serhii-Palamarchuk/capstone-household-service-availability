@@ -114,10 +114,13 @@ Integration/deploy checkpoint: merged to `main`, relevant merge-ready/main commi
 
 Для цього проєкту `фіналізація MVP` не означає додавання нових функцій без вимоги: функціональний scope уже достатній за feedback Тетяни. Week 5 evidence має формуватися через стабілізацію, повторну/розширену перевірку, документування фактичної реалізації та підготовку до фінального demo.
 
+Користувач хоче внести невеликі косметичні правки в MVP у межах Week 5. Точний перелік ще не погоджено. Їх трактувати як обмежений UI/UX polish без зміни предметної моделі, Availability Estimator, Simulation Engine v1, service templates, status/recommendation semantics або MVP scope. Перед реалізацією зафіксувати короткий перелік; після змін повторити релевантні tests/build/browser smoke і включити лише фактичний результат до Week 5 report.
+
 План evidence для Week 5 report:
 
 - завершити змістовне доопрацювання Chapter 2, щоб Chapters 1–4 були узгоджені з feedback Тетяни;
 - повністю допрацювати Chapter 3, включно з межами MVP, фактичними ітераціями, архітектурним обґрунтуванням, Availability Estimator / Simulation Engine, формулами та тестовою методологією;
+- погодити короткий перелік і виконати косметичний MVP polish без розширення функціонального scope;
 - провести fresh extended verification поточного `main`: automated suite/build, інтеграційні/functional browser scenarios і performance baseline без вигаданого порогу; за можливості — коротка зовнішня usability перевірка з фактично доступними учасниками, без статистичних узагальнень;
 - написати першу повну версію Chapter 4 лише на основі фактичних screenshots, implementation details та test evidence;
 - подати Chapters 3–4 Тетяні та зафіксувати submission/feedback;
@@ -138,6 +141,6 @@ Integration/deploy checkpoint: merged to `main`, relevant merge-ready/main commi
 
 Week 4 reporting checkpoint закрито як accepted. Роботу далі вести з прямим трасуванням у Week 5 report.
 
-Послідовність: Chapter 2 → Chapter 3 → fresh extended testing → Chapter 4 → submission Chapters 3–4 → Week 5 report → підготовка final demo.
+Послідовність: Chapter 2 → Chapter 3 → погодження косметичних MVP правок → cosmetic polish → fresh extended testing → Chapter 4 → submission Chapters 3–4 → Week 5 report → підготовка final demo.
 
 Не розширювати MVP новими функціями без конкретної вимоги.
