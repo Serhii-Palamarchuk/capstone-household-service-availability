@@ -1,14 +1,16 @@
 # Поточний стан проєкту
 
+Оновлено: 2026-08-24.
+
 ## Поточний етап
 
-Завершено й прийнято:
+Завершено й прийнято як проєктні milestones:
 
 - `Simulation Engine v1`;
 - `React Demo v1`;
 - `Deploy v1`;
-- `User-facing MVP v1` — design, `AC-01…AC-14`, implementation, review/cleanup, merge, deployment і post-deploy live smoke;
-- `UX Polish v1` — accepted design, `UX-01…UX-30`, implementation, review, merge у `main`, deployment і post-deploy live smoke.
+- `User-facing MVP v1`;
+- `UX Polish v1`.
 
 Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availability/
 
@@ -18,115 +20,98 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 Equipment → Backup → Services & Scenario → Result
 ```
 
-`Simulation Engine v1`, Availability Estimator formulas, service-template semantics, status semantics і recommendation logic залишаються незмінними відносно accepted User-facing MVP v1 contract.
+Архітектура поточного MVP: React SPA + Vite, client-side runtime, GitHub Pages; окремий backend і БД відсутні. `Simulation Engine v1`, Availability Estimator formulas, service-template semantics, status semantics і recommendation logic не змінювати без окремого рішення.
 
-## Supervisor / reporting checkpoint
+## Reporting checkpoint
 
-Weekly Capstone Progress Report — Week 2 прийнятий Тетяною; окремих текстових коментарів або нового feedback після прийняття не зафіксовано.
+- Week 2 report — accepted.
+- Week 3 report — accepted у LMS 2026-08-21, без окремого текстового feedback.
+- Week 4 report — фіналізовано та подано через LMS 2026-08-24; подання продубльовано у Slack DM Тетяні о 12:22:49 EEST, message ts `1787563369.922679`.
+- Поточний статус Week 4: `submitted → awaiting supervisor feedback`. Не позначати accepted до фактичного прийняття.
 
-Weekly Capstone Progress Report — Week 3 прийнятий Тетяною в LMS 2026-08-21. Окремого текстового feedback, зауважень або нових вимог після прийняття не зафіксовано.
+## Second demo / supervisor feedback — 2026-08-24
 
-Week 3 reporting checkpoint закритий як accepted. Звітна межа зберігається: Week 3 report охоплює User-facing MVP v1, його testing/deploy/live smoke та підготовку UX Polish v1. Реалізація, verification, merge/deploy і live smoke UX Polish v1 належать до Week 4 report.
+Під час п’ятої щотижневої зустрічі проведено друге live demo актуального User-facing MVP.
 
-Weekly Capstone Progress Report — Week 4 фіналізовано та подано через LMS 2026-08-24. Подання продубльовано у Slack DM Тетяні о 12:22:49 EEST; message ts `1787563369.922679`. Поточний статус Week 4: `submitted → awaiting supervisor feedback`. Не позначати звіт accepted до фактичного прийняття.
+Транскрипт: https://docs.google.com/document/d/1AxMOqf5KXgdL1n7CVNgkIssgTTQKqNSgtjoOiLBE8kQ/edit?tab=t.0
 
-### Second demo / supervisor feedback — 2026-08-24
-
-Під час п’ятої щотижневої зустрічі проведено фактичне друге демо актуального User-facing MVP. Транскрипт: https://docs.google.com/document/d/1AxMOqf5KXgdL1n7CVNgkIssgTTQKqNSgtjoOiLBE8kQ/edit?tab=t.0. Сегмент користувача починається приблизно з `22:51`; попередня частина зустрічі стосується іншого студента й не повинна приписуватися цьому проєкту.
+Сегмент користувача починається приблизно з `22:51`; попередня частина стосується іншого студента й не повинна приписуватися цьому проєкту.
 
 Ключовий feedback Тетяни:
 
-- ідею та поточний стан проєкту оцінено позитивно; після live demo концепція зрозуміла;
-- поточний мінімальний функціональний scope достатній для MVP; нових обов’язкових функцій не вимагалося;
-- React SPA без окремого backend допустима для поточного MVP, оскільки немає user cabinet/auth/history або даних, що потребують серверного зберігання; backend слід додавати лише за появи конкретної вимоги;
-- основний пріоритет тепер — суттєво деталізувати пояснювальну записку, а не ускладнювати реалізацію;
-- назви підрозділів мають бути специфічними до теми, а не копіювати placeholder-назви методички;
-- Розділ 2 потрібно розширити теорією, науковими публікаціями, поясненням оцінювання автономності, детальнішим аналізом аналогів, скриншотами за доречності й текстовою інтерпретацією таблиць; gap залишати тільки за достатньої доказовості;
-- Розділ 3: пояснювати таблиці вимог у прозі, явно описати межі MVP, деталізувати фактичні ітерації розробки, обґрунтувати клієнтську архітектуру/React і додати формули/деталі Availability Estimator та Simulation Engine;
-- рекомендовано об’єднати поточні 3.3 і 3.4 у змістовний підрозділ на кшталт `Обґрунтування архітектури та технологічного стеку проєкту`;
-- Розділ 4 має документувати фактичний результат: UI screenshots, технічну реалізацію, структуру/фрагменти коду за потреби, validation/calculation details і реальні test results;
-- для висновків/захисту потрібно продумати масштабування та базову модель підтримки/фінансування; можливі гранти/фонди/держава/місцеві органи або інші моделі, але будь-які числові оцінки повинні спиратися на реальні джерела/розрахунки;
-- AI use у пояснювальній записці потрібно явно задекларувати з поясненням де і для чого він застосовувався;
-- форматування: перевірити 12 pt, 1.5 line spacing і прибрати зайві bold/italic виділення; фінальне форматування можна робити після наповнення;
+- ідею та поточний стан проєкту оцінено позитивно; концепція після demo зрозуміла;
+- мінімальний функціональний scope достатній для MVP; нових обов’язкових функцій не вимагалося;
+- React SPA без backend допустима для поточного MVP, бо немає user cabinet/auth/history/server persistence; backend додавати лише за конкретної вимоги;
+- основний пріоритет — суттєво деталізувати пояснювальну записку, а не ускладнювати реалізацію;
+- headings мають бути предметними й прив’язаними до теми, а не копіювати placeholder-назви методички;
+- Chapter 1: коротко дати контекст, чітко виділити проблему, явно описати що вмітиме проєкт, розширити практичну цінність;
+- Chapter 2: додати теорію, наукові джерела, оцінювання автономності/формули, деталізувати аналоги, скриншоти за доречності, плюси/мінуси та текстову інтерпретацію таблиць; gap залишати лише за достатньої доказовості;
+- Chapter 3: пояснювати таблиці вимог у прозі, явно описати межі MVP, деталізувати фактичні ітерації, обґрунтувати client-side architecture/React, суттєво розширити Availability Estimator / Simulation Engine і формули;
+- старі 3.3 + 3.4 об’єднати в `Обґрунтування архітектури та технологічного стеку проєкту`;
+- Chapter 4: показати фактичний результат — UI screenshots, технічну реалізацію, структуру/фрагменти коду за потреби, validation/calculation details, real test results;
+- AI use потрібно явно задекларувати: де і для яких задач використовувався;
+- фінально перевірити 12 pt, 1.5 line spacing, прибрати зайві bold/italic;
+- для висновків/захисту продумати масштабування та модель підтримки/фінансування; числові оцінки — тільки з джерелами/реальними розрахунками;
 - озвучена дата подання — `2026-09-14`;
-- до наступної зустрічі принести готові Розділи 1–4; Розділ 5 — якщо дозволить час.
+- до наступної зустрічі підготувати Chapters 1–4; Chapter 5 — якщо дозволить час.
 
-Week 4 report після demo оновлено фактичним feedback, фіналізовано та подано. Новий feedback після подання ще не отримано.
+## Прямі коментарі Тетяни в Google Doc
 
-### Explanatory note checkpoint — 2026-08-24
+Робоча пояснювальна записка: https://docs.google.com/document/d/1sWA7sMvRp_X0hZUpSc310kh-wJ_fARo6OipjGoFtLB8/edit?usp=drivesdk
 
-Після подання Week 4 розпочато структурне доопрацювання робочої пояснювальної записки відповідно до feedback другого демо. Оновлено предметні назви підрозділів Розділів 1–4; у Розділі 3 об’єднано окремі підрозділи про стек і архітектуру в `3.3. Обґрунтування архітектури та технологічного стеку проєкту`; наступні підрозділи перенумеровано; Розділ 4 перейменовано на `Результати реалізації та тестування` і конкретизовано його структуру. Змінені headings у Google Doc позначено помаранчевим відповідно до правила робочої версії.
+Зафіксовано чотири відкриті supervisor comments:
 
-Прямі коментарі Тетяни у Google Doc також є обов’язковою частиною feedback і враховуються разом із транскриптом зустрічі. Станом на 2026-08-24 зафіксовано чотири відкриті коментарі Тетяни:
+- `додати що буде вміти проєкт` — враховано у Chapter 1 pass 2026-08-24 через явний опис функціональних можливостей MVP; comment не resolve до підтвердження керівника;
+- `обʼєднати з 3.4` — виконано структурно: старі 3.3 і 3.4 об’єднано; comment не resolve до підтвердження керівника;
+- `розширити` — стосується Availability Estimator / Simulation Engine і формул; ще потребує змістовного розширення Chapter 3;
+- `для чого і де?` біля `штучного інтелекту` — ще потребує конкретного опису фактичного AI use у декларації/відповідному місці записки.
 
-- `додати що буде вміти проєкт` — у вступній/цільовій частині потрібно явно описати майбутні можливості вебсистеми, а не лише проблему й мету;
-- `обʼєднати з 3.4` — виконано структурно: старі підрозділи 3.3 і 3.4 об’єднано;
-- `розширити` — стосується опису Availability Estimator / Simulation Engine і формул; поточний підрозділ 3.4 потрібно суттєво деталізувати;
-- `для чого і де?` біля згадки `штучного інтелекту` — у декларації/описі використання AI потрібно конкретно вказати, для яких задач і на яких етапах застосовувалися AI-інструменти.
+Власні технічні коментарі користувача (дати, Student ID, підпис тощо) не змішувати з supervisor feedback.
 
-Власні технічні коментарі користувача в Google Doc (дати, Student ID, підпис тощо) не змішувати з supervisor feedback Тетяни.
+## Explanatory note checkpoint — Chapter 1 pass
 
-## UX Polish v1 — accepted contract
+2026-08-24 виконано повний змістовний pass Chapter 1 за трьома джерелами: вимоги Neoversity, усний feedback другого demo та прямі comments Тетяни.
 
-Accepted docs:
+Актуальна структура Chapter 1:
 
-- `docs/specs/ux-polish-v1.md`;
-- `docs/specs/ux-polish-v1-acceptance.md` (`UX-01…UX-30`);
-- `docs/DECISIONS.md` — D-005;
-- `docs/plans/ux-polish-v1.md` — 8-task implementation plan.
+- `1.1. Відключення електроенергії в Україні та потреби побутових користувачів`;
+- `1.2. Обґрунтування необхідності оцінювання доступності побутових сервісів`;
+- `1.3. Мета, завдання та функціональні можливості вебсистеми`;
+- `1.4. Наукова новизна та практична цінність проєкту`;
+- `1.5. Структура пояснювальної записки`;
+- `Висновки до першого розділу`.
 
-Ключовий contract:
+Змістовні зміни:
 
-- compact rows + progressive details;
-- 4-step wizard із backward stepper та окремою `Back`-кнопкою;
-- desktop acceptance viewport `1920 × 1080` і no-scroll baseline для density fixture;
-- optional custom `Name` для Device/BackupSource/Service з deterministic fallback;
-- adaptive backup assignment;
-- compact Services і decision-first Result;
-- quick edit `usableCapacityWh`, `maxOutputPowerW` та outage duration через standard normalization → estimator → simulation pipeline;
-- stale-result protection;
-- UA/EN без third-party i18n dependency;
-- ExternalProvider name лишається required;
-- без змін engine/estimator/template/recommendation semantics.
+- додано перевірений контекст енергетичної ситуації в Україні на основі IEA `Energy System Resilience` (2026);
+- чіткіше визначено кінцевого побутового користувача та значення терміна «критичний побутовий сервіс» у межах роботи;
+- проблема сформульована як розрив між автономністю окремого Device і доступністю Service через обов’язкові залежності;
+- 1.3 тепер прямо описує, що вміє MVP: Equipment/Backup, service templates/dependencies, outage scenario, External Provider availability, Device availability estimation, service status/time/bottleneck/causal path, repeat calculation;
+- розширено практичну цінність і чітко обмежено твердження: результат є scenario-based estimate, не гарантія фактичної роботи обладнання;
+- новизна лишається як адаптація/поєднання відомих dependency/resilience approaches для побутового контексту, без заяви про новий метод;
+- висновки Chapter 1 розширено до повноцінного підсумку й переходу до Chapter 2;
+- у bibliography додано фактично використане джерело `[13] International Energy Agency, Energy System Resilience, 2026`, accessed 2026-08-24;
+- нові зміни в робочому Google Doc позначено помаранчевим за поточною convention.
 
-## Week 4 — UX Polish v1 verification та integration
+## UX Polish v1 — verification evidence
 
-Фінальна verification evidence до merge:
+Фінальна verification evidence:
 
 - full suite: `140 passed`, `0 failed`, `0 skipped`;
-- production build: Vite `8.2.1`, `36 modules transformed`, успішно;
-- `git diff --check` — без помилок;
-- whole-branch review: початкові `2 Major` і `2 Minor` виправлено; нових `Critical` / `Major` / `Minor` findings немає; verdict `ACCEPTED`;
-- browser/manual acceptance: desktop density, navigation/state retention, stale Result, validation discoverability, quick edit, rerun без reload, UA/EN state retention, keyboard acceptance — `PASS`;
-- scope audit: без змін у `Simulation Engine v1`, Availability Estimator formulas, service templates, recommendations і dependency manifests.
+- production build: Vite `8.2.1`, `36 modules transformed`, success;
+- `git diff --check` — PASS;
+- whole-branch review: initial `2 Major` + `2 Minor` fixed; final verdict `ACCEPTED`, no Critical/Major/Minor;
+- browser/manual acceptance — PASS for density, navigation/state retention, stale Result, validation discoverability, quick edit, rerun, UA/EN state retention, keyboard acceptance;
+- post-deploy live smoke — PASS for compact Step 1, language state retention, backward navigation, recalculation and stale-result protection.
 
-Integration:
+No external usability study, screen-reader result or performance baseline is currently recorded. Do not invent these results.
 
-- feature branch синхронізовано з `origin/main` без rebase/переписування history;
-- merge-ready remote HEAD: `0d6e383c0ae71c12b1497efe21f0a47ec80e068c`;
-- локальний `main` fast-forward merged до `0d6e383c…`;
-- перед push у `main` повторно запущено full suite: `140 passed`, `0 failed`, `0 skipped`;
-- повторний production build: Vite `8.2.1`, `36 modules transformed`, успішно;
-- повторні `git diff --check` і clean worktree — PASS;
-- `main` push виконано; remote `main` і `feature/ux-polish-v1` після push були `identical` на `0d6e383c…`;
-- GitHub Pages deployment для цього push завершився успішно за підтвердженням користувача.
-
-## Post-deploy live smoke — UX Polish v1
-
-Користувач фактично перевірив live GitHub Pages після deployment:
-
-- новий compact Step 1 відкривається, EN/UA control видимий — PASS;
-- EN → UA → EN зберігає current step і введені дані — PASS;
-- backward stepper повертає на попередній step без втрати змінених values — PASS;
-- Result запускається без page reload; backup quick edit + `Recalculate` оновлює result — PASS;
-- після upstream зміни старий Result не подається як актуальний і потрібен новий run/recalculation — PASS.
-
-Цей smoke підтверджує ключові live UX flows після deployment. Він не замінює окреме screen-reader testing; такого результату не зафіксовано.
+Integration/deploy checkpoint: merged to `main`, relevant merge-ready/main commit `0d6e383c0ae71c12b1497efe21f0a47ec80e068c`; GitHub Pages deployment completed successfully.
 
 ## Source of truth
 
 - `docs/STATUS.md` — current operational snapshot;
-- `docs/DECISIONS.md` — accepted суттєві рішення;
+- `docs/DECISIONS.md` — accepted substantive decisions;
 - `docs/specs/user-facing-mvp-v1.md`;
 - `docs/specs/user-facing-mvp-v1-acceptance.md`;
 - `docs/specs/ux-polish-v1.md`;
@@ -136,6 +121,14 @@ Integration:
 
 ## Наступна дія
 
-Week 4 report submitted → awaiting supervisor feedback. Second demo completed; UX Polish v1 milestone залишається закритим як implemented → verified → merged → deployed → live-smoked.
+Week 4 report remains `submitted → awaiting supervisor feedback`.
 
-Структурний pass пояснювальної записки за feedback Тетяни розпочато й headings Розділів 1–4 вже конкретизовано. Наступний пріоритет: (1) змістовно посилити Розділ 1, насамперед контекст, практичну цінність і явний опис того, що буде вміти проєкт; (2) суттєво розширити 2.1 теорією оцінювання автономності та перевіреними джерелами, після чого деталізувати аналоги й доказовість gap; (3) доповнити Розділ 3 прозовим поясненням вимог, фактичними ітераціями та розширеним описом Availability Estimator / Simulation Engine і формул; (4) написати Розділ 4 з фактичними screenshots/code/test evidence; (5) окремо сформулювати прозорий опис використання AI: де і для яких задач він застосовувався; (6) сформувати evidence-based future development/funding model для Chapter 5 і захисту. Не розширювати MVP новими функціями без конкретної вимоги.
+Chapter 1 content pass завершено. Наступний пріоритет — Chapter 2:
+
+1. суттєво розширити `2.1` теорією оцінювання автономності й перевіреними академічними/офіційними джерелами;
+2. деталізувати `2.2` аналіз аналогів, їхні плюси/мінуси, цільову аудиторію та текстову інтерпретацію таблиці; додати screenshots лише де вони реально допомагають аналізу;
+3. розширити `2.3`: визначення dependency modelling, реальні підходи/типи моделей, cascading failures, redundancy/resilience;
+4. після цього повторно перевірити доказовість `2.4 gap`;
+5. далі перейти до Chapter 3 comment `розширити` і явної декларації AI use.
+
+Не розширювати MVP новими функціями без конкретної вимоги.
