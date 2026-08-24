@@ -108,6 +108,21 @@ No external usability study, screen-reader result or performance baseline is cur
 
 Integration/deploy checkpoint: merged to `main`, relevant merge-ready/main commit `0d6e383c0ae71c12b1497efe21f0a47ec80e068c`; GitHub Pages deployment completed successfully.
 
+## Week 5 reporting target
+
+Офіційний Week 5 фокус: фіналізувати основну частину MVP, провести розширене тестування, подати керівнику Розділ 3 `Методологія` та першу версію Розділу 4 `Результати та обговорення`, а у weekly report зафіксувати завершені оновлення, результати тестування, проблеми/рішення, план підготовки до фінального демо та посилання на артефакти.
+
+Для цього проєкту `фіналізація MVP` не означає додавання нових функцій без вимоги: функціональний scope уже достатній за feedback Тетяни. Week 5 evidence має формуватися через стабілізацію, повторну/розширену перевірку, документування фактичної реалізації та підготовку до фінального demo.
+
+План evidence для Week 5 report:
+
+- завершити змістовне доопрацювання Chapter 2, щоб Chapters 1–4 були узгоджені з feedback Тетяни;
+- повністю допрацювати Chapter 3, включно з межами MVP, фактичними ітераціями, архітектурним обґрунтуванням, Availability Estimator / Simulation Engine, формулами та тестовою методологією;
+- провести fresh extended verification поточного `main`: automated suite/build, інтеграційні/functional browser scenarios і performance baseline без вигаданого порогу; за можливості — коротка зовнішня usability перевірка з фактично доступними учасниками, без статистичних узагальнень;
+- написати першу повну версію Chapter 4 лише на основі фактичних screenshots, implementation details та test evidence;
+- подати Chapters 3–4 Тетяні та зафіксувати submission/feedback;
+- підготувати Week 5 report і окремий короткий план фінального demo Week 6.
+
 ## Source of truth
 
 - `docs/STATUS.md` — current operational snapshot;
@@ -121,14 +136,8 @@ Integration/deploy checkpoint: merged to `main`, relevant merge-ready/main commi
 
 ## Наступна дія
 
-Week 4 reporting checkpoint закрито як accepted.
+Week 4 reporting checkpoint закрито як accepted. Роботу далі вести з прямим трасуванням у Week 5 report.
 
-Chapter 1 content pass завершено. Наступний пріоритет — Chapter 2:
-
-1. суттєво розширити `2.1` теорією оцінювання автономності й перевіреними академічними/офіційними джерелами;
-2. деталізувати `2.2` аналіз аналогів, їхні плюси/мінуси, цільову аудиторію та текстову інтерпретацію таблиці; додати screenshots лише де вони реально допомагають аналізу;
-3. розширити `2.3`: визначення dependency modelling, реальні підходи/типи моделей, cascading failures, redundancy/resilience;
-4. після цього повторно перевірити доказовість `2.4 gap`;
-5. далі перейти до Chapter 3 comment `розширити` і явної декларації AI use.
+Послідовність: Chapter 2 → Chapter 3 → fresh extended testing → Chapter 4 → submission Chapters 3–4 → Week 5 report → підготовка final demo.
 
 Не розширювати MVP новими функціями без конкретної вимоги.
