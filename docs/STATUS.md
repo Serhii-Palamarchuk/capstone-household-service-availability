@@ -26,8 +26,8 @@ Equipment → Backup → Services & Scenario → Result
 
 - Week 2 report — accepted.
 - Week 3 report — accepted у LMS 2026-08-21, без окремого текстового feedback.
-- Week 4 report — фіналізовано та подано через LMS 2026-08-24; подання продубльовано у Slack DM Тетяні о 12:22:49 EEST, message ts `1787563369.922679`.
-- Поточний статус Week 4: `submitted → awaiting supervisor feedback`. Не позначати accepted до фактичного прийняття.
+- Week 4 report — accepted Тетяною 2026-08-24. Звіт було подано через LMS та продубльовано у Slack DM о 12:22:49 EEST, message ts `1787563369.922679`.
+- Відповідь Тетяни в LMS: «Вітаю, дякую за детальний звіт!» о 19:17 2026-08-24. Окремих зауважень або нових вимог у цій відповіді не зафіксовано. Week 4 reporting checkpoint закрито як accepted.
 
 ## Second demo / supervisor feedback — 2026-08-24
 
@@ -121,7 +121,7 @@ Integration/deploy checkpoint: merged to `main`, relevant merge-ready/main commi
 
 ## Наступна дія
 
-Week 4 report remains `submitted → awaiting supervisor feedback`.
+Week 4 reporting checkpoint закрито як accepted.
 
 Chapter 1 content pass завершено. Наступний пріоритет — Chapter 2:
 
