@@ -28,7 +28,7 @@ Weekly Capstone Progress Report — Week 3 прийнятий Тетяною в 
 
 Week 3 reporting checkpoint закритий як accepted. Звітна межа зберігається: Week 3 report охоплює User-facing MVP v1, його testing/deploy/live smoke та підготовку UX Polish v1. Реалізація, verification, merge/deploy і live smoke UX Polish v1 належать до Week 4 report.
 
-Підготовлено робочу чернетку `Weekly Capstone Progress Report — Week 4`: https://docs.google.com/document/d/1GC0L-_VHXMbJqyynj_lUVf2aCitn8hfnef8pvYpJUK8/edit?usp=drivesdk.
+Weekly Capstone Progress Report — Week 4 фіналізовано та подано через LMS 2026-08-24. Подання продубльовано у Slack DM Тетяні о 12:22:49 EEST; message ts `1787563369.922679`. Поточний статус Week 4: `submitted → awaiting supervisor feedback`. Не позначати звіт accepted до фактичного прийняття.
 
 ### Second demo / supervisor feedback — 2026-08-24
 
@@ -51,7 +51,7 @@ Week 3 reporting checkpoint закритий як accepted. Звітна меж�
 - озвучена дата подання — `2026-09-14`;
 - до наступної зустрічі принести готові Розділи 1–4; Розділ 5 — якщо дозволить час.
 
-Чернетку Week 4 report після demo оновлено фактичним feedback; second demo більше не pending. Week 4 report ще не зафіксований як submitted/accepted.
+Week 4 report після demo оновлено фактичним feedback, фіналізовано та подано. Новий feedback після подання ще не отримано.
 
 ## UX Polish v1 — accepted contract
 
@@ -67,7 +67,7 @@ Accepted docs:
 - compact rows + progressive details;
 - 4-step wizard із backward stepper та окремою `Back`-кнопкою;
 - desktop acceptance viewport `1920 × 1080` і no-scroll baseline для density fixture;
-- optional custom `Name` для Device / BackupSource / Service з deterministic fallback;
+- optional custom `Name` для Device/BackupSource/Service з deterministic fallback;
 - adaptive backup assignment;
 - compact Services і decision-first Result;
 - quick edit `usableCapacityWh`, `maxOutputPowerW` та outage duration через standard normalization → estimator → simulation pipeline;
@@ -123,6 +123,6 @@ Integration:
 
 ## Наступна дія
 
-Second demo completed; UX Polish v1 milestone залишається закритим як implemented → verified → merged → deployed → live-smoked.
+Week 4 report submitted → awaiting supervisor feedback. Second demo completed; UX Polish v1 milestone залишається закритим як implemented → verified → merged → deployed → live-smoked.
 
-Безпосередній пріоритет — довести пояснювальну записку до контрольної точки, яку попросила Тетяна: готові Розділи 1–4, а Розділ 5 — якщо дозволить час. Не розширювати MVP новими функціями без конкретної вимоги. Послідовність: (1) конкретизувати headings і посилити Chapter 1; (2) суттєво розширити Chapter 2 джерелами/теорією/аналізом аналогів; (3) деталізувати Chapter 3 та обґрунтувати client-side architecture; (4) написати Chapter 4 з фактичними screenshots/code/test evidence; (5) сформувати evidence-based future development / funding model для Chapter 5 і захисту; (6) після цього фіналізувати й подати Week 4 report.
+Безпосередній пріоритет — довести пояснювальну записку до контрольної точки, яку попросила Тетяна: готові Розділи 1–4, а Розділ 5 — якщо дозволить час. Не розширювати MVP новими функціями без конкретної вимоги. Послідовність: (1) конкретизувати headings і посилити Chapter 1; (2) суттєво розширити Chapter 2 джерелами/теорією/аналізом аналогів; (3) деталізувати Chapter 3 та обґрунтувати client-side architecture; (4) написати Chapter 4 з фактичними screenshots/code/test evidence; (5) сформувати evidence-based future development/funding model для Chapter 5 і захисту.
