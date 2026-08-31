@@ -1,6 +1,6 @@
 # Поточний стан проєкту
 
-Оновлено: 2026-08-27.
+Оновлено: 2026-08-31.
 
 ## Поточний етап
 
@@ -20,66 +20,66 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 Equipment → Backup → Services & Scenario → Result
 ```
 
-Архітектура поточного MVP: React SPA + Vite, client-side runtime, GitHub Pages; окремий backend і БД відсутні. `Simulation Engine v1`, Availability Estimator formulas, service-template semantics, status semantics і recommendation logic не змінювати без окремого рішення.
+Архітектура MVP: React SPA + Vite, client-side runtime, GitHub Pages; окремий backend і БД відсутні. `Simulation Engine v1`, Availability Estimator formulas, service-template semantics, status semantics і recommendation logic не змінювати без окремого рішення.
 
 ## Reporting checkpoint
 
 - Week 2 report — accepted.
 - Week 3 report — accepted у LMS 2026-08-21, без окремого текстового feedback.
-- Week 4 report — accepted Тетяною 2026-08-24. Звіт подано через LMS і продубльовано у Slack DM о 12:22:49 EEST, message ts `1787563369.922679`.
-- Відповідь Тетяни в LMS: «Вітаю, дякую за детальний звіт!» о 19:17 2026-08-24. Окремих зауважень або нових вимог у цій відповіді не зафіксовано.
+- Week 4 report — accepted Тетяною 2026-08-24, без нових вимог у відповіді LMS.
+- Week 5 report як документ існує, але submission/acceptance у канонічному контексті не підтверджено. Не позначати accepted без фактичного підтвердження.
+- Week 6: користувач пропустив понад тиждень і 2026-08-31 надав транскрипт 6-ї щотижневої зустрічі для відновлення роботи.
 
-## Second demo / supervisor feedback — 2026-08-24
+## Supervisor feedback baseline
 
-Транскрипт: https://docs.google.com/document/d/1AxMOqf5KXgdL1n7CVNgkIssgTTQKqNSgtjoOiLBE8kQ/edit?tab=t.0
+Після другого demo 2026-08-24 Тетяна підтвердила:
 
-Сегмент користувача починається приблизно з `22:51`; попередня частина стосується іншого студента й не повинна приписуватися цьому проєкту.
+- функціональний scope MVP достатній; нових обов’язкових функцій не вимагалося;
+- React SPA без backend допустима для поточного MVP;
+- головний пріоритет — пояснювальна записка, доказовість і тестування вже реалізованого рішення;
+- Chapter 3 потрібно деталізувати, особливо Availability Estimator / Simulation Engine і формули;
+- Chapter 4 має показати фактичний UI, технічну реалізацію, validation/calculation details та реальні результати тестів;
+- AI use потрібно явно задекларувати: де, для чого і в яких межах;
+- для захисту продумати масштабування та модель підтримки/фінансування без вигаданих числових оцінок;
+- раніше озвучена дата подання — `2026-09-14`.
 
-Ключовий feedback Тетяни:
+## Week 6 transcript checkpoint — 2026-08-31
 
-- мінімальний функціональний scope достатній для MVP; нових обов’язкових функцій не вимагалося;
-- React SPA без backend допустима для поточного MVP; backend додавати лише за конкретної вимоги;
-- головний пріоритет — суттєво деталізувати пояснювальну записку, а не ускладнювати реалізацію;
-- Chapter 2: додати теорію, наукові джерела, формули автономності, детальніший аналіз аналогів і текстову інтерпретацію таблиць; gap залишати лише за достатньої доказовості;
-- Chapter 3: пояснити вимоги в прозі, явно описати межі MVP та фактичні ітерації, обґрунтувати архітектуру/React, суттєво розширити Availability Estimator / Simulation Engine і формули;
-- Chapter 4: показати фактичний результат — UI screenshots, технічну реалізацію, validation/calculation details та реальні результати тестування;
-- AI use потрібно явно задекларувати: де і для яких задач використовувався;
-- для захисту продумати масштабування та модель підтримки/фінансування; числові оцінки — тільки з джерелами/реальними розрахунками;
-- озвучена дата подання — `2026-09-14`;
-- до наступної зустрічі ціль — готові Chapters 1–4; Chapter 5 — якщо дозволить час.
+Наданий транскрипт `Транскрипт — 6-та щотижнева зустріч з науковим керівником` не містить персонального сегмента Сергія: спочатку розбирається робота Максима, далі — Романа/інших студентів. Індивідуальні коментарі до їхніх тем не приписувати цьому проєкту.
 
-## Прямі коментарі Тетяни в Google Doc
+Загальні рекомендації Тетяни, які варто застосувати під час фіналізації:
 
-Робоча пояснювальна записка: https://docs.google.com/document/d/1sWA7sMvRp_X0hZUpSc310kh-wJ_fARo6OipjGoFtLB8/edit?usp=drivesdk
+- кожний змістовний підрозділ будувати як коротку завершену міні-статтю: вступ → факти/деталі → підсумок і перехід;
+- Chapter 4 можна посилити технічними деталями, цікавими фрагментами коду/функцій і описом deployment;
+- використання AI описати конкретно: де, для чого і в яких обсягах/межах;
+- обов’язково додати Appendix з артефактами проєкту: repository, live deploy та інші фактично наявні посилання;
+- діаграми, що займають понад пів сторінки, можна переносити в Appendices;
+- рисунки повинні бути читабельними; не відривати caption від рисунка;
+- основний текст — міжрядковий інтервал 1,5; у таблицях допустимий одинарний;
+- наприкінці роботи доречно описати перспективи розвитку/підтримки/фінансування, але числові прогнози тільки за реальними джерелами або розрахунками.
 
-- `додати що буде вміти проєкт` — змістовно враховано у Chapter 1; comment не resolve до підтвердження керівника;
-- `обʼєднати з 3.4` — виконано структурно; comment не resolve до підтвердження керівника;
-- `розширити` — стосується Availability Estimator / Simulation Engine і формул; наступний пріоритет Chapter 3;
-- `для чого і де?` біля згадки ШІ — ще потребує конкретного опису фактичного AI use.
+Репліка `доробити до середи` у транскрипті стосувалася іншого студента й не є дедлайном цього проєкту.
 
-Власні технічні коментарі користувача не змішувати з supervisor feedback.
+Офіційний фокус Weeks 6–7: фіналізація проєкту, фінальне demo, завершення пояснювальної записки, тестування й якість вже реалізованих компонентів. Нові функції не є пріоритетом.
 
-## Explanatory note checkpoint — Chapters 1–2
+## Explanatory note — factual state 2026-08-31
 
-### Chapter 1
+Робочий Google Doc: https://docs.google.com/document/d/1sWA7sMvRp_X0hZUpSc310kh-wJ_fARo6OipjGoFtLB8/edit?usp=drivesdk
 
-Content pass завершено 2026-08-24: уточнено енергетичний контекст, кінцевого користувача, проблему Device runtime → Service availability, функціональні можливості MVP, новизну та практичну цінність. Додано фактично використане джерело IEA `Energy System Resilience` (2026) як `[13]`.
+Перевірено напряму в документі:
 
-### Chapter 2 — content pass 2026-08-27
+- Chapters 1–2 — наповнені й суттєво доопрацьовані за feedback Тетяни;
+- Chapter 3 — уже має зміст: вимоги/межі MVP, ітерації, архітектура/stack, Availability Estimator + dependency model, testing strategy, challenges/limitations і conclusions;
+- `3.4` залишається відносно стислим порівняно з прямим supervisor comment `розширити`; перед submission потрібен фінальний змістовний audit;
+- Chapter 4 — наразі лише headings `4.1–4.4`, без основного тексту;
+- Chapter 5 — лише heading;
+- Appendices — лише heading;
+- конкретної декларації фактичного використання AI ще немає;
+- на титульній сторінці зараз стоїть `Дата подання: 04.09.2026`, що суперечить раніше озвученій Тетяною даті `14.09.2026`; перевірити й виправити перед фіналізацією.
 
-Розділ 2 суттєво розширено за feedback Тетяни:
+## Verification baseline
 
-- `2.1` тепер пояснює W vs Wh, сумарне активне навантаження, формули `PΣ = ΣPi`, `t = Eusable / PΣ`, `tmin = floor(Eusable / PΣ × 60)`, різницю між енергоємністю та максимальною вихідною потужністю, ExternalFirst та межі спрощеної W/Wh-моделі;
-- додано перевірені джерела про вплив режиму розряду, температури, старіння та змінного навантаження на фактичну доступну ємність/оцінку автономності: `[14]` Vennam et al. (2022), `[15]` Yang et al. (2021), `[16]` Victron Energy manual;
-- `2.2` розширено аналізом Energo.ua, Wattlix, NuWatt, Offgridly, Continuity Lab, TRN Lite та REopt: цільова аудиторія, сильні сторони, обмеження й текстова інтерпретація таблиці. Твердження про відсутні функції обмежені лише перевіреною публічною документацією;
-- `2.3` розширено теорією функціональних залежностей і каскадних порушень на основі Hasselqvist et al., Karan & Mohammadpour, DISruptionMap і TRN Lite; порівняно довільний граф, probabilistic dependency model та детермінований DAG із mandatory dependencies; обґрунтовано спрощений підхід MVP;
-- `2.4` переформульовано обережніше: gap не заявляється як глобальна відсутність подібних продуктів, а як невиявлене в проаналізованій вибірці побутових рішень поєднання простого W/Wh input, багаторівневих Service dependencies, часової симуляції та пояснення causal path;
-- висновки Chapter 2 оновлено і прямо пов’язано з вимогами MVP;
-- усі нові/змінені фрагменти в Google Doc позначено помаранчевим.
-
-Наступний змістовний checkpoint пояснювальної записки — Chapter 3. Коментар Тетяни `розширити` ще не закрито.
-
-## UX Polish v1 — verification evidence
+Остання зафіксована verification evidence UX Polish v1:
 
 - full suite: `140 passed`, `0 failed`, `0 skipped`;
 - production build: Vite `8.2.1`, `36 modules transformed`, success;
@@ -90,22 +90,6 @@ Content pass завершено 2026-08-24: уточнено енергетич�
 
 No external usability study, screen-reader result or performance baseline is currently recorded. Do not invent these results.
 
-## Week 5 reporting target
-
-Week 5 вести з прямим трасуванням у weekly report. Функціональний scope уже достатній за feedback Тетяни, тому `фіналізація MVP` означає стабілізацію, обмежений cosmetic polish, розширене тестування й документування, а не додавання нових функцій.
-
-Користувач хоче внести невеликі косметичні UI/UX правки в MVP. Точний перелік ще не погоджено. Перед реалізацією зафіксувати короткий список; не змінювати предметну модель, Availability Estimator, Simulation Engine v1, service templates, status/recommendation semantics або MVP scope. Після змін повторити релевантні tests/build/browser smoke і включити лише фактичні результати до Week 5 report.
-
-План Week 5 evidence:
-
-- Chapter 2 content pass — виконано;
-- повністю допрацювати Chapter 3;
-- погодити й виконати обмежений cosmetic MVP polish;
-- провести fresh extended verification: automated suite/build, integration/functional browser scenarios і performance baseline без вигаданого порогу; за можливості — коротку зовнішню usability перевірку з фактично доступними учасниками;
-- написати першу повну версію Chapter 4 лише на основі фактичних screenshots, implementation details та test evidence;
-- подати Chapters 3–4 Тетяні та зафіксувати submission/feedback;
-- підготувати Week 5 report і короткий план final demo Week 6.
-
 ## Source of truth
 
 - `docs/STATUS.md` — current operational snapshot;
@@ -114,11 +98,21 @@ Week 5 вести з прямим трасуванням у weekly report. Фу�
 - `docs/specs/user-facing-mvp-v1-acceptance.md`;
 - `docs/specs/ux-polish-v1.md`;
 - `docs/specs/ux-polish-v1-acceptance.md`;
-- `docs/plans/ux-polish-v1.md`;
-- `docs/specs/repository-workflow.md`.
+- working explanatory note in Google Drive;
+- Capstone Project Context in Google Drive.
 
 ## Наступна дія
 
-Chapter 2 content pass завершено. Далі: Chapter 3 → погодження косметичних MVP правок → cosmetic polish → fresh extended testing → Chapter 4 → submission Chapters 3–4 → Week 5 report → підготовка final demo.
+Recovery sequence:
 
-Не розширювати MVP новими функціями без конкретної вимоги.
+1. фінальний audit Chapter 3, насамперед `3.4`, підсумки й логічні переходи;
+2. написати повний Chapter 4 лише на фактичних screenshots, implementation details і test evidence;
+3. провести fresh verification; performance baseline — тільки через реальний вимір;
+4. написати Chapter 5: досягнення мети, обмеження, практична цінність, масштабування і модель підтримки;
+5. додати конкретну AI declaration;
+6. додати Appendices з таблицею артефактів і великими діаграмами за потреби;
+7. фінальне форматування й перевірка титульної дати;
+8. уточнити фактичний submission status Week 5 та підготувати/закрити Week 6 report;
+9. підготувати final demo.
+
+Cosmetic UI work тепер лише за залишкового часу і без зміни функціонального scope.
