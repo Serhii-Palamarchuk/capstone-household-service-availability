@@ -1,6 +1,6 @@
 # Поточний стан проєкту
 
-Оновлено: 2026-09-01.
+Оновлено: 2026-09-01 (після завершення content pass записки та cosmetic duration formatting).
 
 ## Поточний етап
 
@@ -15,7 +15,7 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - Week 2 — accepted.
 - Week 3 — accepted 2026-08-21.
 - Week 4 — accepted Тетяною 2026-08-24.
-- Week 5 report — submitted 2026-09-01; очікується feedback/acceptance Тетяни.
+- Week 5 report — accepted Тетяною; коментар: для тижня 5 добре, у Week 6 потрібно відправити готову пояснювальну записку.
 - Week 5 Google Doc: https://docs.google.com/document/d/1hgUQa2pJnniCZo1RaQBkbbh176rfX6p8sgHQ5jn_RAk/edit?usp=drivesdk
 
 ## Supervisor comments in explanatory note
@@ -34,7 +34,7 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 
 Робочий Google Doc: https://docs.google.com/document/d/1sWA7sMvRp_X0hZUpSc310kh-wJ_fARo6OipjGoFtLB8/edit?usp=drivesdk
 
-- Chapters 1–3 — змістовно готові після повторної перевірки 2026-09-01;
+- Chapters 1–4 — змістовно готові після повторної перевірки 2026-09-01;
 - Chapter 2 має topic-specific title згідно із supervisor feedback;
 - у Chapter 2 вставлено три фактичні ілюстрації інтерфейсів: NuWatt (рис. 2.1), Wattlix (рис. 2.2), TRN Lite (рис. 2.3), а також додано текстові посилання на них;
 - у Chapter 2 формули автономності пронумеровано як (2.1) і (2.2), термінологію й формулювання gap уточнено;
@@ -43,18 +43,42 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - усі нові текстові фрагменти, внесені ChatGPT у робочий Google Doc, позначено помаранчевим;
 - Chapter 4 — підготовлена перша повна змістовна версія 4.1–4.4 + висновки;
 - Декларація академічної доброчесності — конкретизована за фактичним використанням ChatGPT, Codex і Claude Code;
-- ще потрібні: фінальні UI screenshots/code evidence для Chapter 4, Chapter 5, Appendices, performance baseline, автоматична структура/зміст і фінальне форматування.
+- додано анотацію з ключовими словами;
+- Chapter 5 — додано повну версію висновків і рекомендацій, включно з обмеженнями MVP та організаційними рекомендаціями без вигаданого бюджету або підтвердженого фінансування;
+- Appendix A — додано таблицю артефактів проєкту з посиланнями на repository, live demo та GitHub Actions workflow;
+- у Chapter 4 залишено чотири точні маркери для скриншотів: `Equipment`, `Backup`, `Services & Scenario`, `Result`, із готовими підписами;
+- автоматична навігаційна структура Google Docs налаштована через `Heading 1`/`Heading 2`; заголовки залишено чорними;
+- список скорочень оформлено таблицею за шаблоном;
+- ще потрібні: вставити чотири фактичні UI screenshots, оновити список рисунків/таблиць і зміст, перевести сторінку в A4, перевірити page breaks і фінальне оформлення, після чого підготувати 15-хвилинне демо.
+
+## Постійні правила редагування записки
+
+- Усе, що ChatGPT/Codex додає або змінює в робочій пояснювальній записці, позначати помаранчевим `#E65900`; незмінений текст залишати чорним. Не переводити погоджені зміни в чорний без прямої команди Сергія.
+- Назви елементів інтерфейсу подавати за правилом: українська назва першою, у дужках — точна англійська назва UI. Приклад: `«Обладнання» (Equipment)`.
+- Не вигадувати результати тестування, usability study, бюджет, фінансування, фактичні показники обладнання або feedback керівника.
+- Не розширювати scope MVP новими функціями до завершення записки та демо; допустимі лише погоджені косметичні правки без зміни Simulation Engine, Availability Estimator formulas, service-template semantics, status semantics або recommendation logic.
 
 ## Verification baseline
 
-- automated suite: `140 passed`, `0 failed`, `0 skipped`;
+- automated suite після cosmetic duration formatting: `141 passed`, `0 failed`, `0 skipped`;
 - Vite `8.2.1` production build: success, `36 modules transformed`;
 - `git diff --check` — PASS;
 - whole-branch review: initial `2 Major` + `2 Minor` fixed; final `ACCEPTED`;
 - browser/manual acceptance — PASS;
 - post-deploy live smoke — PASS.
 
-External usability study, screen-reader result і performance baseline не зафіксовані. Не вигадувати результати.
+- performance baseline виконано для локального `runUserScenario`: 1 000 warm-up запусків, 5 серій × 20 000 виміряних запусків (100 000 загалом), Node.js `v24.19.0`, Linux x86_64, Intel Xeon E5-2673 v4 @ 2.30 GHz; median `0.026 ms/run`, mean `0.028 ms/run`;
+- baseline охоплює лише локальний розрахунковий контур для одного невеликого deterministic fixture; не охоплює browser rendering, network latency або low-end devices і не має наперед заданого acceptance threshold;
+- external usability study і screen-reader result не проводилися. Не вигадувати результати.
+
+## Cosmetic duration formatting
+
+- Реалізовано display-only форматування тривалості без зміни внутрішніх integer-minute calculations.
+- Українською: `45 хв`, `1 год`, `1 год 25 хв`, `0 хв`; англійською: `45 min`, `1 h`, `1 h 25 min`, `0 min`.
+- Форматер використовується на `Result` і в recommendation helper messages; legacy demo також оновлено.
+- Code review: Critical — none, Important — none; minor direct zero-case test додано.
+- Локальний commit: `b36fa30` (`Format durations as hours and minutes`).
+- Відправлення в `origin/main` явно погоджено Сергієм, але HTTPS push із цього середовища не відбувся через відсутню GitHub-авторизацію (`could not read Username`). Remote `main` залишається на `e0e6b30`, доки commit `b36fa30` не буде відправлено з авторизованого середовища.
 
 ## Source of truth
 
@@ -69,7 +93,10 @@ External usability study, screen-reader result і performance baseline не за
 
 ## Наступна дія
 
-1. Очікувати фактичний feedback/acceptance Тетяни щодо Week 5 report і пояснювальної записки; не вигадувати статус до її відповіді.
-2. Паралельно: Chapter 4 screenshots/code evidence → performance baseline → Chapter 5 → Appendices → automatic document structure/TOC → final formatting → final demo.
+1. Відправити локальний commit `b36fa30` у `origin/main` з авторизованого GitHub-середовища та дочекатися успішного GitHub Pages deployment.
+2. Виконати live browser smoke, особливо перевірити `Result` і формат `год + хв` українською та англійською.
+3. Зняти чотири фактичні скриншоти `Equipment`, `Backup`, `Services & Scenario`, `Result` і вставити їх замість маркерів у Chapter 4.
+4. Оновити список рисунків/таблиць і зміст, застосувати A4 та фінальні page breaks, виконати PDF visual QA.
+5. Підготувати й відрепетирувати 15-хвилинне демо та матеріали Week 6; передати Тетяні готову пояснювальну записку.
 
-Нові функції не є пріоритетом; cosmetic UI work — лише за залишкового часу й без зміни scope.
+Нові функції не додавати до завершення цих кроків.
