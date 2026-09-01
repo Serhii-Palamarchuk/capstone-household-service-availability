@@ -15,7 +15,7 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - Week 2 — accepted.
 - Week 3 — accepted 2026-08-21.
 - Week 4 — accepted Тетяною 2026-08-24.
-- Week 5 report — фіналізовано та підготовлено до подання; submission/acceptance ще не підтверджено.
+- Week 5 report — submitted 2026-09-01; очікується feedback/acceptance Тетяни.
 - Week 5 Google Doc: https://docs.google.com/document/d/1hgUQa2pJnniCZo1RaQBkbbh176rfX6p8sgHQ5jn_RAk/edit?usp=drivesdk
 
 ## Supervisor comments in explanatory note
@@ -69,8 +69,7 @@ External usability study, screen-reader result і performance baseline не за
 
 ## Наступна дія
 
-1. Перевірити доступ до Week 5 report і подати report + explanatory note.
-2. Після submission зафіксувати `submitted`.
-3. Далі: Chapter 4 screenshots/code evidence → performance baseline → Chapter 5 → Appendices → automatic document structure/TOC → final formatting → final demo.
+1. Очікувати фактичний feedback/acceptance Тетяни щодо Week 5 report і пояснювальної записки; не вигадувати статус до її відповіді.
+2. Паралельно: Chapter 4 screenshots/code evidence → performance baseline → Chapter 5 → Appendices → automatic document structure/TOC → final formatting → final demo.
 
 Нові функції не є пріоритетом; cosmetic UI work — лише за залишкового часу й без зміни scope.
