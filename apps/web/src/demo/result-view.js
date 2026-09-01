@@ -1,7 +1,13 @@
 import { DEMO_NODE_NAMES } from './internet-demo.js';
 
 function formatDuration(minutes) {
-  return `${minutes / 60} h`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (hours === 0) return `${remainingMinutes} min`;
+  if (remainingMinutes === 0) return `${hours} h`;
+
+  return `${hours} h ${remainingMinutes} min`;
 }
 
 export function createResultView(outcome) {

@@ -1,20 +1,12 @@
 import { useState } from 'react';
 
 import {
+  formatDuration,
   translateRecommendation,
   translateStatus,
   translateValidationError,
   translateWarning,
 } from '../../user-mvp/i18n.js';
-
-function formatDuration(minutes, t) {
-  const hours = minutes / 60;
-  const hoursText = Number.isInteger(hours) ? String(hours) : hours.toFixed(2).replace(/0+$/, '');
-  return t('duration.minutesHours', {
-    hours: hoursText,
-    minutes,
-  });
-}
 
 function ResultErrors({ errors, id, nameFor, t }) {
   if (errors.length === 0) return null;

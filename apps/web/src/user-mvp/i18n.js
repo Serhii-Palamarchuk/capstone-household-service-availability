@@ -158,7 +158,9 @@ const messages = {
     'unit.watts': '{value} W',
     'unit.wattHours': '{value} Wh',
     'unit.maximumWatts': '{value} W max',
-    'duration.minutesHours': '{minutes} min ({hours} h)',
+    'duration.minutesOnly': '{minutes} min',
+    'duration.hoursOnly': '{hours} h',
+    'duration.hoursMinutes': '{hours} h {minutes} min',
     'validation.REQUIRED_FIELD': 'This field is required.',
     'validation.REQUIRED_POSITIVE_NUMBER': 'Enter a value greater than zero.',
     'validation.INVALID_POSITIVE_NUMBER': 'Enter a value greater than zero.',
@@ -201,7 +203,7 @@ const messages = {
     'warning.MISSING_BACKUP_SOURCE_MAX_OUTPUT': 'Maximum output is not set for {source}; overload was not checked.',
     'recommendation.ADD_BACKUP': 'Add backup power for {entity}.',
     'recommendation.EXTERNAL_PROVIDER_LIMIT': '{entity} is limiting availability; increasing local battery capacity does not remove this provider limit.',
-    'recommendation.DISABLE_ADDITIONAL_LOAD': 'Disabling {entity} improves every selected target by at least {improvementMinutes} minutes.',
+    'recommendation.DISABLE_ADDITIONAL_LOAD': 'Disabling {entity} improves every selected target by at least {improvement}.',
   },
   uk: {
     'app.eyebrow': 'Планувальник відключень для домогосподарства',
@@ -360,7 +362,9 @@ const messages = {
     'unit.watts': '{value} Вт',
     'unit.wattHours': '{value} Вт·год',
     'unit.maximumWatts': '{value} Вт макс.',
-    'duration.minutesHours': '{minutes} хв ({hours} год)',
+    'duration.minutesOnly': '{minutes} хв',
+    'duration.hoursOnly': '{hours} год',
+    'duration.hoursMinutes': '{hours} год {minutes} хв',
     'validation.REQUIRED_FIELD': 'Це поле обов’язкове.',
     'validation.REQUIRED_POSITIVE_NUMBER': 'Введіть значення, більше за нуль.',
     'validation.INVALID_POSITIVE_NUMBER': 'Введіть значення, більше за нуль.',
@@ -403,7 +407,7 @@ const messages = {
     'warning.MISSING_BACKUP_SOURCE_MAX_OUTPUT': 'Для {source} не задано максимальну вихідну потужність; перевантаження не перевірялося.',
     'recommendation.ADD_BACKUP': 'Додайте резервне живлення для {entity}.',
     'recommendation.EXTERNAL_PROVIDER_LIMIT': '{entity} обмежує доступність; збільшення ємності локальної батареї не усуває це обмеження постачальника.',
-    'recommendation.DISABLE_ADDITIONAL_LOAD': 'Вимкнення {entity} покращує кожну обрану ціль щонайменше на {improvementMinutes} хвилин.',
+    'recommendation.DISABLE_ADDITIONAL_LOAD': 'Вимкнення {entity} покращує кожну обрану ціль щонайменше на {improvement}.',
   },
 };
 
@@ -441,10 +445,33 @@ export function translateWarning(warning, t, nameFor) {
   });
 }
 
+export function formatDuration(minutes, t) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (hours === 0) {
+    return t('duration.minutesOnly', { minutes: remainingMinutes });
+  }
+
+  if (remainingMinutes === 0) {
+    return t('duration.hoursOnly', { hours });
+  }
+
+  return t('duration.hoursMinutes', {
+    hours,
+    minutes: remainingMinutes,
+  });
+}
+
 export function translateRecommendation(recommendation, t, nameFor) {
-  return t(`recommendation.${recommendation.type}`, {
+  const params = {
     fallback: recommendation.type,
     entity: nameFor(recommendation.entityId),
-    improvementMinutes: recommendation.improvementMinutes,
-  });
+  };
+
+  if (Number.isInteger(recommendation.improvementMinutes)) {
+    params.improvement = formatDuration(recommendation.improvementMinutes, t);
+  }
+
+  return t(`recommendation.${recommendation.type}`, params);
 }

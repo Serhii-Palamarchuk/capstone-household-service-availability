@@ -61,7 +61,7 @@ test('engine failure preserves validation code and message', () => {
   });
 });
 
-test('duration formatter displays exact whole and fractional hours from integer minutes', () => {
+test('duration formatter displays hours and remaining minutes without decimal hours', () => {
   const createSuccessOutcome = availabilityDurationMinutes => ({
     success: true,
     targetResults: [{
@@ -74,6 +74,7 @@ test('duration formatter displays exact whole and fractional hours from integer 
   });
 
   assert.equal(createResultView(createSuccessOutcome(120)).availabilityText, '2 h');
-  assert.equal(createResultView(createSuccessOutcome(90)).availabilityText, '1.5 h');
-  assert.equal(createResultView(createSuccessOutcome(0)).availabilityText, '0 h');
+  assert.equal(createResultView(createSuccessOutcome(90)).availabilityText, '1 h 30 min');
+  assert.equal(createResultView(createSuccessOutcome(45)).availabilityText, '45 min');
+  assert.equal(createResultView(createSuccessOutcome(0)).availabilityText, '0 min');
 });

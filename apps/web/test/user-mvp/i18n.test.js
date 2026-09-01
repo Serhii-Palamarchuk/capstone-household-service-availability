@@ -15,6 +15,7 @@ import {
 import {
   SUPPORTED_LANGUAGES,
   createTranslator,
+  formatDuration,
   translateRecommendation,
   translateStatus,
   translateValidationError,
@@ -109,8 +110,26 @@ test('visible navigation, role, result, and unit copy resolves in both languages
   assert.equal(uk('unit.watts', { value: 15 }), '15 Вт');
   assert.equal(en('unit.wattHours', { value: 120 }), '120 Wh');
   assert.equal(uk('unit.wattHours', { value: 120 }), '120 Вт·год');
-  assert.equal(en('duration.minutesHours', { minutes: 90, hours: 1.5 }), '90 min (1.5 h)');
-  assert.equal(uk('duration.minutesHours', { minutes: 90, hours: 1.5 }), '90 хв (1.5 год)');
+  assert.equal(en('duration.minutesOnly', { minutes: 45 }), '45 min');
+  assert.equal(en('duration.hoursOnly', { hours: 1 }), '1 h');
+  assert.equal(en('duration.hoursMinutes', { hours: 1, minutes: 25 }), '1 h 25 min');
+  assert.equal(uk('duration.minutesOnly', { minutes: 45 }), '45 хв');
+  assert.equal(uk('duration.hoursOnly', { hours: 1 }), '1 год');
+  assert.equal(uk('duration.hoursMinutes', { hours: 1, minutes: 25 }), '1 год 25 хв');
+});
+
+test('shared duration formatter renders zero, minutes, hours, and mixed values in both languages', () => {
+  const cases = [
+    [0, '0 min', '0 хв'],
+    [45, '45 min', '45 хв'],
+    [60, '1 h', '1 год'],
+    [85, '1 h 25 min', '1 год 25 хв'],
+  ];
+
+  for (const [minutes, expectedEn, expectedUk] of cases) {
+    assert.equal(formatDuration(minutes, createTranslator('en')), expectedEn);
+    assert.equal(formatDuration(minutes, createTranslator('uk')), expectedUk);
+  }
 });
 
 test('current form and result copy has English and Ukrainian translations', () => {
@@ -259,6 +278,8 @@ test('each recommendation type translates without mutating its stable type', () 
     { type: 'ADD_BACKUP', entityId: 'device-router' },
     { type: 'EXTERNAL_PROVIDER_LIMIT', entityId: 'provider-internet' },
     { type: 'DISABLE_ADDITIONAL_LOAD', entityId: 'device-lamp', improvementMinutes: 60 },
+    { type: 'DISABLE_ADDITIONAL_LOAD', entityId: 'device-lamp', improvementMinutes: 25 },
+    { type: 'DISABLE_ADDITIONAL_LOAD', entityId: 'device-lamp', improvementMinutes: 85 },
   ];
   const names = {
     'device-router': 'Router',
@@ -276,7 +297,15 @@ test('each recommendation type translates without mutating its stable type', () 
   );
   assert.equal(
     translateRecommendation(recommendations[2], en, id => names[id]),
-    'Disabling Desk lamp improves every selected target by at least 60 minutes.',
+    'Disabling Desk lamp improves every selected target by at least 1 h.',
+  );
+  assert.equal(
+    translateRecommendation(recommendations[3], en, id => names[id]),
+    'Disabling Desk lamp improves every selected target by at least 25 min.',
+  );
+  assert.equal(
+    translateRecommendation(recommendations[4], en, id => names[id]),
+    'Disabling Desk lamp improves every selected target by at least 1 h 25 min.',
   );
   assert.equal(
     translateRecommendation(recommendations[0], uk, id => names[id]),
@@ -288,11 +317,25 @@ test('each recommendation type translates without mutating its stable type', () 
   );
   assert.equal(
     translateRecommendation(recommendations[2], uk, id => names[id]),
-    'Вимкнення Desk lamp покращує кожну обрану ціль щонайменше на 60 хвилин.',
+    'Вимкнення Desk lamp покращує кожну обрану ціль щонайменше на 1 год.',
+  );
+  assert.equal(
+    translateRecommendation(recommendations[3], uk, id => names[id]),
+    'Вимкнення Desk lamp покращує кожну обрану ціль щонайменше на 25 хв.',
+  );
+  assert.equal(
+    translateRecommendation(recommendations[4], uk, id => names[id]),
+    'Вимкнення Desk lamp покращує кожну обрану ціль щонайменше на 1 год 25 хв.',
   );
   assert.deepEqual(
     recommendations.map(recommendation => recommendation.type),
-    ['ADD_BACKUP', 'EXTERNAL_PROVIDER_LIMIT', 'DISABLE_ADDITIONAL_LOAD'],
+    [
+      'ADD_BACKUP',
+      'EXTERNAL_PROVIDER_LIMIT',
+      'DISABLE_ADDITIONAL_LOAD',
+      'DISABLE_ADDITIONAL_LOAD',
+      'DISABLE_ADDITIONAL_LOAD',
+    ],
   );
 });
 
@@ -379,7 +422,8 @@ test('all wizard and result surfaces render Ukrainian presentation without chang
   assert.match(servicesHtml, /Маршрутизатор <span class="role-type">Пристрій<\/span>/);
   assert.doesNotMatch(servicesHtml, />INVALID_POSITIVE_NUMBER</);
   assert.match(resultHtml, /Результат доступності/);
-  assert.match(resultHtml, /360 хв \(6 год\)/);
+  assert.match(resultHtml, /<strong>6 год<\/strong>/);
+  assert.doesNotMatch(resultHtml, /360 хв/);
   assert.match(resultHtml, /80 Вт/);
   assert.match(resultHtml, /Обмежено/);
   assert.match(failureHtml, /Виявлено циклічну залежність послуг\./);
