@@ -34,12 +34,16 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 
 Робочий Google Doc: https://docs.google.com/document/d/1sWA7sMvRp_X0hZUpSc310kh-wJ_fARo6OipjGoFtLB8/edit?usp=drivesdk
 
-- Chapters 1–2 — змістовно доопрацьовані;
+- Chapters 1–3 — змістовно готові після повторної перевірки 2026-09-01;
 - Chapter 2 має topic-specific title згідно із supervisor feedback;
-- Chapter 3 — актуалізований, включно з розширеним 3.4;
+- у Chapter 2 вставлено три фактичні ілюстрації інтерфейсів: NuWatt (рис. 2.1), Wattlix (рис. 2.2), TRN Lite (рис. 2.3), а також додано текстові посилання на них;
+- у Chapter 2 формули автономності пронумеровано як (2.1) і (2.2), термінологію й формулювання gap уточнено;
+- у Chapter 3 додано прямі текстові посилання на таблиці 3.1 і 3.2, пояснення після архітектурної схеми, уточнено назву 3.4, перекладено статуси й прибрано зайві англомовні робочі терміни;
+- додано список скорочень для AC, DC, MVP, ONT, ONU, SPA, UI та xPON;
+- усі нові текстові фрагменти, внесені ChatGPT у робочий Google Doc, позначено помаранчевим;
 - Chapter 4 — підготовлена перша повна змістовна версія 4.1–4.4 + висновки;
 - Декларація академічної доброчесності — конкретизована за фактичним використанням ChatGPT, Codex і Claude Code;
-- ще потрібні: фінальні UI screenshots/code evidence, Chapter 5, Appendices, performance baseline, фінальне форматування.
+- ще потрібні: фінальні UI screenshots/code evidence для Chapter 4, Chapter 5, Appendices, performance baseline, автоматична структура/зміст і фінальне форматування.
 
 ## Verification baseline
 
@@ -65,9 +69,8 @@ External usability study, screen-reader result і performance baseline не за
 
 ## Наступна дія
 
-1. Перед поданням Week 5 ще раз пройти всі supervisor comments/suggestions як checklist, включно зі скриншотами, а не лише comments API.
-2. Перевірити доступ до Week 5 report і подати report + explanatory note.
-3. Після submission зафіксувати `submitted`.
-4. Далі: Chapter 4 screenshots/code evidence → performance baseline → Chapter 5 → Appendices → final formatting → final demo.
+1. Перевірити доступ до Week 5 report і подати report + explanatory note.
+2. Після submission зафіксувати `submitted`.
+3. Далі: Chapter 4 screenshots/code evidence → performance baseline → Chapter 5 → Appendices → automatic document structure/TOC → final formatting → final demo.
 
 Нові функції не є пріоритетом; cosmetic UI work — лише за залишкового часу й без зміни scope.
