@@ -77,8 +77,8 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - Українською: `45 хв`, `1 год`, `1 год 25 хв`, `0 хв`; англійською: `45 min`, `1 h`, `1 h 25 min`, `0 min`.
 - Форматер використовується на `Result` і в recommendation helper messages; legacy demo також оновлено.
 - Code review: Critical — none, Important — none; minor direct zero-case test додано.
-- Локальний commit: `b36fa30` (`Format durations as hours and minutes`).
-- Відправлення в `origin/main` явно погоджено Сергієм, але HTTPS push із цього середовища не відбувся через відсутню GitHub-авторизацію (`could not read Username`). Remote `main` залишається на `e0e6b30`, доки commit `b36fa30` не буде відправлено з авторизованого середовища.
+- Локальний commit реалізації: `b36fa30` (`Format durations as hours and minutes`); локальний commit попередньої синхронізації статусу: `0a06cfe`.
+- Push у `origin/main` виконано через підключений GitHub connector як fast-forward без force. GitHub створив еквівалентні remote commits `85d66bf4acaad09529482cf5b3672d46faf8f37a` (`Format durations as hours and minutes`) і `d99a670e3504a94ff269a9fd23c5a6dbec2a7ad6` (`docs: record Week 6 continuation checkpoint`). Після push remote `main` вказував на `d99a670e3504a94ff269a9fd23c5a6dbec2a7ad6`.
 
 ## Source of truth
 
@@ -93,10 +93,9 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 
 ## Наступна дія
 
-1. Відправити локальний commit `b36fa30` у `origin/main` з авторизованого GitHub-середовища та дочекатися успішного GitHub Pages deployment.
-2. Виконати live browser smoke, особливо перевірити `Result` і формат `год + хв` українською та англійською.
-3. Зняти чотири фактичні скриншоти `Equipment`, `Backup`, `Services & Scenario`, `Result` і вставити їх замість маркерів у Chapter 4.
-4. Оновити список рисунків/таблиць і зміст, застосувати A4 та фінальні page breaks, виконати PDF visual QA.
-5. Підготувати й відрепетирувати 15-хвилинне демо та матеріали Week 6; передати Тетяні готову пояснювальну записку.
+1. Дочекатися успішного GitHub Pages deployment і виконати live browser smoke, особливо перевірити `Result` та формат `год + хв` українською й англійською.
+2. Зняти чотири фактичні скриншоти `Equipment`, `Backup`, `Services & Scenario`, `Result` і вставити їх замість маркерів у Chapter 4.
+3. Оновити список рисунків/таблиць і зміст, застосувати A4 та фінальні page breaks, виконати PDF visual QA.
+4. Підготувати й відрепетирувати 15-хвилинне демо та матеріали Week 6; передати Тетяні готову пояснювальну записку.
 
 Нові функції не додавати до завершення цих кроків.
