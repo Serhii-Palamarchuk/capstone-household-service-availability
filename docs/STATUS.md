@@ -1,6 +1,6 @@
 # Поточний стан проєкту
 
-Оновлено: 2026-09-03 (після повторного проходу feedback Тетяни та посилення технічної частини пояснювальної записки).
+Оновлено: 2026-09-03 (після уточнення термінології, структури репозиторію та компактності Рисунка 3.2).
 
 ## Поточний етап
 
@@ -33,23 +33,23 @@ Chapters 1–5, AI declaration і Appendix A змістовно заповнен
 - у §2.2 після кожного з рисунків 2.1 NuWatt, 2.2 Wattlix і 2.3 TRN Lite додано окрему текстову інтерпретацію того, що саме ілюстрація підтверджує для аналізу аналогів;
 - у «Висновках до другого розділу» прибрано citations; висновки переформульовано як власний синтез уже проаналізованих джерел і рішень;
 - у §3.2 додано Таблицю 3.3 «Основні ітерації розробки та способи перевірки»: Simulation Engine v1 → React Demo v1 → Deploy v1 → User-facing MVP v1 → UX Polish v1; колонки `Етап / Основний результат / Перевірка`;
-- у §3.5 розширено стратегію тестування фактичними рівнями: unit tests на `node:test` / `node:assert/strict`, інтеграційний pipeline `runUserScenarioCore → Scenario.availability → Simulation Engine`, negative cases і manual/browser acceptance; кількісні результати залишаються в Chapter 4 лише за фактичними runs;
+- у §3.5 розширено стратегію тестування фактичними рівнями: unit tests на `node:test` / `node:assert/strict`, інтеграційний ланцюг від нормалізованих користувацьких даних через основну функцію інтеграційного модуля (`runUserScenarioCore`) до карти часової доступності компонентів сценарію (`Scenario.availability`), далі до Simulation Engine; також описано negative cases і manual/browser acceptance;
 - у §3.6 розширено фактичні виклики: контроль scope, якість/валідація вхідних даних і структурна коректність графа, баланс explainability з простотою UI, межі deterministic W/Wh-моделі;
-- у §4.2 додано компактне фактичне дерево `apps/web/src` з `components/user-mvp`, `user-mvp` і `simulation`; source paths перевірено проти актуального `main`, дерево оформлено Courier New 10 pt;
+- у §4.2 додано фактичне дерево `apps/web/src`; на рівні каталогів прямо підписано їхню роль: `components/user-mvp` — інтерфейс кроків 1–4, `user-mvp` — підготовка сценарію й оцінювання, `simulation` — перевірка графа й симуляція. Після дерева додано пояснення розподілу відповідальностей між UI, user-facing calculation layer і незалежним simulation core;
 - Section 4.2 уже містить два фактичні code fragments: Availability Estimator shared-load/runtime calculation і Simulation Engine recursive dependency calculation;
 - програмний код і product semantics під час цього documentation pass не змінювалися; нового запису в `docs/DECISIONS.md` не потрібно.
 
 ### Рисунок 3.2 / Mermaid
 
-Створено Mermaid-source:
+Канонічний Mermaid-source перенесено до:
 
-`docs/service-availability-evaluation-diagram.md`
+`docs/diagrams/service-availability-evaluation-diagram.md`
 
-Commit створення: `e2906feb41753f9bd39ffd9c8900eec46cb5b9f6`.
+Попередній файл `docs/service-availability-evaluation-diagram.md` видалено з remote main.
 
-Діаграма відображає фактичний pipeline: target services / required dependencies → active devices → BackupSource/shared load → max-output validation → runtime → Device/ExternalProvider availability → `Scenario.availability` → DAG validation → recursive Service calculation → `T=min(...)` → Available/Limited/Unavailable → limiting dependencies / causal paths.
+Діаграму скорочено до рівня, достатнього для пояснювальної записки: вхідні дані сценарію → Availability Estimator (активні пристрої, сумарне навантаження, перевірка максимальної потужності, розрахунок часу, карта часової доступності компонентів `Scenario.availability`) → Simulation Engine (перевірка графа, `T = min` обов’язкових залежностей, статус, limiting dependencies / causal paths) → пояснюваний результат. Детальні внутрішні гілки валідації залишені в §3.4 та canonical specs, щоб рисунок був читабельним на одній сторінці.
 
-У записці підпис уже змінено на `Рисунок 3.2 — Діаграма алгоритмічної послідовності оцінювання доступності сервісу`. Поточне текстове подання є тимчасовим; Сергій зробить screenshot Mermaid і замінить ним цей блок перед фінальним форматуванням.
+У записці підпис: `Рисунок 3.2 — Діаграма алгоритмічної послідовності оцінювання доступності сервісу`. Поточне текстове подання є тимчасовим; перед фінальним форматуванням його потрібно замінити screenshot компактної Mermaid-діаграми.
 
 ### Financial viability checkpoint
 
@@ -61,12 +61,13 @@ Commit створення: `e2906feb41753f9bd39ffd9c8900eec46cb5b9f6`.
 
 ## Поточний PDF / верстка
 
-Fresh export після supervisor-feedback pass:
+Fresh export після останніх текстових уточнень:
 
 - 55 сторінок;
 - формат усе ще US Letter `612 × 792 pt`;
-- поточні сторінки до переходу на A4: пояснення рис. 2.1–2.3 — 17–19; висновки Chapter 2 — 24; Таблиця 3.3 — 30; Рисунок 3.2 — 35; §3.5 — 36; §3.6 — 37; source tree у §4.2 — 43; code fragments 4.1/4.2 — 44–45; financial block — приблизно 50–51;
-- visual QA сторінок 17–19, 24, 30, 35–37, 43–45: видимого clipping/overlap немає;
+- уточнення інтеграційного рівня в §3.5 — стор. 36;
+- дерево структури та пояснення відповідальностей у §4.2 — стор. 43 і продовження на наступній сторінці;
+- visual QA стор. 36 і 43: видимого clipping/overlap немає;
 - після A4/page breaks номери сторінок потрібно визначити повторно.
 
 У змісті ще залишаються `#` замість фінальних номерів сторінок; списки рисунків і таблиць потрібно оновити після остаточної пагінації.
@@ -80,6 +81,7 @@ Fresh export після supervisor-feedback pass:
 - Усе, що ChatGPT/Codex додає або змістовно змінює, позначати помаранчевим `#E65900`; незмінений текст залишати чорним. Не прибирати orange без прямої команди Сергія.
 - Назви UI: українська назва першою, точна англійська — у дужках.
 - В академічній прозі український технічний термін подавати першим; exact identifier/path/code залишати без перекладу там, де це природно.
+- Внутрішні програмні назви не використовувати як «магічні» терміни. Для функцій, об’єктів, полів і внутрішніх контрактів спочатку пояснювати українською їхній зміст/роль, а точний identifier давати в дужках. Приклади: `основна функція інтеграційного модуля (runUserScenarioCore)`, `карта часової доступності компонентів сценарію (Scenario.availability)`.
 - Після кожного редагування повідомляти розділ/підрозділ і сторінки за поточною пагінацією; якщо пагінація не фінальна — прямо це зазначати.
 - Не вигадувати usability study, screen-reader results, фінансування, фактичні device measurements або test numbers.
 
@@ -103,7 +105,7 @@ Fresh export після supervisor-feedback pass:
 
 ## Наступна дія
 
-1. Сергій робить screenshot Mermaid із `docs/service-availability-evaluation-diagram.md` і замінює ним тимчасовий блок Рисунка 3.2.
+1. Зробити screenshot компактної Mermaid-діаграми з `docs/diagrams/service-availability-evaluation-diagram.md` і замінити ним тимчасовий блок Рисунка 3.2.
 2. Перевести записку з US Letter у A4, зберігши поля, і налаштувати фінальні page breaks.
 3. Оновити списки рисунків/таблиць та номери сторінок у змісті.
 4. Виконати повний PDF visual QA і виправити лише фактичні проблеми верстки.
