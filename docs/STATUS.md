@@ -1,6 +1,6 @@
 # Поточний стан проєкту
 
-Оновлено: 2026-09-02 (після вставлення UI screenshots і pre-final formatting audit записки).
+Оновлено: 2026-09-03 (після financial viability / support-cost update пояснювальної записки).
 
 ## Поточний етап
 
@@ -41,15 +41,21 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - у Chapter 3 додано прямі текстові посилання на таблиці 3.1 і 3.2, пояснення після архітектурної схеми, уточнено назву 3.4, перекладено статуси й прибрано зайві англомовні робочі терміни;
 - додано список скорочень для AC, DC, MVP, ONT, ONU, SPA, UI та xPON;
 - усі нові текстові фрагменти, внесені ChatGPT у робочий Google Doc, позначено помаранчевим;
-- Chapter 4 — підготовлена перша повна змістовна версія 4.1–4.4 + висновки;
+- Chapter 4 — підготовлена повна змістовна версія 4.1–4.4 + висновки;
+- у Chapter 4 вставлено чотири фактичні UI screenshots: `Equipment`, `Backup`, `Services & Scenario`, `Result`, а в 4.3 додано рис. 4.5 з результатом автоматизованих тестів і рис. 4.6 з успішним GitHub Actions build/deploy;
 - Декларація академічної доброчесності — конкретизована за фактичним використанням ChatGPT, Codex і Claude Code;
 - додано анотацію з ключовими словами;
-- Chapter 5 — додано повну версію висновків і рекомендацій, включно з обмеженнями MVP та організаційними рекомендаціями без вигаданого бюджету або підтвердженого фінансування;
+- Chapter 5 — повна версія висновків і рекомендацій; 2026-09-03 додано компактну сценарну оцінку витрат на супровід відповідно до персонального feedback Тетяни на 5-й зустрічі;
+- financial viability checkpoint: поточний public GitHub + GitHub Free/Pages/Actions дає 0 дол. США/місяць прямих витрат на хостинг і стандартний CI/deploy за незмінної некомерційної архітектури; GitHub Pages не позиціонується як безкоштовний hosting комерційного SaaS;
+- labor planning scenario: DOU median developer salary June 2026 = 3500 дол. США/місяць net, sample 4541 developers; planning assumptions 160 h/month and 8 h support/month → 21.9 дол. США/h → 175 дол. США/month → 2100 дол. США/year. Це не виміряна трудомісткість і не grant rate; taxes/overheads/program rules не включено;
+- exact potential-user count не заявляється: надійно визначити його без окремого market validation не вдалося. Як proxy одного ключового сценарію наведено official NCEC/Ukrstat 2023 fixed-Internet indicator 62 per 100 households із джерельними territorial limitations; це не TAM;
+- до bibliography додано sources [22]–[26]: GitHub Pricing, GitHub Actions billing, GitHub Pages limits, DOU salary report summer 2026, Ukrstat/NCEC indicator 9.6.1;
+- confirmed funding agreements відсутні; grants/funds/local-government/partner funding залишаються Future Work recommendations;
 - Appendix A — додано таблицю артефактів проєкту з посиланнями на repository, live demo та GitHub Actions workflow;
-- у Chapter 4 вставлено чотири фактичні UI screenshots: `Equipment`, `Backup`, `Services & Scenario`, `Result`; маркери видалено, підписи рисунків 4.1–4.4 збережено;
 - автоматична навігаційна структура Google Docs налаштована через `Heading 1`/`Heading 2`; заголовки залишено чорними;
 - список скорочень оформлено таблицею за шаблоном;
 - поточний формат сторінки — US Letter (`612 × 792 pt`); потрібно перевести документ у A4, зберігши встановлені поля;
+- за поточною US Letter pagination financial block розташований у Chapter 5 на стор. 46–47; bibliography [22]–[26] — стор. 50; після A4/page breaks номери потрібно оновити;
 - у змісті ще залишаються `#` замість номерів сторінок; списки рисунків і таблиць потрібно сформувати/оновити після фінальної пагінації;
 - після A4, page breaks і заповнення змісту потрібні повний PDF visual QA та фінальний експорт;
 - відкритий лише один Google Docs comment: `додати що буде вміти проєкт`; вимогу вже змістовно враховано у Chapter 1, comment не закривати без рішення Сергія/підтвердження керівника.
@@ -58,7 +64,9 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 
 - Усе, що ChatGPT/Codex додає або змінює в робочій пояснювальній записці, позначати помаранчевим `#E65900`; незмінений текст залишати чорним. Не переводити погоджені зміни в чорний без прямої команди Сергія.
 - Назви елементів інтерфейсу подавати за правилом: українська назва першою, у дужках — точна англійська назва UI. Приклад: `«Обладнання» (Equipment)`.
-- Не вигадувати результати тестування, usability study, бюджет, фінансування, фактичні показники обладнання або feedback керівника.
+- Англомовні технічні/проєктні терміни в прозі подавати українською першими, а точний англійський відповідник — у дужках, якщо це доречно. Для code identifiers (`usableCapacityWh`, `powerW`, `maxOutputPowerW`, `totalPowerW` тощо) у прозі спочатку давати природну українську назву, а identifier — у дужках; у коді, формулах, шляхах, URL та точних назвах джерел/продуктів identifier не перекладати.
+- Після кожного редагування записки повідомляти Сергію, у яких розділах/підрозділах і на яких сторінках за поточною пагінацією зроблено зміни; якщо пагінація ще не фінальна, прямо це зазначати.
+- Не вигадувати результати тестування, usability study, бюджет, фінансування, фактичні показники обладнання або feedback керівника. Фінансові числа допускаються лише як прозоро позначені сценарні оцінки з перевіреними джерелами та явними припущеннями.
 - Не розширювати scope MVP новими функціями до завершення записки та демо; допустимі лише погоджені косметичні правки без зміни Simulation Engine, Availability Estimator formulas, service-template semantics, status semantics або recommendation logic.
 
 ## Verification baseline
@@ -68,9 +76,8 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - `git diff --check` — PASS;
 - whole-branch review: initial `2 Major` + `2 Minor` fixed; final `ACCEPTED`;
 - browser/manual acceptance — PASS;
-- post-deploy live smoke — PASS.
-- connector readback записки: чотири Chapter 4 screenshots присутні, маркерів немає, підписи рисунків 4.1–4.4 збережено.
-
+- post-deploy live smoke — PASS;
+- Chapter 4 connector/PDF readback: UI figures 4.1–4.4 and test/deploy evidence figures 4.5–4.6 present; current layout visually checked.
 - performance baseline виконано для локального `runUserScenario`: 1 000 warm-up запусків, 5 серій × 20 000 виміряних запусків (100 000 загалом), Node.js `v24.19.0`, Linux x86_64, Intel Xeon E5-2673 v4 @ 2.30 GHz; median `0.026 ms/run`, mean `0.028 ms/run`;
 - baseline охоплює лише локальний розрахунковий контур для одного невеликого deterministic fixture; не охоплює browser rendering, network latency або low-end devices і не має наперед заданого acceptance threshold;
 - external usability study і screen-reader result не проводилися. Не вигадувати результати.
@@ -82,7 +89,7 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - Форматер використовується на `Result` і в recommendation helper messages; legacy demo також оновлено.
 - Code review: Critical — none, Important — none; minor direct zero-case test додано.
 - Локальний commit реалізації: `b36fa30` (`Format durations as hours and minutes`); локальний commit попередньої синхронізації статусу: `0a06cfe`.
-- Push у `origin/main` виконано через підключений GitHub connector як fast-forward без force. GitHub створив еквівалентні remote commits `85d66bf4acaad09529482cf5b3672d46faf8f37a` (`Format durations as hours and minutes`) і `d99a670e3504a94ff269a9fd23c5a6dbec2a7ad6` (`docs: record Week 6 continuation checkpoint`). Після push remote `main` вказував на `d99a670e3504a94ff269a9fd23c5a6dbec2a7ad6`.
+- Push у `origin/main` виконано через підключений GitHub connector як fast-forward без force. GitHub створив еквівалентні remote commits `85d66bf4acaad09529482cf5b3672d46faf8f37a` (`Format durations as hours and minutes`) і `d99a670e3504a94ff269a9fd23c5a6dbec2a7ad6` (`docs: record Week 6 continuation checkpoint`).
 
 ## Source of truth
 
