@@ -1,6 +1,6 @@
 # Поточний стан проєкту
 
-Оновлено: 2026-09-03 (після посилення технічної частини пояснювальної записки).
+Оновлено: 2026-09-03 (після повторного проходу feedback Тетяни та посилення технічної частини пояснювальної записки).
 
 ## Поточний етап
 
@@ -10,108 +10,102 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 
 Архітектура MVP: React SPA + Vite, client-side runtime, GitHub Pages; backend і БД відсутні. Без окремого рішення не змінювати Simulation Engine v1, Availability Estimator formulas, service-template semantics, status semantics і recommendation logic.
 
+Нові функції до завершення пояснювальної записки та фінального демо не додавати.
+
 ## Reporting checkpoint
 
 - Week 2 — accepted.
 - Week 3 — accepted 2026-08-21.
 - Week 4 — accepted Тетяною 2026-08-24.
-- Week 5 report — accepted Тетяною; коментар: для тижня 5 добре, у Week 6 потрібно відправити готову пояснювальну записку.
-- Week 5 Google Doc: https://docs.google.com/document/d/1hgUQa2pJnniCZo1RaQBkbbh176rfX6p8sgHQ5jn_RAk/edit?usp=drivesdk
-
-## Supervisor comments in explanatory note
-
-Перевірено поточні Google Docs comments і додаткові supervisor suggestions, надані користувачем скриншотами:
-
-- `назва з прив’язкою до теми` для Chapter 2 — шаблонну назву `ДОСЛІДЖЕННЯ РИНКУ ТА ТЕХНОЛОГІЧНОГО СЕРЕДОВИЩА` замінено 2026-09-01 на `АНАЛІЗ ПІДХОДІВ ДО ОЦІНЮВАННЯ ДОСТУПНОСТІ ПОБУТОВИХ СЕРВІСІВ І МОДЕЛЮВАННЯ ЇХ ФУНКЦІОНАЛЬНИХ ЗАЛЕЖНОСТЕЙ`; зміну внесено і в зміст, і в основний текст та позначено помаранчевим;
-- `додати що буде вміти проєкт` — змістовно враховано у Chapter 1; comment залишено відкритим до підтвердження керівником;
-- `обʼєднати з 3.4` — структурно виконано в Chapter 3; comment більше не є відкритим за актуальним audit Google Docs comments;
-- `розширити` — Chapter 3.4 суттєво розширено; comment resolved 2026-08-31;
-- `для чого і де?` — comment прив’язаний до фрази `штучного інтелекту` у Декларації академічної доброчесності. Декларацію уточнено за фактичним використанням: ChatGPT — аналіз вимог/feedback, архітектурні рішення, пошук і перевірка інформації, документація; Codex — основний AI-асистент під час реалізації, доопрацювання, рефакторингу й автоматизованого тестування коду; Claude Code — епізодичний додатковий асистент під час роботи з кодом. Остаточні рішення сформульовано від першої особи: `я ухвалював самостійно`. Comment уже resolved 2026-08-31; disclosure після цього уточнено додатково.
-
-Фразу про необхідність узгодити спосіб бібліографічного цитування AI з тексту самої декларації прибрано як внутрішню робочу примітку. Якщо Neoversity/керівник вимагає окремий формат бібліографічного оформлення AI, його треба уточнити окремо, а не вигадувати.
+- Week 5 — accepted; коментар Тетяни: «Вітаю, для тижня 5 добре. В тиждень 6 треба відправити готову пояснювальну записку.»
+- Отже результат Week 6 — готова пояснювальна записка, а не чернетка.
 
 ## Explanatory note checkpoint
 
 Робочий Google Doc: https://docs.google.com/document/d/1sWA7sMvRp_X0hZUpSc310kh-wJ_fARo6OipjGoFtLB8/edit?usp=drivesdk
 
-- Chapters 1–4 — змістовно готові після повторної перевірки 2026-09-01;
-- Chapter 2 має topic-specific title згідно із supervisor feedback;
-- у Chapter 2 вставлено три фактичні ілюстрації інтерфейсів: NuWatt (рис. 2.1), Wattlix (рис. 2.2), TRN Lite (рис. 2.3), а також додано текстові посилання на них;
-- у Chapter 2 формули автономності пронумеровано як (2.1) і (2.2), термінологію й формулювання gap уточнено;
-- у Chapter 3 додано прямі текстові посилання на таблиці 3.1 і 3.2, пояснення після архітектурної схеми, уточнено назву 3.4, перекладено статуси й прибрано зайві англомовні робочі терміни;
-- у Section 3.4 додано Рисунок 3.2 з компактною алгоритмічною послідовністю `target services → required dependencies → active devices → BackupSource / totalPowerW / maxOutputPowerW / runtimeMinutes → Scenario.availability → recursive DAG traversal → T=min(...) → status / limiting dependencies / causal paths`; пояснення пов’язує етапи з FR-05, FR-08, FR-09 і NFR-03;
-- додано список скорочень для AC, DC, MVP, ONT, ONU, SPA, UI та xPON;
-- усі нові текстові фрагменти, внесені ChatGPT у робочий Google Doc, позначено помаранчевим;
-- Chapter 4 — підготовлена повна змістовна версія 4.1–4.4 + висновки;
-- у Chapter 4 вставлено чотири фактичні UI screenshots: `Equipment`, `Backup`, `Services & Scenario`, `Result`, а в 4.3 додано рис. 4.5 з результатом автоматизованих тестів і рис. 4.6 з успішним GitHub Actions build/deploy;
-- у Section 4.2 додано два фактичні фрагменти коду з актуального `main`: 4.1 з `apps/web/src/user-mvp/availability-estimator.js` показує сумування shared load, перевірку `maxOutputPowerW` і розрахунок `runtimeMinutes`; 4.2 з `apps/web/src/simulation/calculate.js` показує рекурсивний обхід Service dependencies та визначення мінімальної доступності сервісу. Код продукту для цього не змінювався;
-- код у записці не позиціонується як новий науковий алгоритм; це технічна/алгоритмічна реалізація прийнятої моделі;
-- Декларація академічної доброчесності — конкретизована за фактичним використанням ChatGPT, Codex і Claude Code;
-- додано анотацію з ключовими словами;
-- Chapter 5 — повна версія висновків і рекомендацій; 2026-09-03 додано компактну сценарну оцінку витрат на супровід відповідно до персонального feedback Тетяни на 5-й зустрічі;
-- financial viability checkpoint: для поточного public MVP GitHub Free, GitHub Pages і стандартні GitHub-hosted runners для GitHub Actions використовуються безкоштовно в межах чинних умов GitHub для публічного репозиторію; це не означає нульову загальну вартість супроводу; GitHub Pages не позиціонується як безкоштовний hosting комерційного SaaS;
-- labor planning scenario: DOU median developer salary June 2026 = 3500 дол. США/місяць net, sample 4541 developers; planning assumptions 160 h/month and 8 h support/month → 21.9 дол. США/h → 175 дол. США/month → 2100 дол. США/year. Це не виміряна трудомісткість і не grant rate; taxes/overheads/program rules не включено;
-- exact potential-user count не заявляється: надійно визначити його без окремого market validation не вдалося. Як proxy одного ключового сценарію наведено official NCEC/Ukrstat 2023 fixed-Internet indicator 62 per 100 households із джерельними territorial limitations; це не TAM;
-- до bibliography додано sources [22]–[26]: GitHub Pricing, GitHub Actions billing, GitHub Pages limits, DOU salary report summer 2026, Ukrstat/NCEC indicator 9.6.1;
-- confirmed funding agreements відсутні; grants/funds/local-government/partner funding залишаються Future Work recommendations;
-- Appendix A — додано таблицю артефактів проєкту з посиланнями на repository, live demo та GitHub Actions workflow;
-- автоматична навігаційна структура Google Docs налаштована через `Heading 1`/`Heading 2`; заголовки залишено чорними;
-- список скорочень оформлено таблицею за шаблоном;
-- поточний формат сторінки — US Letter (`612 × 792 pt`); потрібно перевести документ у A4, зберігши встановлені поля;
-- поточний PDF після technical strengthening має 52 сторінки: Рисунок 3.2 — стор. 34; code fragment 4.1 — стор. 41; code fragment 4.2 — стор. 42; Section 4.3 починається на стор. 43; financial block починається на стор. 47; bibliography source [22] — стор. 51. Після A4/page breaks номери потрібно оновити;
-- у змісті ще залишаються `#` замість номерів сторінок; списки рисунків і таблиць потрібно сформувати/оновити після фінальної пагінації;
-- після A4, page breaks і заповнення змісту потрібні повний PDF visual QA та фінальний експорт;
-- відкритий лише один Google Docs comment: `додати що буде вміти проєкт`; вимогу вже змістовно враховано у Chapter 1, comment не закривати без рішення Сергія/підтвердження керівника.
+Chapters 1–5, AI declaration і Appendix A змістовно заповнені. Поточний пріоритет — завершити лише обґрунтовані змістовні правки за feedback, потім форматування A4 і фінальний PDF QA.
+
+### Повторний supervisor-feedback pass — 2026-09-03
+
+Після повторного проходу транскриптів Тетяни виконано такі релевантні до цього проєкту правки:
+
+- у §2.2 після кожного з рисунків 2.1 NuWatt, 2.2 Wattlix і 2.3 TRN Lite додано окрему текстову інтерпретацію того, що саме ілюстрація підтверджує для аналізу аналогів;
+- у «Висновках до другого розділу» прибрано citations; висновки переформульовано як власний синтез уже проаналізованих джерел і рішень;
+- у §3.2 додано Таблицю 3.3 «Основні ітерації розробки та способи перевірки»: Simulation Engine v1 → React Demo v1 → Deploy v1 → User-facing MVP v1 → UX Polish v1; колонки `Етап / Основний результат / Перевірка`;
+- у §3.5 розширено стратегію тестування фактичними рівнями: unit tests на `node:test` / `node:assert/strict`, інтеграційний pipeline `runUserScenarioCore → Scenario.availability → Simulation Engine`, negative cases і manual/browser acceptance; кількісні результати залишаються в Chapter 4 лише за фактичними runs;
+- у §3.6 розширено фактичні виклики: контроль scope, якість/валідація вхідних даних і структурна коректність графа, баланс explainability з простотою UI, межі deterministic W/Wh-моделі;
+- у §4.2 додано компактне фактичне дерево `apps/web/src` з `components/user-mvp`, `user-mvp` і `simulation`; source paths перевірено проти актуального `main`, дерево оформлено Courier New 10 pt;
+- Section 4.2 уже містить два фактичні code fragments: Availability Estimator shared-load/runtime calculation і Simulation Engine recursive dependency calculation;
+- програмний код і product semantics під час цього documentation pass не змінювалися; нового запису в `docs/DECISIONS.md` не потрібно.
+
+### Рисунок 3.2 / Mermaid
+
+Створено Mermaid-source:
+
+`docs/service-availability-evaluation-diagram.md`
+
+Commit створення: `e2906feb41753f9bd39ffd9c8900eec46cb5b9f6`.
+
+Діаграма відображає фактичний pipeline: target services / required dependencies → active devices → BackupSource/shared load → max-output validation → runtime → Device/ExternalProvider availability → `Scenario.availability` → DAG validation → recursive Service calculation → `T=min(...)` → Available/Limited/Unavailable → limiting dependencies / causal paths.
+
+У записці підпис уже змінено на `Рисунок 3.2 — Діаграма алгоритмічної послідовності оцінювання доступності сервісу`. Поточне текстове подання є тимчасовим; Сергій зробить screenshot Mermaid і замінить ним цей блок перед фінальним форматуванням.
+
+### Financial viability checkpoint
+
+- Для поточного public MVP GitHub Free, GitHub Pages і стандартні GitHub-hosted runners для GitHub Actions використовуються безкоштовно в межах чинних умов для публічного репозиторію; це не означає нульову загальну вартість супроводу.
+- GitHub Pages не позиціонується як безкоштовний hosting комерційного SaaS.
+- Labor planning scenario: DOU median developer salary June 2026 = 3500 дол. США/місяць net, sample 4541 developers; planning assumptions 160 h/month and 8 h support/month → 21.9 дол. США/h → 175 дол. США/month → 2100 дол. США/year. Це сценарна оцінка, не виміряна трудомісткість і не grant rate.
+- Точний TAM не заявляється. Як proxy одного Internet-сценарію наведено official NCEC/Ukrstat 2023 fixed-Internet indicator 62 per 100 households із зазначеними джерелом обмеженнями.
+- Підтверджених домовленостей про фінансування немає; grants/partners/local-government support залишаються рекомендаціями Future Work.
+
+## Поточний PDF / верстка
+
+Fresh export після supervisor-feedback pass:
+
+- 55 сторінок;
+- формат усе ще US Letter `612 × 792 pt`;
+- поточні сторінки до переходу на A4: пояснення рис. 2.1–2.3 — 17–19; висновки Chapter 2 — 24; Таблиця 3.3 — 30; Рисунок 3.2 — 35; §3.5 — 36; §3.6 — 37; source tree у §4.2 — 43; code fragments 4.1/4.2 — 44–45; financial block — приблизно 50–51;
+- visual QA сторінок 17–19, 24, 30, 35–37, 43–45: видимого clipping/overlap немає;
+- після A4/page breaks номери сторінок потрібно визначити повторно.
+
+У змісті ще залишаються `#` замість фінальних номерів сторінок; списки рисунків і таблиць потрібно оновити після остаточної пагінації.
+
+## Supervisor comments in Google Docs
+
+Відкритий один comment: `додати що буде вміти проєкт`. Вимогу вже змістовно враховано у Chapter 1; comment не закривати без рішення Сергія або підтвердження керівника.
 
 ## Постійні правила редагування записки
 
-- Усе, що ChatGPT/Codex додає або змінює в робочій пояснювальній записці, позначати помаранчевим `#E65900`; незмінений текст залишати чорним. Не переводити погоджені зміни в чорний без прямої команди Сергія.
-- Назви елементів інтерфейсу подавати за правилом: українська назва першою, у дужках — точна англійська назва UI. Приклад: `«Обладнання» (Equipment)`.
-- Англомовні технічні/проєктні терміни в прозі подавати українською першими, а точний англійський відповідник — у дужках, якщо це доречно. Для code identifiers (`usableCapacityWh`, `powerW`, `maxOutputPowerW`, `totalPowerW` тощо) у прозі спочатку давати природну українську назву, а identifier — у дужках; у коді, формулах, шляхах, URL та точних назвах джерел/продуктів identifier не перекладати.
-- Після кожного редагування записки повідомляти Сергію, у яких розділах/підрозділах і на яких сторінках за поточною пагінацією зроблено зміни; якщо пагінація ще не фінальна, прямо це зазначати.
-- Не вигадувати результати тестування, usability study, бюджет, фінансування, фактичні показники обладнання або feedback керівника. Фінансові числа допускаються лише як прозоро позначені сценарні оцінки з перевіреними джерелами та явними припущеннями.
-- Не розширювати scope MVP новими функціями до завершення записки та демо; допустимі лише погоджені косметичні правки без зміни Simulation Engine, Availability Estimator formulas, service-template semantics, status semantics або recommendation logic.
+- Усе, що ChatGPT/Codex додає або змістовно змінює, позначати помаранчевим `#E65900`; незмінений текст залишати чорним. Не прибирати orange без прямої команди Сергія.
+- Назви UI: українська назва першою, точна англійська — у дужках.
+- В академічній прозі український технічний термін подавати першим; exact identifier/path/code залишати без перекладу там, де це природно.
+- Після кожного редагування повідомляти розділ/підрозділ і сторінки за поточною пагінацією; якщо пагінація не фінальна — прямо це зазначати.
+- Не вигадувати usability study, screen-reader results, фінансування, фактичні device measurements або test numbers.
 
 ## Verification baseline
 
-- automated suite після cosmetic duration formatting: `141 passed`, `0 failed`, `0 skipped`;
+- automated suite: `141 passed`, `0 failed`, `0 skipped`;
 - Vite `8.2.1` production build: success, `36 modules transformed`;
-- `git diff --check` — PASS;
-- whole-branch review: initial `2 Major` + `2 Minor` fixed; final `ACCEPTED`;
-- browser/manual acceptance — PASS;
-- post-deploy live smoke — PASS;
-- Chapter 4 connector/PDF readback: UI figures 4.1–4.4 and test/deploy evidence figures 4.5–4.6 present; current layout visually checked;
-- technical-strengthening PDF readback/visual QA: Рисунок 3.2 на стор. 34, code fragment 4.1 на стор. 41, code fragment 4.2 на стор. 42; схема та обидва фрагменти не розриваються між сторінками, видимого clipping/overlap немає;
-- performance baseline виконано для локального `runUserScenario`: 1 000 warm-up запусків, 5 серій × 20 000 виміряних запусків (100 000 загалом), Node.js `v24.19.0`, Linux x86_64, Intel Xeon E5-2673 v4 @ 2.30 GHz; median `0.026 ms/run`, mean `0.028 ms/run`;
-- baseline охоплює лише локальний розрахунковий контур для одного невеликого deterministic fixture; не охоплює browser rendering, network latency або low-end devices і не має наперед заданого acceptance threshold;
-- external usability study і screen-reader result не проводилися. Не вигадувати результати.
-
-## Cosmetic duration formatting
-
-- Реалізовано display-only форматування тривалості без зміни внутрішніх integer-minute calculations.
-- Українською: `45 хв`, `1 год`, `1 год 25 хв`, `0 хв`; англійською: `45 min`, `1 h`, `1 h 25 min`, `0 min`.
-- Форматер використовується на `Result` і в recommendation helper messages; legacy demo також оновлено.
-- Code review: Critical — none, Important — none; minor direct zero-case test додано.
-- Локальний commit реалізації: `b36fa30` (`Format durations as hours and minutes`); локальний commit попередньої синхронізації статусу: `0a06cfe`.
-- Push у `origin/main` виконано через підключений GitHub connector як fast-forward без force. GitHub створив еквівалентні remote commits `85d66bf4acaad09529482cf5b3672d46faf8f37a` (`Format durations as hours and minutes`) і `d99a670e3504a94ff269a9fd23c5a6dbec2a7ad6` (`docs: record Week 6 continuation checkpoint`).
+- `git diff --check`: PASS;
+- whole-branch review: initial `2 Major + 2 Minor` fixed; final `ACCEPTED`;
+- browser/manual acceptance: PASS;
+- post-deploy live smoke: PASS;
+- performance baseline: local `runUserScenario`, 1 000 warm-up, 5 × 20 000 measured = 100 000 runs; Node.js `v24.19.0`, Linux x86_64, Xeon E5-2673 v4 @ 2.30 GHz; median `0.026 ms/run`, mean `0.028 ms/run`; calculation loop only, no browser/network/low-end-device claim and no predefined acceptance threshold;
+- external usability study and screen-reader evaluation НЕ проводилися.
 
 ## Source of truth
 
-- `docs/STATUS.md`;
-- `docs/DECISIONS.md`;
-- `docs/specs/user-facing-mvp-v1.md`;
-- `docs/specs/user-facing-mvp-v1-acceptance.md`;
-- `docs/specs/ux-polish-v1.md`;
-- `docs/specs/ux-polish-v1-acceptance.md`;
-- working explanatory note in Google Drive;
-- Capstone Project Context in Google Drive.
+1. Google Drive `Capstone Project Context — Software Engineering`.
+2. `docs/STATUS.md`.
+3. `docs/DECISIONS.md` + accepted specs.
+4. Working explanatory note in Google Drive.
 
 ## Наступна дія
 
-1. Перевести записку з US Letter у A4 і налаштувати фінальні page breaks.
-2. Сформувати/оновити списки рисунків і таблиць, потім заповнити номери сторінок у змісті.
-3. Виконати повний PDF visual QA; виправити лише фактичні проблеми верстки.
-4. Після прямого підтвердження Сергія прибрати помаранчеве маркування, експортувати фінальний PDF і передати Тетяні готову записку.
-5. Після завершення записки підготувати й відрепетирувати 15-хвилинне демо та матеріали Week 6.
-
-Нові функції не додавати до завершення цих кроків.
+1. Сергій робить screenshot Mermaid із `docs/service-availability-evaluation-diagram.md` і замінює ним тимчасовий блок Рисунка 3.2.
+2. Перевести записку з US Letter у A4, зберігши поля, і налаштувати фінальні page breaks.
+3. Оновити списки рисунків/таблиць та номери сторінок у змісті.
+4. Виконати повний PDF visual QA і виправити лише фактичні проблеми верстки.
+5. Після прямого підтвердження Сергія прибрати помаранчеве маркування, експортувати фінальний PDF і передати Тетяні готову записку.
+6. Після завершення записки підготувати й відрепетирувати 15-хвилинне фінальне демо та Week 6 materials.
