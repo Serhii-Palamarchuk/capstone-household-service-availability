@@ -1,6 +1,6 @@
 # Поточний стан проєкту
 
-Оновлено: 2026-09-03 (після financial viability / support-cost update пояснювальної записки).
+Оновлено: 2026-09-03 (після посилення технічної частини пояснювальної записки).
 
 ## Поточний етап
 
@@ -39,10 +39,13 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - у Chapter 2 вставлено три фактичні ілюстрації інтерфейсів: NuWatt (рис. 2.1), Wattlix (рис. 2.2), TRN Lite (рис. 2.3), а також додано текстові посилання на них;
 - у Chapter 2 формули автономності пронумеровано як (2.1) і (2.2), термінологію й формулювання gap уточнено;
 - у Chapter 3 додано прямі текстові посилання на таблиці 3.1 і 3.2, пояснення після архітектурної схеми, уточнено назву 3.4, перекладено статуси й прибрано зайві англомовні робочі терміни;
+- у Section 3.4 додано Рисунок 3.2 з компактною алгоритмічною послідовністю `target services → required dependencies → active devices → BackupSource / totalPowerW / maxOutputPowerW / runtimeMinutes → Scenario.availability → recursive DAG traversal → T=min(...) → status / limiting dependencies / causal paths`; пояснення пов’язує етапи з FR-05, FR-08, FR-09 і NFR-03;
 - додано список скорочень для AC, DC, MVP, ONT, ONU, SPA, UI та xPON;
 - усі нові текстові фрагменти, внесені ChatGPT у робочий Google Doc, позначено помаранчевим;
 - Chapter 4 — підготовлена повна змістовна версія 4.1–4.4 + висновки;
 - у Chapter 4 вставлено чотири фактичні UI screenshots: `Equipment`, `Backup`, `Services & Scenario`, `Result`, а в 4.3 додано рис. 4.5 з результатом автоматизованих тестів і рис. 4.6 з успішним GitHub Actions build/deploy;
+- у Section 4.2 додано два фактичні фрагменти коду з актуального `main`: 4.1 з `apps/web/src/user-mvp/availability-estimator.js` показує сумування shared load, перевірку `maxOutputPowerW` і розрахунок `runtimeMinutes`; 4.2 з `apps/web/src/simulation/calculate.js` показує рекурсивний обхід Service dependencies та визначення мінімальної доступності сервісу. Код продукту для цього не змінювався;
+- код у записці не позиціонується як новий науковий алгоритм; це технічна/алгоритмічна реалізація прийнятої моделі;
 - Декларація академічної доброчесності — конкретизована за фактичним використанням ChatGPT, Codex і Claude Code;
 - додано анотацію з ключовими словами;
 - Chapter 5 — повна версія висновків і рекомендацій; 2026-09-03 додано компактну сценарну оцінку витрат на супровід відповідно до персонального feedback Тетяни на 5-й зустрічі;
@@ -55,7 +58,7 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - автоматична навігаційна структура Google Docs налаштована через `Heading 1`/`Heading 2`; заголовки залишено чорними;
 - список скорочень оформлено таблицею за шаблоном;
 - поточний формат сторінки — US Letter (`612 × 792 pt`); потрібно перевести документ у A4, зберігши встановлені поля;
-- за поточною US Letter pagination financial block розташований у Chapter 5 на стор. 46–47; bibliography [22]–[26] — стор. 50; після A4/page breaks номери потрібно оновити;
+- поточний PDF після technical strengthening має 52 сторінки: Рисунок 3.2 — стор. 34; code fragment 4.1 — стор. 41; code fragment 4.2 — стор. 42; Section 4.3 починається на стор. 43; financial block починається на стор. 47; bibliography source [22] — стор. 51. Після A4/page breaks номери потрібно оновити;
 - у змісті ще залишаються `#` замість номерів сторінок; списки рисунків і таблиць потрібно сформувати/оновити після фінальної пагінації;
 - після A4, page breaks і заповнення змісту потрібні повний PDF visual QA та фінальний експорт;
 - відкритий лише один Google Docs comment: `додати що буде вміти проєкт`; вимогу вже змістовно враховано у Chapter 1, comment не закривати без рішення Сергія/підтвердження керівника.
@@ -77,7 +80,8 @@ Live URL: https://serhii-palamarchuk.github.io/capstone-household-service-availa
 - whole-branch review: initial `2 Major` + `2 Minor` fixed; final `ACCEPTED`;
 - browser/manual acceptance — PASS;
 - post-deploy live smoke — PASS;
-- Chapter 4 connector/PDF readback: UI figures 4.1–4.4 and test/deploy evidence figures 4.5–4.6 present; current layout visually checked.
+- Chapter 4 connector/PDF readback: UI figures 4.1–4.4 and test/deploy evidence figures 4.5–4.6 present; current layout visually checked;
+- technical-strengthening PDF readback/visual QA: Рисунок 3.2 на стор. 34, code fragment 4.1 на стор. 41, code fragment 4.2 на стор. 42; схема та обидва фрагменти не розриваються між сторінками, видимого clipping/overlap немає;
 - performance baseline виконано для локального `runUserScenario`: 1 000 warm-up запусків, 5 серій × 20 000 виміряних запусків (100 000 загалом), Node.js `v24.19.0`, Linux x86_64, Intel Xeon E5-2673 v4 @ 2.30 GHz; median `0.026 ms/run`, mean `0.028 ms/run`;
 - baseline охоплює лише локальний розрахунковий контур для одного невеликого deterministic fixture; не охоплює browser rendering, network latency або low-end devices і не має наперед заданого acceptance threshold;
 - external usability study і screen-reader result не проводилися. Не вигадувати результати.
